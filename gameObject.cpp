@@ -1,0 +1,55 @@
+#include <gameObject.h>
+#include <mesh.h>
+#include <GL/glew.h>
+#include <ray.h>
+
+const Mesh* GameObject::getMesh()
+{
+  return this->mesh;
+}
+
+const Program* GameObject::getShaderProgram()
+{
+  return this->shaderProgram;
+}
+
+GameObject::~GameObject()
+{
+  if(this->mesh != nullptr) delete this->mesh;
+
+  if(this->shaderProgram != nullptr) delete this->shaderProgram;
+}
+
+void GameObject::draw(cy::Matrix4f &viewProjection)
+{
+  this->mesh->bindVAO();
+
+  const uint16_t shaderID = this->shaderProgram->getProgram();
+  glUseProgram(shaderID);
+
+  const cy::Matrix4f mvp = viewProjection * this->getModelMatrix();
+
+  GLuint mvpLocation = glGetUniformLocation(shaderID, "mvp");
+  glUniformMatrix4fv(mvpLocation, 1, GL_FALSE, mvp.cell);
+
+  GLuint selectedLocation = glGetUniformLocation(shaderID, "isSelected");
+  glUniform1i(selectedLocation, this->isSelected);
+
+  glDrawArrays(GL_TRIANGLES, 0, this->mesh->getTriangleCount() * 3);
+}
+
+void GameObject::draw(Camera camera)
+{
+  draw(camera.getViewProjection());
+}
+
+void GameObject::draw(cy::Matrix4f &projection, cy::Matrix4f &view)
+{
+  cy::Matrix4f viewProjection = projection * view;
+  draw(viewProjection);
+}
+
+bool GameObject::intersect(Ray& ray)
+{
+  return this->mesh->intersectMesh(ray, this);
+}
