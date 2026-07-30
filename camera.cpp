@@ -31,6 +31,7 @@ void Camera::updateMatrices()
 
 cy::Matrix4f& Camera::getViewProjection()
 {
+  updateMatrices();
   return this->viewProjection;
 }
 

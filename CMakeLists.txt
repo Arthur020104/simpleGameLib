@@ -18,6 +18,9 @@ set(SOURCES
   gameObject.cpp
   mesh.cpp
   camera.cpp
+  scene.cpp
+  examples/exampleObject.h
+  examples/exampleScene.h
 )
 
 set(HEADERS 
@@ -30,11 +33,18 @@ set(HEADERS
   camera.h
   vertex.h
   ray.h
+  scene.h
+  examples/exampleObject.cpp
+  examples/exampleScene.cpp
 )
 
 add_executable(Renderer ${SOURCES} ${HEADERS})
 
-target_include_directories(Renderer PRIVATE ${CMAKE_CURRENT_SOURCE_DIR})
+target_include_directories(
+  Renderer PRIVATE 
+  ${CMAKE_CURRENT_SOURCE_DIR}
+  ${CMAKE_CURRENT_SOURCE_DIR}/examples
+  )
 
 target_link_libraries(Renderer PRIVATE
   glfw

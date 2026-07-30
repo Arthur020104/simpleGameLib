@@ -16,6 +16,12 @@ uint32_t Mesh::getId()
   return this->id; 
 }
 
+Mesh::~Mesh()
+{
+  glDeleteBuffers(1, &VBO);
+  glDeleteVertexArrays(1, &VAO);
+}
+
 Mesh::Mesh(const std::vector<Vertex>& inputVertices): id(Mesh::nextMeshId++), vertices(inputVertices) 
 {
   this->triangleCount = this->vertices.size() / 3;
@@ -77,7 +83,12 @@ void Mesh::bindVAO()
 
 bool Mesh::intersectTriangle(Ray& ray, GameObject* gameObject, Vertex &v0, Vertex &v1, Vertex &v2)
 {
+  //using parallelogram area bc the ratio will be the same
   cy::Vec3f planeNormal = (v1.pos - v0.pos) ^ (v2.pos - v0.pos);
+
+  float area = planeNormal.Length();
+
+  if(abs(area) <= ERROR_MARGIN) return false;
 
   float overArea = 1.0f / planeNormal.Length();
 
@@ -86,6 +97,7 @@ bool Mesh::intersectTriangle(Ray& ray, GameObject* gameObject, Vertex &v0, Verte
   cy::Vec3f centerPoint = (v0.pos + v1.pos + v2.pos) *  0.33333333333f;
 
   float v = planeNormal % ray.direction;
+  if(abs(v) <= ERROR_MARGIN) return false;
 
   const float t = (planeNormal % (centerPoint - ray.origin)) / v;
 
@@ -126,4 +138,19 @@ bool Mesh::intersectMesh(Ray& ray, GameObject* gameObject)
   }
 
   return false;
+}
+
+void Mesh::registerObjectWithMesh(GameObject* obj)
+{
+  this->objectsUsingMesh++;
+}
+
+uint16_t Mesh::getUsingMesh()
+{
+  return this->objectsUsingMesh;
+}
+
+u_int16_t Mesh::removeUsingMesh(GameObject* obj)
+{
+  return --this->objectsUsingMesh;
 }

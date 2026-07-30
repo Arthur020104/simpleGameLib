@@ -4,20 +4,19 @@
 #include <transform.h>
 #include <camera.h>
 #include <ray.h>
+#include <scene.h>
 
 class Mesh; 
 class Program;
 class Camera;
+class Scene;
 
 class GameObject: public Transform
 {
-  private:
-    Mesh* mesh;
-    Program* shaderProgram;
   public:
-    GameObject(Mesh* meshData, Program* shader): mesh(meshData), shaderProgram(shader) {};
+    GameObject(Mesh* meshData, Program* shader);
 
-    ~GameObject();
+    virtual ~GameObject();
 
     const Mesh* getMesh();
 
@@ -27,9 +26,18 @@ class GameObject: public Transform
 
     void draw(cy::Matrix4f &viewProjection);
 
-    void draw(Camera camera);
+    void draw(Camera* camera);
 
     bool intersect(Ray& ray);
 
     bool isSelected = false;
+
+    Scene* scene;
+
+    virtual void start() = 0;
+    virtual void beforeDrawing() = 0;
+    virtual void aftherDrawing() = 0;
+  private:
+    Mesh* mesh;
+    Program* shaderProgram;
 };

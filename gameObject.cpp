@@ -3,6 +3,12 @@
 #include <GL/glew.h>
 #include <ray.h>
 
+GameObject::GameObject(Mesh* meshData, Program* shader): mesh(meshData), shaderProgram(shader) 
+{
+  this->mesh->registerObjectWithMesh(this);
+  this->shaderProgram->registerObjectUsingProgram(this);
+}
+
 const Mesh* GameObject::getMesh()
 {
   return this->mesh;
@@ -15,9 +21,9 @@ const Program* GameObject::getShaderProgram()
 
 GameObject::~GameObject()
 {
-  if(this->mesh != nullptr) delete this->mesh;
+  if(this->mesh->removeUsingMesh(this) <= 0) delete this->mesh;
 
-  if(this->shaderProgram != nullptr) delete this->shaderProgram;
+  if(this->shaderProgram->removeUsingProgram(this) <= 0) delete this->shaderProgram;
 }
 
 void GameObject::draw(cy::Matrix4f &viewProjection)
@@ -34,13 +40,18 @@ void GameObject::draw(cy::Matrix4f &viewProjection)
 
   GLuint selectedLocation = glGetUniformLocation(shaderID, "isSelected");
   glUniform1i(selectedLocation, this->isSelected);
-
-  glDrawArrays(GL_TRIANGLES, 0, this->mesh->getTriangleCount() * 3);
+  if(this->mesh->getTriangleCount() >= 1)
+    glDrawArrays(GL_TRIANGLES, 0, this->mesh->getTriangleCount() * 3);
+  else{
+    std::cout<<"LINE DRAWING"<<std::endl;
+    glDrawArrays(GL_LINES, 0, 2);
+  }
+    
 }
 
-void GameObject::draw(Camera camera)
+void GameObject::draw(Camera* camera)
 {
-  draw(camera.getViewProjection());
+  draw(camera->getViewProjection());
 }
 
 void GameObject::draw(cy::Matrix4f &projection, cy::Matrix4f &view)

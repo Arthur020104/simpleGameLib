@@ -13,6 +13,10 @@ class Program
     void compileShaders();
     unsigned short getProgram();
 
+    void registerObjectUsingProgram(GameObject* obj);//for now passing the obj is useless, but later I may want to add a list of objects using this program
+    uint16_t getUsingProgram();
+    u_int16_t removeUsingProgram(GameObject* obj);
+
   private:
     unsigned short id;
     std::string vertexShaderPath, fragmentShaderPath;
@@ -25,4 +29,7 @@ class Program
     void checkCompileErrors(unsigned short id,const char* type);
     void prepareProgram(unsigned short* shaders, unsigned short size);
     void destroyProgram();
+
+
+    uint16_t objectsUsingProgram;
 };
