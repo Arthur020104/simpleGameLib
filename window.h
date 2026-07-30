@@ -13,11 +13,19 @@ class WindowController
     bool shouldClose();
     void pollEvents();
     void swapBuffers();
-    
+
+    cy::Vec2f getMousePos(bool ndc = false);
+
+    float aspect = 0.0f;
+
+    double deltaTime = 0.0f;
     GLFWwindow* window;
   private:
+
     
 };
+
+extern WindowController WINDOW;
 
 WindowController initContext(uint16_t w, uint16_t h, const char* title, cy::Vec4f clearColor);
 void frameBufferSizeCallback(GLFWwindow* window, uint16_t w, uint16_t h);

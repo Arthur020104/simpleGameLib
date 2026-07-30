@@ -1,7 +1,7 @@
 #pragma once
 #include <mesh.h>
 #include <program.h>
-#include <transform.h>
+#include <component.h>
 #include <camera.h>
 #include <ray.h>
 #include <scene.h>
@@ -11,7 +11,7 @@ class Program;
 class Camera;
 class Scene;
 
-class GameObject: public Transform
+class GameObject: public Component
 {
   public:
     GameObject(Mesh* meshData, Program* shader);
@@ -22,7 +22,7 @@ class GameObject: public Transform
 
     const Program* getShaderProgram();
 
-    void draw(cy::Matrix4f &projection, cy::Matrix4f &view);
+    virtual void draw(cy::Matrix4f &projection, cy::Matrix4f &view);
 
     void draw(cy::Matrix4f &viewProjection);
 
@@ -32,11 +32,9 @@ class GameObject: public Transform
 
     bool isSelected = false;
 
-    Scene* scene;
-
     virtual void start() = 0;
-    virtual void beforeDrawing() = 0;
-    virtual void aftherDrawing() = 0;
+    virtual void beforeUpdate() = 0;
+    virtual void aftherUpdate() = 0;
   private:
     Mesh* mesh;
     Program* shaderProgram;

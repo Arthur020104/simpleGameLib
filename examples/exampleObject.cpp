@@ -5,12 +5,12 @@ void ExampleObject::start()
   return;
 }
 
-void ExampleObject::beforeDrawing()
+void ExampleObject::beforeUpdate()
 {
   return;
 }
 
-void ExampleObject::aftherDrawing()
+void ExampleObject::aftherUpdate()
 {
   return;
 }

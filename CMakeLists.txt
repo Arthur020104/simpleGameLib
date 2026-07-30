@@ -19,8 +19,9 @@ set(SOURCES
   mesh.cpp
   camera.cpp
   scene.cpp
-  examples/exampleObject.h
-  examples/exampleScene.h
+  examples/exampleObject.cpp
+  examples/exampleScene.cpp
+  examples/exampleCamera.cpp
 )
 
 set(HEADERS 
@@ -34,8 +35,10 @@ set(HEADERS
   vertex.h
   ray.h
   scene.h
-  examples/exampleObject.cpp
-  examples/exampleScene.cpp
+  component.h
+  examples/exampleObject.h
+  examples/exampleScene.h
+  examples/exampleCamera.h
 )
 
 add_executable(Renderer ${SOURCES} ${HEADERS})

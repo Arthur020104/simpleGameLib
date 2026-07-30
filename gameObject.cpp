@@ -43,7 +43,6 @@ void GameObject::draw(cy::Matrix4f &viewProjection)
   if(this->mesh->getTriangleCount() >= 1)
     glDrawArrays(GL_TRIANGLES, 0, this->mesh->getTriangleCount() * 3);
   else{
-    std::cout<<"LINE DRAWING"<<std::endl;
     glDrawArrays(GL_LINES, 0, 2);
   }
     

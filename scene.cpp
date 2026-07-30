@@ -1,9 +1,10 @@
 #include <scene.h>
 #include <iostream>
+#include <algorithm>
 
 void Scene::draw()
 {
-  std::cout<<"drawing\n";
+  if(cameras.size() <= 0) throw std::runtime_error("At least one camera is necessary for rendering");
   for(GameObject* obj: this->objects)
   {
     obj->draw(this->cameras[activeCamera]);
@@ -11,9 +12,7 @@ void Scene::draw()
 }
 
 Scene::Scene()
-{
-  Camera* cam = new Camera(cy::Vec3f(0.0f, 0.0f, 0.0f));
-  this->cameras.push_back(cam);
+{ 
 }
 
 Scene::~Scene()
@@ -49,7 +48,12 @@ void Scene::beforeDrawing()
 {
   for(GameObject* obj: this->objects)
   {
-    obj->beforeDrawing();
+    obj->beforeUpdate();
+  }
+
+  for(Camera* obj: this->cameras)
+  {
+    obj->beforeUpdate();
   }
 }
 
@@ -57,7 +61,12 @@ void Scene::aftherDrawing()
 {
   for(GameObject* obj: this->objects)
   {
-    obj->aftherDrawing();
+    obj->aftherUpdate();
+  }
+
+  for(Camera* obj: this->cameras)
+  {
+    obj->aftherUpdate();
   }
 }
 
@@ -75,6 +84,8 @@ void Scene::addCamera(Camera* cam)
 
 void Scene::setActiveCam(uint16_t activeCam)
 {
+  if(cameras.size() <= activeCam) throw std::runtime_error("Cannot set the active camera: the specified camera index does not exist.");
+
   this->activeCamera = activeCam;
 }
 
@@ -88,4 +99,31 @@ void Scene::setActiveCam(Camera* cam)
       break;
     }
   }
+}
+
+bool Scene::intersectSceneObjects(Ray& ray)
+{
+  bool hitSomething = false;
+  for(GameObject* obj: this->objects)
+  {
+    if(obj->intersect(ray) && !hitSomething) hitSomething = true;
+  }
+
+  return hitSomething;
+}
+
+void Scene::destroy(GameObject* obj)
+{
+  auto itemOnObjects = std::find(this->objects.begin(), this->objects.end(), obj);
+
+  if(itemOnObjects != this->objects.end())
+  {
+    this->objects.erase(itemOnObjects);
+    return;
+  }
+
+  auto itemOnStartObjects = std::find(this->objectsWaitingToStart.begin(), this->objectsWaitingToStart.end(), obj);
+
+  if(itemOnStartObjects != this->objectsWaitingToStart.end()) this->objectsWaitingToStart.erase(itemOnStartObjects);
+
 }

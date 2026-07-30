@@ -1,10 +1,11 @@
 #pragma once
 #include <vector>
 #include <gameObject.h>
-#include <camera.h>
+#include <ray.h>
 
 class GameObject;
 class Camera;
+struct Ray;
 
 class Scene
 {
@@ -28,6 +29,10 @@ class Scene
     virtual void beforeDrawing();
 
     virtual void aftherDrawing();
+
+    void destroy(GameObject* obj);
+
+    virtual bool intersectSceneObjects(Ray& ray);
   private:
     std::vector<GameObject*> objects;
     std::vector<Camera*> cameras;
@@ -35,5 +40,6 @@ class Scene
     std::vector<GameObject*> objectsWaitingToStart;
 
     uint16_t activeCamera = 0;
+
     //std::vector<Ligth*> lights;
 };

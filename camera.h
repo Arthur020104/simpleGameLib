@@ -1,13 +1,12 @@
 #pragma once
 #include <cy/cyMatrix.h>
-#include <transform.h>
+#include <component.h>
 #include <ray.h>
-#include <scene.h>
 
 struct Ray;
 class Scene;
 
-class Camera : public Transform
+class Camera : public Component
 {
 public:
   Camera(cy::Vec3f initialPos);
@@ -16,10 +15,12 @@ public:
 
   Ray generateRay(cy::Vec2f point);
 
-  Scene* scene;
+  void updateAspect(float aspect);
+
 private:
-  const float N = 0.1f, F = 500.0f;
+  const float N = 0.1f, F = 100000.0f;
   const float FOV = 103.0f;
+  float aspect;
   
   cy::Vec3f direction = cy::Vec3f(0.0f, 0.0f, -1.0f), defaultUp = cy::Vec3f(0.0f, 1.0f, 0.0f);
 

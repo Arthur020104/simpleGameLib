@@ -1,9 +1,11 @@
 #include <camera.h>
 #include <cy/cyMatrix.h>
+#include <window.h>
 
-Camera::Camera(cy::Vec3f initialPos): Transform(initialPos)
+Camera::Camera(cy::Vec3f initialPos): Component(initialPos)
 {
-  this->projectionMatrix = cy::Matrix4f::Perspective(FOV * cy::Deg2Rad<float>(), float(1280)/float(720), N, F);
+  this->aspect = WINDOW.aspect;
+  this->projectionMatrix = cy::Matrix4f::Perspective(FOV * cy::Deg2Rad<float>(), WINDOW.aspect, N, F);
   this->direction = direction.GetNormalized();
   
   updateMatrices();
@@ -31,12 +33,15 @@ void Camera::updateMatrices()
 
 cy::Matrix4f& Camera::getViewProjection()
 {
+  if(WINDOW.aspect != this->aspect) this->updateAspect(WINDOW.aspect);
+  //remove update and track to only update for when changes are made
   updateMatrices();
   return this->viewProjection;
 }
 
 Ray Camera::generateRay(cy::Vec2f point)
 {
+  this->updateMatrices();
   cy::Vec4f farWorld = invertedViewProjection * cy::Vec4f(point.x, point.y, 1.0f, 1.0f);
   
   farWorld /= farWorld.w;
@@ -46,4 +51,12 @@ Ray Camera::generateRay(cy::Vec2f point)
   ray.direction = (farWorld.XYZ() - this->position).GetNormalized();
 
   return ray;
+}
+
+void Camera::updateAspect(float aspect)
+{
+  this->aspect = aspect;
+  this->projectionMatrix = cy::Matrix4f::Perspective(FOV * cy::Deg2Rad<float>(), aspect, N, F);
+
+  this->updateMatrices();
 }

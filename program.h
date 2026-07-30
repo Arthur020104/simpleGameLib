@@ -4,6 +4,9 @@
 #include <string.h>
 #include <cy/cyTriMesh.h>
 #include <cy/cyMatrix.h>
+#include <gameObject.h>
+
+class GameObject;
 
 class Program
 {
@@ -33,3 +36,5 @@ class Program
 
     uint16_t objectsUsingProgram;
 };
+//FIND A BETTER WAY AFTHER, IF NO ONE USES THIS PROGRAM MEMORY WILL LEAK
+extern Program* DEFAULT_SHADER;

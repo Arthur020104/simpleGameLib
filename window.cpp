@@ -9,6 +9,15 @@
 #include <cy/cyMatrix.h>
 #include <string>
 #include <stdexcept>
+#include <stdint.h>
+
+//Windows
+#ifdef _WIN32 
+extern "C" {
+  __declspec(dllexport) uint32_t NvOptimusEnablement = 1;
+  __declspec(dllexport) int AmdPowerXpressRequestHighPerformance = 1;
+}
+#endif
 
 WindowController initContext(uint16_t w, uint16_t h, const char* title, cy::Vec4f clearColor)
 {
@@ -33,7 +42,7 @@ WindowController initContext(uint16_t w, uint16_t h, const char* title, cy::Vec4
   return window;
 }
 
-WindowController::WindowController(uint16_t w, uint16_t h, const char* title, uint16_t majorV, uint16_t minorV)
+WindowController::WindowController(uint16_t w, uint16_t h, const char* title, uint16_t majorV, uint16_t minorV): w(w), h(h)
 {
   glfwWindowHint(GLFW_CONTEXT_VERSION_MAJOR, majorV);
   glfwWindowHint(GLFW_CONTEXT_VERSION_MINOR, minorV);
@@ -43,6 +52,7 @@ WindowController::WindowController(uint16_t w, uint16_t h, const char* title, ui
 
   
   this->window = glfwCreateWindow(w, h, title, NULL, NULL);
+  this->aspect = (float)w/(float)h;
   if (!this->window)
     throw std::runtime_error("Failed to create GLFW window");
   
@@ -73,6 +83,19 @@ void WindowController::pollEvents()
   glfwPollEvents();
 }
 
+cy::Vec2f WindowController::getMousePos(bool ndc)
+{
+  double x, y;
+  glfwGetCursorPos(this->window, &x, &y);
+
+  if(!ndc) return cy::Vec2f(x, y);
+
+  x = (x * (1.0f / (float)this->w)) * 2.0f - 1.0f;
+  y = 1.0f - (y * (1.0f / (float)this->h)) * 2.0f;
+
+  return cy::Vec2f(x, y);
+}
+
 void errorCallback(int error, const char* description)
 {
   std::cerr <<"Error: " << description << std::endl;
@@ -95,6 +118,7 @@ void frameBufferSizeCallback(GLFWwindow* window, int w, int h)
   myWindow->w = w; 
   myWindow->h = h;
   glViewport(0, 0, myWindow->w, myWindow->h);
+  myWindow->aspect = (float)w/(float)h;
   //should create an variable called ratio  and oldRatio when ratio !== oldRatio, put the bool ratioChanged as true.
   //create an funtion to put ratioChanged = false and oldRatio = ratio(afther all cameras ratio are updated)
   //projMatrix = cy::Matrix4f::Perspective(FOV * cy::Deg2Rad<float>(), float(W)/float(H), N, F);
