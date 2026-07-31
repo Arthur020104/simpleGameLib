@@ -3,9 +3,8 @@
 #include <GL/glew.h>
 #include <ray.h>
 
-GameObject::GameObject(Mesh* meshData, Program* shader): mesh(meshData), shaderProgram(shader) 
+GameObject::GameObject(Mesh* meshData, std::shared_ptr<Program> shader): mesh(meshData), shaderProgram(shader), Component()
 {
-  this->mesh->registerObjectWithMesh(this);
   this->shaderProgram->registerObjectUsingProgram(this);
 }
 
@@ -14,7 +13,7 @@ const Mesh* GameObject::getMesh()
   return this->mesh;
 }
 
-const Program* GameObject::getShaderProgram()
+const std::shared_ptr<Program> GameObject::getShaderProgram()
 {
   return this->shaderProgram;
 }
@@ -22,8 +21,6 @@ const Program* GameObject::getShaderProgram()
 GameObject::~GameObject()
 {
   if(this->mesh->removeUsingMesh(this) <= 0) delete this->mesh;
-
-  if(this->shaderProgram->removeUsingProgram(this) <= 0) delete this->shaderProgram;
 }
 
 void GameObject::draw(cy::Matrix4f &viewProjection)

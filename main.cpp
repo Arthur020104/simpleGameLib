@@ -11,8 +11,7 @@
 
 cy::Vec4f CLEAR_COLOR(0.529f, 0.808f, 0.922f, 1.0f);
 WindowController WINDOW = initContext(1280, 720, "Teste 11", CLEAR_COLOR);
-Program* DEFAULT_SHADER = new Program("/home/arthur/Documents/simpleGame/shaders/vertex.vs", "/home/arthur/Documents/simpleGame/shaders/frag.fs");
-
+std::shared_ptr<Program> DEFAULT_SHADER = std::make_shared<Program>("/home/arthur/Documents/simpleGame/shaders/vertex.vs", "/home/arthur/Documents/simpleGame/shaders/frag.fs");
 int main(void)
 {
   double lastTime = glfwGetTime();

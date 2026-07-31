@@ -5,6 +5,7 @@
 #include <cy/cyTriMesh.h>
 #include <cy/cyMatrix.h>
 #include <gameObject.h>
+#include <memory>
 
 class GameObject;
 
@@ -37,4 +38,4 @@ class Program
     uint16_t objectsUsingProgram;
 };
 //FIND A BETTER WAY AFTHER, IF NO ONE USES THIS PROGRAM MEMORY WILL LEAK
-extern Program* DEFAULT_SHADER;
+extern std::shared_ptr<Program> DEFAULT_SHADER;

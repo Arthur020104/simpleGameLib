@@ -14,13 +14,17 @@ Camera::Camera(cy::Vec3f initialPos): Component(initialPos)
 cy::Matrix4f& Camera::lookAtMatrix()
 {
   cy::Vec3f forward = this->direction.GetNormalized();
+  
   cy::Vec3f right = this->defaultUp ^ forward;
+  right.Normalize();
+
   cy::Vec3f up = forward ^ right;
+  up.Normalize();
 
   viewMatrix.column[0] = cy::Vec4f(right.x, up.x, -forward.x, 0.0f);
   viewMatrix.column[1] = cy::Vec4f(right.y, up.y, -forward.y, 0.0f);
   viewMatrix.column[2] = cy::Vec4f(right.z, up.z, -forward.z, 0.0f);
-  viewMatrix.column[3] = cy::Vec4f(-this->position.x, -this->position.y, -this->position.z, 1.0f);
+  viewMatrix.column[3] = cy::Vec4f(-(this->position % right), -(this->position % up), this->position % forward, 1.0f);
 
   return viewMatrix;
 }
@@ -47,7 +51,7 @@ Ray Camera::generateRay(cy::Vec2f point)
   farWorld /= farWorld.w;
 
   Ray ray;
-  ray.origin = this->position;
+  ray.origin = position;
   ray.direction = (farWorld.XYZ() - this->position).GetNormalized();
 
   return ray;

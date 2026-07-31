@@ -32,6 +32,8 @@ Mesh* loadMesh(const char* path)
 
   if(!objTriMesh.HasNormals()) objTriMesh.ComputeNormals();
 
+  if(!objTriMesh.IsBoundBoxReady()) objTriMesh.ComputeBoundingBox();
+
   std::vector<Vertex> meshData;
 
   for(uint32_t i = 0; i < objTriMesh.NF(); i++)
@@ -58,6 +60,6 @@ Mesh* loadMesh(const char* path)
       meshData.push_back(vertex);
     }
   }
-
-  return new Mesh(meshData);
+  cy::Vec3f bbox[2] = {objTriMesh.boundMin, objTriMesh.boundMax};
+  return new Mesh(meshData, bbox);
 }

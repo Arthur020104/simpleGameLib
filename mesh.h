@@ -4,16 +4,21 @@
 #include <vertex.h>
 #include <cy/cyTriMesh.h>
 #include <gameObject.h>
+#include <meshBvhNode.h>
 
 struct Ray;
 class GameObject;
+class MeshBvhNode;
 
 class Mesh
 {
   public:
     bool intersectMesh(Ray& ray, GameObject* gameObject);
 
-    Mesh(const std::vector<Vertex>& inputVertices);
+    Mesh(std::vector<Vertex> inputVertices, cy::Vec3f boundingVolume[2]);
+
+    Mesh(std::vector<Vertex> inputVertices);
+
 
     ~Mesh();
 
@@ -21,7 +26,7 @@ class Mesh
 
     uint16_t getUsingMesh();
 
-    u_int16_t removeUsingMesh(GameObject* obj);
+    uint16_t removeUsingMesh(GameObject* obj);
 
     uint32_t getId();
     
@@ -30,6 +35,9 @@ class Mesh
     const uint32_t getTriangleCount() { return this->triangleCount; }
 
     void bindVAO();
+    
+
+    cy::Vec3f boundingVolume[2];
   private:
     uint32_t id;
     std::vector<Vertex> vertices;
@@ -44,5 +52,7 @@ class Mesh
 
     inline static float upperBound = 1.0f + ERROR_MARGIN;
 
-    static bool intersectTriangle(Ray& ray, GameObject* gameObject, Vertex &v0, Vertex &v1, Vertex &v2);
+    MeshBvhNode* bvh = nullptr;
+
+    void init(std::vector<Vertex>& inputVertices, cy::Vec3f boundingVolume[2]);
 };

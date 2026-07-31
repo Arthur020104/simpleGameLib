@@ -41,31 +41,41 @@ void ExampleCamera::aftherUpdate()
     this->updateModelMatrix();
   }
 
-  if(lineRay != nullptr)
+  if(lineRay != nullptr && glfwGetMouseButton(WINDOW.window, GLFW_MOUSE_BUTTON_LEFT) == GLFW_PRESS)
   {
     this->scene->destroy(lineRay);
     delete lineRay;
     this->lineRay = nullptr;
   }
-  cy::Vec2f mousePos = WINDOW.getMousePos(true);
-  Ray r = generateRay(mousePos);
-
-  bool hit = false;//this->scene->intersectSceneObjects(r);
-
-  if(hit)
+  //if click fire mouse
+  if(glfwGetMouseButton(WINDOW.window, GLFW_MOUSE_BUTTON_LEFT) == GLFW_PRESS)
   {
-    
-    Vertex origin = {.pos = r.origin, .normal = cy::Vec3f(0.0f, 0.0f, 0.0f), .uv = cy::Vec2f(0.0f, 0.0f)};
-    Vertex hitPoint = {.pos = r.hits[0].point, .normal = cy::Vec3f(0.0f, 0.0f, 0.0f), .uv = cy::Vec2f(0.0f, 0.0f)};
-    Mesh* lineMesh = new Mesh(std::vector<Vertex>{origin, hitPoint});
-    
-    r.hits[0].hitObject->isSelected = true;
+    cy::Vec2f mousePos = WINDOW.getMousePos(true);
+    Ray r = generateRay(mousePos);
 
-    lineRay = new ExampleObject(lineMesh, DEFAULT_SHADER);
-    lineRay->scale = cy::Vec3f(1.2f, 1.2f, 1.2f);
-    lineRay->isSelected = true;
-    this->scene->addObject(lineRay);
+    bool hit = this->scene->intersectSceneObjects(r);
+    if(hit)
+    {
+      for(Hit& hit: r.hits)
+      {
+        this->scene->destroy(hit.hitObject);
+        delete hit.hitObject;
+        //hit.hitObject->isSelected = true;
+
+      }
+      
+      Vertex origin = {.pos = r.origin, .normal = cy::Vec3f(0.0f, 0.0f, 0.0f), .uv = cy::Vec2f(0.0f, 0.0f)};
+      Vertex hitPoint = {.pos = r.origin + (r.direction * 1000.0f), .normal = cy::Vec3f(0.0f, 0.0f, 0.0f), .uv = cy::Vec2f(0.0f, 0.0f)};
+
+      std::vector<Vertex> vertices{origin, hitPoint};
+
+      Mesh* lineMesh = new Mesh(vertices);
+
+      lineRay = new ExampleObject(lineMesh, DEFAULT_SHADER);
+      lineRay->isSelected = true;
+      this->scene->addObject(lineRay);
+    }
   }
-  
+
   return;
 }

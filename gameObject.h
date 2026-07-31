@@ -5,6 +5,7 @@
 #include <camera.h>
 #include <ray.h>
 #include <scene.h>
+#include <memory>
 
 class Mesh; 
 class Program;
@@ -14,13 +15,13 @@ class Scene;
 class GameObject: public Component
 {
   public:
-    GameObject(Mesh* meshData, Program* shader);
+    GameObject(Mesh* meshData, std::shared_ptr<Program> shader);
 
     virtual ~GameObject();
 
     const Mesh* getMesh();
 
-    const Program* getShaderProgram();
+    const std::shared_ptr<Program> getShaderProgram();
 
     virtual void draw(cy::Matrix4f &projection, cy::Matrix4f &view);
 
@@ -37,5 +38,5 @@ class GameObject: public Component
     virtual void aftherUpdate() = 0;
   private:
     Mesh* mesh;
-    Program* shaderProgram;
+    std::shared_ptr<Program> shaderProgram;
 };

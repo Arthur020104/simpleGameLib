@@ -8,8 +8,6 @@
 
 ExampleScene::ExampleScene(): Scene()
 {
-  Program* shaderProgram = new Program("/home/arthur/Documents/simpleGame/shaders/vertex.vs", "/home/arthur/Documents/simpleGame/shaders/frag.fs");
-
   Mesh* teapotMesh = loadMesh("/home/arthur/Documents/simpleGame/obj/teapot.obj");
 
   cy::Vec3f startPos(-50.0f, -50.0f, -100.0f);
@@ -19,7 +17,7 @@ ExampleScene::ExampleScene(): Scene()
   {
     for(uint16_t j = 0; j < 10; j++)
     {
-      ExampleObject* teapotObj = new ExampleObject(teapotMesh, shaderProgram);
+      ExampleObject* teapotObj = new ExampleObject(teapotMesh, DEFAULT_SHADER);
       teapotObj->position = startPos + cy::Vec3f(moveAmount * i, moveAmount*j, 0.0f);
       this->addObject(teapotObj);
     }

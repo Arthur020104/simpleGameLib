@@ -5,6 +5,7 @@
 #include <ray.h>
 #include <vertex.h>
 #include <ray.h>
+#include <algorithm>
 
 const std::vector<Vertex>& Mesh::getVertices() 
 { 
@@ -20,10 +21,51 @@ Mesh::~Mesh()
 {
   glDeleteBuffers(1, &VBO);
   glDeleteVertexArrays(1, &VAO);
+  
+  if(this->bvh != nullptr)
+  {
+    delete this->bvh;
+    this->bvh = nullptr;
+  }
 }
 
-Mesh::Mesh(const std::vector<Vertex>& inputVertices): id(Mesh::nextMeshId++), vertices(inputVertices) 
+Mesh::Mesh(std::vector<Vertex> inputVertices)
 {
+  cy::Vec3f positiveInfinity = cy::Vec3f(INFINITY, INFINITY, INFINITY);
+  cy::Vec3f negativeInfinity = cy::Vec3f(-INFINITY, -INFINITY, -INFINITY);
+
+  cy::Vec3f boundingVolumeC[2] = {positiveInfinity, negativeInfinity};
+
+  for(Vertex& vertex: inputVertices)
+  {
+    cy::Vec3f itemsBBox[2] = { positiveInfinity, negativeInfinity };
+
+    alterBoudingMin(vertex.pos, itemsBBox[0]);
+    alterBoudingMin(vertex.pos, itemsBBox[1]);
+
+    alterBoudingMin(itemsBBox[0], boundingVolumeC[0]);
+    alterBoudingMin(itemsBBox[1], boundingVolumeC[1]);
+  }
+  init(inputVertices, boundingVolumeC);
+}
+
+Mesh::Mesh(std::vector<Vertex> inputVertices, cy::Vec3f boundingVolume[2])
+{
+  init(inputVertices, boundingVolume);
+}
+
+void Mesh::init(std::vector<Vertex>& inputVertices, cy::Vec3f boundingVolume[2])
+{
+  this->id = nextMeshId++;
+  this->vertices = inputVertices;
+
+  if(vertices.size() % 3 == 0)
+  {
+    bvh = new MeshBvhNode(this->vertices, 0);
+  }
+  
+  std::copy(boundingVolume, boundingVolume + 2, this->boundingVolume);
+
   this->triangleCount = this->vertices.size() / 3;
 
   glGenVertexArrays(1, &VAO);
@@ -81,63 +123,11 @@ void Mesh::bindVAO()
   glBindVertexArray(this->VAO);
 }
 
-bool Mesh::intersectTriangle(Ray& ray, GameObject* gameObject, Vertex &v0, Vertex &v1, Vertex &v2)
-{
-  //using parallelogram area bc the ratio will be the same
-  cy::Vec3f planeNormal = (v1.pos - v0.pos) ^ (v2.pos - v0.pos);
-
-  float area = planeNormal.Length();
-
-  if(abs(area) <= ERROR_MARGIN) return false;
-
-  float overArea = 1.0f / planeNormal.Length();
-
-  planeNormal.Normalize();
-
-  cy::Vec3f centerPoint = (v0.pos + v1.pos + v2.pos) *  0.33333333333f;
-
-  float v = planeNormal % ray.direction;
-  if(abs(v) <= ERROR_MARGIN) return false;
-
-  const float t = (planeNormal % (centerPoint - ray.origin)) / v;
-
-  if(t < TMIN) return false;
-
-  cy::Vec3f pointOnPlane = ray.origin + ray.direction * t;
-
-  float total = 0;
-
-  float alpha = (((v1.pos - pointOnPlane) ^ (v2.pos - pointOnPlane)) % planeNormal) * overArea;
-  if (alpha < 0.0f || alpha > 1.0f) return false;
-
-  float beta = (((v2.pos - pointOnPlane) ^ (v0.pos - pointOnPlane)) % planeNormal) * overArea;
-  if (beta < 0.0f || beta > 1.0f) return false;
-
-  float gamma = 1.0f - alpha - beta;
-  if (gamma < 0.0f || gamma > 1.0f) return false;
-  
-  total = alpha + beta + gamma;
-
-  if(abs(total - 1.0) > ERROR_MARGIN) return false;
-
-  Hit hit;
-  hit.point = pointOnPlane;
-  hit.hitObject = gameObject;
-
-  ray.hits.push_back(hit);
-
-  return true;
-}
-
 bool Mesh::intersectMesh(Ray& ray, GameObject* gameObject)
 {
-  for(uint32_t i = 0; i < this->vertices.size(); i += 3)
-  {
-    if(Mesh::intersectTriangle(ray, gameObject, vertices[i], vertices[i + 1], vertices[i + 2]))
-      return true;
-  }
+  if(this->bvh == nullptr) return false;
 
-  return false;
+  return this->bvh->intersect(ray, gameObject);
 }
 
 void Mesh::registerObjectWithMesh(GameObject* obj)
@@ -150,7 +140,7 @@ uint16_t Mesh::getUsingMesh()
   return this->objectsUsingMesh;
 }
 
-u_int16_t Mesh::removeUsingMesh(GameObject* obj)
+uint16_t Mesh::removeUsingMesh(GameObject* obj)
 {
   return --this->objectsUsingMesh;
 }

@@ -10,6 +10,7 @@
 #include <string>
 #include <stdexcept>
 #include <stdint.h>
+#include <algorithm>
 
 //Windows
 #ifdef _WIN32 
@@ -92,6 +93,9 @@ cy::Vec2f WindowController::getMousePos(bool ndc)
 
   x = (x * (1.0f / (float)this->w)) * 2.0f - 1.0f;
   y = 1.0f - (y * (1.0f / (float)this->h)) * 2.0f;
+
+  x = std::clamp(x, -1.0, 1.0);
+  y = std::clamp(y, -1.0, 1.0);
 
   return cy::Vec2f(x, y);
 }
