@@ -15,11 +15,11 @@ class Scene;
 class GameObject: public Component
 {
   public:
-    GameObject(Mesh* meshData, std::shared_ptr<Program> shader);
+    GameObject(std::shared_ptr<Mesh> meshData, std::shared_ptr<Program> shader);
 
     virtual ~GameObject();
 
-    const Mesh* getMesh();
+    const std::shared_ptr<Mesh> getMesh();
 
     const std::shared_ptr<Program> getShaderProgram();
 
@@ -37,6 +37,6 @@ class GameObject: public Component
     virtual void beforeUpdate() = 0;
     virtual void aftherUpdate() = 0;
   private:
-    Mesh* mesh;
+    std::shared_ptr<Mesh> mesh;
     std::shared_ptr<Program> shaderProgram;
 };

@@ -24,7 +24,6 @@ class MeshBvhNode
     bool intersect(Ray& ray, GameObject* gameObject);
   
     private:  
-    //for destructor delete two children and all items, items just will be filled for leaf nodes
 
     void init(std::vector<Vertex>& items, cy::Vec3f boundingVolume[2], uint32_t depth);
     

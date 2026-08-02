@@ -3,12 +3,12 @@
 #include <GL/glew.h>
 #include <ray.h>
 
-GameObject::GameObject(Mesh* meshData, std::shared_ptr<Program> shader): mesh(meshData), shaderProgram(shader), Component()
+GameObject::GameObject(std::shared_ptr<Mesh> meshData, std::shared_ptr<Program> shader): mesh(meshData), shaderProgram(shader), Component()
 {
   this->shaderProgram->registerObjectUsingProgram(this);
 }
 
-const Mesh* GameObject::getMesh()
+const std::shared_ptr<Mesh> GameObject::getMesh()
 {
   return this->mesh;
 }
@@ -20,7 +20,7 @@ const std::shared_ptr<Program> GameObject::getShaderProgram()
 
 GameObject::~GameObject()
 {
-  if(this->mesh->removeUsingMesh(this) <= 0) delete this->mesh;
+  
 }
 
 void GameObject::draw(cy::Matrix4f &viewProjection)
@@ -37,11 +37,8 @@ void GameObject::draw(cy::Matrix4f &viewProjection)
 
   GLuint selectedLocation = glGetUniformLocation(shaderID, "isSelected");
   glUniform1i(selectedLocation, this->isSelected);
-  if(this->mesh->getTriangleCount() >= 1)
-    glDrawArrays(GL_TRIANGLES, 0, this->mesh->getTriangleCount() * 3);
-  else{
-    glDrawArrays(GL_LINES, 0, 2);
-  }
+  
+  this->mesh->renderMesh();
     
 }
 

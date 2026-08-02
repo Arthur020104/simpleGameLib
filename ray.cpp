@@ -3,7 +3,6 @@
 
 bool intersectBoundingVolume(Ray& r, cy::Vec3f* boundingVolume)
 {
-
   float t1x = (boundingVolume[0].x - r.origin.x) / r.direction.x;
   float t2x = (boundingVolume[1].x - r.origin.x) / r.direction.x;
 

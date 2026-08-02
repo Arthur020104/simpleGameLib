@@ -20,12 +20,12 @@ std::string readFile(const char* path)
   return fileContents;
 }
 
-Mesh* loadMesh(std::string path)
+std::shared_ptr<Mesh> loadMesh(std::string path)
 {
   return loadMesh(path.c_str());
 }
 
-Mesh* loadMesh(const char* path)
+std::shared_ptr<Mesh> loadMesh(const char* path)
 {
   cy::TriMesh objTriMesh;
   if(!objTriMesh.LoadFromFileObj(path, true, &std::cout)) std::cerr << "Failed to load Obj from file. Path: '"<< path << "'.\n";
@@ -61,5 +61,10 @@ Mesh* loadMesh(const char* path)
     }
   }
   cy::Vec3f bbox[2] = {objTriMesh.boundMin, objTriMesh.boundMax};
-  return new Mesh(meshData, bbox);
+  return std::make_shared<Mesh>(meshData, bbox);
+}
+
+std::shared_ptr<Mesh> loadMesh(char* path)
+{
+  return loadMesh((const char*)path);
 }

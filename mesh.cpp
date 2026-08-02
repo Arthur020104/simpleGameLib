@@ -29,7 +29,7 @@ Mesh::~Mesh()
   }
 }
 
-Mesh::Mesh(std::vector<Vertex> inputVertices)
+Mesh::Mesh(std::vector<Vertex> inputVertices, MeshType type)
 {
   cy::Vec3f positiveInfinity = cy::Vec3f(INFINITY, INFINITY, INFINITY);
   cy::Vec3f negativeInfinity = cy::Vec3f(-INFINITY, -INFINITY, -INFINITY);
@@ -46,24 +46,39 @@ Mesh::Mesh(std::vector<Vertex> inputVertices)
     alterBoudingMin(itemsBBox[0], boundingVolumeC[0]);
     alterBoudingMin(itemsBBox[1], boundingVolumeC[1]);
   }
-  init(inputVertices, boundingVolumeC);
+  init(inputVertices, type, boundingVolumeC);
 }
 
-Mesh::Mesh(std::vector<Vertex> inputVertices, cy::Vec3f boundingVolume[2])
+Mesh::Mesh(std::vector<Vertex> inputVertices, cy::Vec3f boundingVolume[2], MeshType type)
 {
-  init(inputVertices, boundingVolume);
+  init(inputVertices, type, boundingVolume);
 }
 
-void Mesh::init(std::vector<Vertex>& inputVertices, cy::Vec3f boundingVolume[2])
+void Mesh::init(std::vector<Vertex>& inputVertices, MeshType type, cy::Vec3f boundingVolume[2])
 {
   this->id = nextMeshId++;
   this->vertices = inputVertices;
+  this->type = type;
 
   if(vertices.size() % 3 == 0)
   {
-    bvh = new MeshBvhNode(this->vertices, 0);
+    
   }
-  
+  switch (type)
+  {
+    case MeshType::TRIANGLE_MESH:
+      if(vertices.size() % 3 != 0)  throw std::invalid_argument("Error: The number of vertices is not valid for a triangle mesh.\n");
+      
+      bvh = new MeshBvhNode(this->vertices, 0);
+      break;
+    case MeshType::LINE_MESH:
+      if(vertices.size() % 2 != 0)  throw std::invalid_argument("Error: The number of vertices is not valid for a line mesh.\n");
+      break;
+    default:
+      throw std::invalid_argument("Error: The mesh type is not valid.\n");
+      break;
+  }
+
   std::copy(boundingVolume, boundingVolume + 2, this->boundingVolume);
 
   this->triangleCount = this->vertices.size() / 3;
@@ -143,4 +158,20 @@ uint16_t Mesh::getUsingMesh()
 uint16_t Mesh::removeUsingMesh(GameObject* obj)
 {
   return --this->objectsUsingMesh;
+}
+
+void Mesh::renderMesh()
+{
+  switch (this->type)
+  {
+    case MeshType::TRIANGLE_MESH:
+      glDrawArrays(GL_TRIANGLES, 0, this->vertices.size());
+      break;
+    case MeshType::LINE_MESH:
+      glDrawArrays(GL_LINES, 0, this->vertices.size());
+      break;
+
+    default:
+      break;
+  }
 }

@@ -4,8 +4,8 @@
 
 std::string readFile(const char* path);
 
-Mesh* loadMesh(const char* path);
+std::shared_ptr<Mesh> loadMesh(const char* path);
 
-Mesh* loadMesh(std::string path);
+std::shared_ptr<Mesh> loadMesh(std::string path);
 
-Mesh* loadObj(char* path);
+std::shared_ptr<Mesh> loadMesh(char* path);

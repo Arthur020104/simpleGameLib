@@ -10,15 +10,19 @@ struct Ray;
 class GameObject;
 class MeshBvhNode;
 
+enum MeshType {
+  TRIANGLE_MESH,
+  LINE_MESH
+};
+
 class Mesh
 {
   public:
     bool intersectMesh(Ray& ray, GameObject* gameObject);
 
-    Mesh(std::vector<Vertex> inputVertices, cy::Vec3f boundingVolume[2]);
+    Mesh(std::vector<Vertex> inputVertices, cy::Vec3f boundingVolume[2], MeshType type = MeshType::TRIANGLE_MESH);
 
-    Mesh(std::vector<Vertex> inputVertices);
-
+    Mesh(std::vector<Vertex> inputVertices, MeshType type = MeshType::TRIANGLE_MESH);
 
     ~Mesh();
 
@@ -35,6 +39,8 @@ class Mesh
     const uint32_t getTriangleCount() { return this->triangleCount; }
 
     void bindVAO();
+
+    void renderMesh();
     
 
     cy::Vec3f boundingVolume[2];
@@ -46,6 +52,8 @@ class Mesh
     uint32_t VAO, VBO;
     uint32_t triangleCount;
 
+    MeshType type;
+
     uint16_t objectsUsingMesh = 0;
 
     inline static uint32_t nextMeshId = 0;
@@ -54,5 +62,6 @@ class Mesh
 
     MeshBvhNode* bvh = nullptr;
 
-    void init(std::vector<Vertex>& inputVertices, cy::Vec3f boundingVolume[2]);
+    void init(std::vector<Vertex>& inputVertices, MeshType type, cy::Vec3f boundingVolume[2]);
 };
+

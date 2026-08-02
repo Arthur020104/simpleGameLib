@@ -8,7 +8,7 @@
 
 ExampleScene::ExampleScene(): Scene()
 {
-  Mesh* teapotMesh = loadMesh("/home/arthur/Documents/simpleGame/obj/teapot.obj");
+  std::shared_ptr<Mesh> teapotMesh = loadMesh("/home/arthur/Documents/simpleGame/obj/teapot.obj");
 
   cy::Vec3f startPos(-50.0f, -50.0f, -100.0f);
   float moveAmount = 20;

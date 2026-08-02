@@ -58,9 +58,9 @@ void ExampleCamera::aftherUpdate()
     {
       for(Hit& hit: r.hits)
       {
-        this->scene->destroy(hit.hitObject);
-        delete hit.hitObject;
-        //hit.hitObject->isSelected = true;
+        //this->scene->destroy(hit.hitObject);
+        //delete hit.hitObject;
+        hit.hitObject->isSelected = true;
 
       }
       
@@ -69,7 +69,7 @@ void ExampleCamera::aftherUpdate()
 
       std::vector<Vertex> vertices{origin, hitPoint};
 
-      Mesh* lineMesh = new Mesh(vertices);
+      std::shared_ptr<Mesh> lineMesh = std::make_shared<Mesh>(vertices, MeshType::LINE_MESH);
 
       lineRay = new ExampleObject(lineMesh, DEFAULT_SHADER);
       lineRay->isSelected = true;
