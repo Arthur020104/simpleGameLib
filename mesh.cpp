@@ -59,11 +59,8 @@ void Mesh::init(std::vector<Vertex>& inputVertices, MeshType type, cy::Vec3f bou
   this->id = nextMeshId++;
   this->vertices = inputVertices;
   this->type = type;
+  this->bvh = nullptr;
 
-  if(vertices.size() % 3 == 0)
-  {
-    
-  }
   switch (type)
   {
     case MeshType::TRIANGLE_MESH:

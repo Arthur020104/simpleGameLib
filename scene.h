@@ -2,6 +2,8 @@
 #include <vector>
 #include <gameObject.h>
 #include <ray.h>
+#include <component.h>
+#include <queue>
 
 class GameObject;
 class Camera;
@@ -24,22 +26,25 @@ class Scene
 
     void draw();
 
-    void handleObjectStart();
+    void handleStart();
 
     virtual void beforeDrawing();
 
     virtual void aftherDrawing();
 
-    void destroy(GameObject* obj);
+    void destroy(Component* obj);
 
     virtual bool intersectSceneObjects(Ray& ray);
   private:
     std::vector<GameObject*> objects;
     std::vector<Camera*> cameras;
+    std::vector<Component*> components;
 
-    std::vector<GameObject*> objectsWaitingToStart;
+    std::vector<Component*> componentsWaitingToStart;
+    std::queue<Component*> destroyQueue;
 
     uint16_t activeCamera = 0;
 
+    void erase(Component* obj);
     //std::vector<Ligth*> lights;
 };

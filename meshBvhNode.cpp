@@ -9,6 +9,8 @@ void MeshBvhNode::init(std::vector<Vertex>& items, cy::Vec3f boundingVolume[2], 
 
   if(this->depth == 0)
   {
+    this->boundingVolume[0] = cy::Vec3f(INFINITY, INFINITY, INFINITY);
+    this->boundingVolume[1] = cy::Vec3f(-INFINITY, -INFINITY, -INFINITY);
     for(Vertex& item: items)
     {
       alterBoudingMin(item.pos, this->boundingVolume[0]);
@@ -91,6 +93,8 @@ bool MeshBvhNode::intersect(Ray& ray, GameObject* gameObject)
 
     if(children[1] != nullptr && children[1]->intersect(ray, gameObject))
       return true;
+    
+    return false;
   }
 
   for(uint32_t i = 0; i < items.size(); i += 3)

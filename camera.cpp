@@ -31,14 +31,13 @@ cy::Matrix4f& Camera::lookAtMatrix()
 
 void Camera::updateMatrices()
 {
+  if(WINDOW.aspect != this->aspect) this->updateAspect(WINDOW.aspect);
   this->viewProjection = this->projectionMatrix * lookAtMatrix();
   this->invertedViewProjection = viewProjection.GetInverse();
 }
 
 cy::Matrix4f& Camera::getViewProjection()
 {
-  if(WINDOW.aspect != this->aspect) this->updateAspect(WINDOW.aspect);
-  //remove update and track to only update for when changes are made
   updateMatrices();
   return this->viewProjection;
 }

@@ -7,7 +7,7 @@ void Scene::draw()
   if(cameras.size() <= 0) throw std::runtime_error("At least one camera is necessary for rendering");
   for(GameObject* obj: this->objects)
   {
-    obj->draw(this->cameras[activeCamera]);
+    obj->draw(this->cameras[activeCamera]); 
   }
 }
 
@@ -17,41 +17,38 @@ Scene::Scene()
 
 Scene::~Scene()
 {
-  for(GameObject* objP: objectsWaitingToStart)
+  for(Component* obj: this->components)
   {
-    delete objP;
+    delete obj;
   }
 
-  for(GameObject* objP: objects)
+  for(Component* obj: this->componentsWaitingToStart)
   {
-    delete objP;
-  }
-
-  for(Camera* cam: cameras)
-  {
-    delete cam;
+    delete obj;
   }
 }
 
-void Scene::handleObjectStart()
+void Scene::handleStart()
 {
-  for(GameObject* obj: this->objectsWaitingToStart)
+  while(!this->destroyQueue.empty())
   {
-    obj->start();
-    this->objects.push_back(obj);
+    Component* obj = this->destroyQueue.front();
+    this->destroyQueue.pop();
+    erase(obj);
   }
 
-  this->objectsWaitingToStart.clear();
+  for(Component* obj: this->componentsWaitingToStart)
+  {
+    obj->start();
+    this->components.push_back(obj);
+  }
+
+  this->componentsWaitingToStart.clear();
 }
 
 void Scene::beforeDrawing()
 {
-  for(GameObject* obj: this->objects)
-  {
-    obj->beforeUpdate();
-  }
-
-  for(Camera* obj: this->cameras)
+  for(Component* obj: this->components)
   {
     obj->beforeUpdate();
   }
@@ -59,12 +56,7 @@ void Scene::beforeDrawing()
 
 void Scene::aftherDrawing()
 {
-  for(GameObject* obj: this->objects)
-  {
-    obj->aftherUpdate();
-  }
-
-  for(Camera* obj: this->cameras)
+  for(Component* obj: this->components)
   {
     obj->aftherUpdate();
   }
@@ -73,13 +65,15 @@ void Scene::aftherDrawing()
 void Scene::addObject(GameObject* obj)
 {
   obj->scene = this;
-  this->objectsWaitingToStart.push_back(obj);
+  this->objects.push_back(obj);
+  this->componentsWaitingToStart.push_back(obj);
 }
 
 void Scene::addCamera(Camera* cam)
 {
   cam->scene = this;
   this->cameras.push_back(cam);
+  this->componentsWaitingToStart.push_back(cam);
 }
 
 void Scene::setActiveCam(uint16_t activeCam)
@@ -104,26 +98,33 @@ void Scene::setActiveCam(Camera* cam)
 bool Scene::intersectSceneObjects(Ray& ray)
 {
   bool hitSomething = false;
+
   for(GameObject* obj: this->objects)
   {
-    if(obj->intersect(ray) && !hitSomething) hitSomething = true;
+    if(obj->intersect(ray)) hitSomething = true;
   }
 
   return hitSomething;
 }
 
-void Scene::destroy(GameObject* obj)
+void Scene::erase(Component* obj)
 {
   auto itemOnObjects = std::find(this->objects.begin(), this->objects.end(), obj);
+  if(itemOnObjects != this->objects.end()) this->objects.erase(itemOnObjects);
 
-  if(itemOnObjects != this->objects.end())
-  {
-    this->objects.erase(itemOnObjects);
-    return;
-  }
+  auto itemOnComponents = std::find(this->components.begin(), this->components.end(), obj);
+  if(itemOnComponents != this->components.end()) this->components.erase(itemOnComponents);
 
-  auto itemOnStartObjects = std::find(this->objectsWaitingToStart.begin(), this->objectsWaitingToStart.end(), obj);
+  auto itemOnStartComponents = std::find(this->componentsWaitingToStart.begin(), this->componentsWaitingToStart.end(), obj);
+  if(itemOnStartComponents != this->componentsWaitingToStart.end()) this->componentsWaitingToStart.erase(itemOnStartComponents);
 
-  if(itemOnStartObjects != this->objectsWaitingToStart.end()) this->objectsWaitingToStart.erase(itemOnStartObjects);
+  auto itemOnCameras = std::find(this->cameras.begin(), this->cameras.end(), obj);
+  if(itemOnCameras != this->cameras.end()) this->cameras.erase(itemOnCameras);
 
+  delete obj;
+}
+
+void Scene::destroy(Component* obj)
+{
+  this->destroyQueue.push(obj);
 }
