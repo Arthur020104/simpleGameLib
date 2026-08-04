@@ -19,6 +19,7 @@ class WindowController
     float aspect = 0.0f;
 
     double deltaTime = 0.0f;
+    bool updateCameras = true;
     GLFWwindow* window;
   private:
 

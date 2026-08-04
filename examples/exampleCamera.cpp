@@ -22,23 +22,19 @@ void ExampleCamera::beforeUpdate()
 
   if(glfwGetKey(WINDOW.window, GLFW_KEY_E) == GLFW_PRESS)
   {
-    this->position += cy::Vec3f(0.0f, velocity, 0.0f) * WINDOW.deltaTime;
-    this->updateModelMatrix();
+    this->setPosition(this->getPosition() + cy::Vec3f(0.0f, velocity, 0.0f) * WINDOW.deltaTime);
   }
   if(glfwGetKey(WINDOW.window, GLFW_KEY_Q) == GLFW_PRESS)
   {
-    this->position += cy::Vec3f(0.0f, -velocity, 0.0f) * WINDOW.deltaTime;
-    this->updateModelMatrix();
+    this->setPosition(this->getPosition() + cy::Vec3f(0.0f, -velocity, 0.0f) * WINDOW.deltaTime);
   }
   if(glfwGetKey(WINDOW.window, GLFW_KEY_D) == GLFW_PRESS)
   {
-    this->position += cy::Vec3f(velocity, 0.0f, 0.0f) * WINDOW.deltaTime;
-    this->updateModelMatrix();
+    this->setPosition(this->getPosition() + cy::Vec3f(velocity, 0.0f, 0.0f) * WINDOW.deltaTime);
   }
   if(glfwGetKey(WINDOW.window, GLFW_KEY_A) == GLFW_PRESS)
   {
-    this->position += cy::Vec3f(-velocity, 0.0f, 0.0f) * WINDOW.deltaTime;
-    this->updateModelMatrix();
+    this->setPosition(this->getPosition() + cy::Vec3f(-velocity, 0.0f, 0.0f) * WINDOW.deltaTime);
   }
 
   if(lineRay != nullptr && glfwGetMouseButton(WINDOW.window, GLFW_MOUSE_BUTTON_LEFT) == GLFW_PRESS)

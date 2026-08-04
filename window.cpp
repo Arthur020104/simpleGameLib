@@ -122,7 +122,11 @@ void frameBufferSizeCallback(GLFWwindow* window, int w, int h)
   myWindow->w = w; 
   myWindow->h = h;
   glViewport(0, 0, myWindow->w, myWindow->h);
+
+  float oldAspect = myWindow->aspect;
   myWindow->aspect = (float)w/(float)h;
+
+  myWindow->updateCameras = myWindow->aspect != oldAspect;
   //should create an variable called ratio  and oldRatio when ratio !== oldRatio, put the bool ratioChanged as true.
   //create an funtion to put ratioChanged = false and oldRatio = ratio(afther all cameras ratio are updated)
   //projMatrix = cy::Matrix4f::Perspective(FOV * cy::Deg2Rad<float>(), float(W)/float(H), N, F);

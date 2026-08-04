@@ -18,7 +18,7 @@ ExampleScene::ExampleScene(): Scene()
     for(uint16_t j = 0; j < 50; j++)
     {
       ExampleObject* teapotObj = new ExampleObject(teapotMesh, DEFAULT_SHADER);
-      teapotObj->position = startPos + cy::Vec3f(moveAmount * i, moveAmount*j, 0.0f);
+      teapotObj->setPosition(startPos + cy::Vec3f(moveAmount * i, moveAmount*j, 0.0f));
       this->addObject(teapotObj);
     }
   }

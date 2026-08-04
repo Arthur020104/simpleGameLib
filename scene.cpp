@@ -1,5 +1,6 @@
 #include <scene.h>
 #include <iostream>
+#include <window.h>
 #include <algorithm>
 
 void Scene::draw()
@@ -48,6 +49,15 @@ void Scene::handleStart()
 
 void Scene::beforeDrawing()
 {
+  if(WINDOW.updateCameras)
+  {
+    for(Camera* cam: this->cameras)
+    {
+      cam->updateMatrices();
+    }
+    WINDOW.updateCameras = false;
+  }
+  
   for(Component* obj: this->components)
   {
     obj->beforeUpdate();

@@ -21,10 +21,12 @@ cy::Matrix4f& Camera::lookAtMatrix()
   cy::Vec3f up = forward ^ right;
   up.Normalize();
 
+  cy::Vec3f pos = this->getPosition();
+
   viewMatrix.column[0] = cy::Vec4f(right.x, up.x, -forward.x, 0.0f);
   viewMatrix.column[1] = cy::Vec4f(right.y, up.y, -forward.y, 0.0f);
   viewMatrix.column[2] = cy::Vec4f(right.z, up.z, -forward.z, 0.0f);
-  viewMatrix.column[3] = cy::Vec4f(-(this->position % right), -(this->position % up), this->position % forward, 1.0f);
+  viewMatrix.column[3] = cy::Vec4f(-(pos % right), -(pos % up), pos % forward, 1.0f);
 
   return viewMatrix;
 }
@@ -38,20 +40,19 @@ void Camera::updateMatrices()
 
 cy::Matrix4f& Camera::getViewProjection()
 {
-  updateMatrices();
   return this->viewProjection;
 }
 
 Ray Camera::generateRay(cy::Vec2f point)
 {
-  this->updateMatrices();
   cy::Vec4f farWorld = invertedViewProjection * cy::Vec4f(point.x, point.y, 1.0f, 1.0f);
   
   farWorld /= farWorld.w;
+  cy::Vec3f pos = this->getPosition();
 
   Ray ray;
-  ray.origin = position;
-  ray.direction = (farWorld.XYZ() - this->position).GetNormalized();
+  ray.origin = pos;
+  ray.direction = (farWorld.XYZ() - pos).GetNormalized();
 
   return ray;
 }
@@ -62,4 +63,22 @@ void Camera::updateAspect(float aspect)
   this->projectionMatrix = cy::Matrix4f::Perspective(FOV * cy::Deg2Rad<float>(), aspect, N, F);
 
   this->updateMatrices();
+}
+
+void Camera::setPosition(cy::Vec3f pos)
+{
+  Component::setPosition(pos);
+  this->updateMatrices();
+}
+
+void Camera::setRotation(cy::Quatf rot)
+{
+  Component::setRotation(rot);
+  this->direction = (rot.ToMatrix4() * cy::Vec4f(this->direction, 1.0f)).XYZ().GetNormalized(); ;
+  this->updateMatrices();
+}
+
+void Camera::setScale(cy::Vec3f)
+{
+  return;
 }

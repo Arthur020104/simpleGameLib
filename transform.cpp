@@ -23,6 +23,23 @@ void Transform::updateModelMatrix()
 
 cy::Matrix4f Transform::getModelMatrix()
 {
-  updateModelMatrix();
   return this->modelMatrix;
+}
+
+void Transform::setPosition(cy::Vec3f pos)
+{
+  this->position = pos;
+  this->updateModelMatrix();
+}
+
+void Transform::setRotation(cy::Quatf rot)
+{
+  this->rotation = rot;
+  this->updateModelMatrix();
+}
+
+void Transform::setScale(cy::Vec3f scale)
+{
+  this->scale = scale;
+  this->updateModelMatrix();
 }
