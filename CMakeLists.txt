@@ -24,6 +24,7 @@ set(SOURCES
   examples/exampleCamera.cpp
   meshBvhNode.cpp
   ray.cpp
+  light.cpp
 )
 
 set(HEADERS 
@@ -42,6 +43,7 @@ set(HEADERS
   examples/exampleScene.h
   examples/exampleCamera.h
   meshBvhNode.h
+  light.h
 )
 
 add_executable(Renderer ${SOURCES} ${HEADERS})

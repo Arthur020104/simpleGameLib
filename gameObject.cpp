@@ -29,14 +29,16 @@ void GameObject::draw(cy::Matrix4f &viewProjection)
 
   const uint16_t shaderID = this->shaderProgram->getProgram();
   glUseProgram(shaderID);
+  this->scene->bindSceneLights(this->shaderProgram.get());
 
   const cy::Matrix4f mvp = viewProjection * this->getModelMatrix();
 
-  GLuint mvpLocation = glGetUniformLocation(shaderID, "mvp");
-  glUniformMatrix4fv(mvpLocation, 1, GL_FALSE, mvp.cell);
-
-  GLuint selectedLocation = glGetUniformLocation(shaderID, "isSelected");
-  glUniform1i(selectedLocation, this->isSelected);
+  this->shaderProgram->bindMat4("mvp", mvp);
+  this->shaderProgram->bindBool("isSelected", this->isSelected);
+  this->shaderProgram->bindMat4("modelMatrix", this->getModelMatrix());
+  
+  Camera* activeCamera = this->scene->getActiveCamera();
+  this->shaderProgram->bindVec3("viewPosition", activeCamera->getPosition());
   
   this->mesh->renderMesh();
     
@@ -44,7 +46,8 @@ void GameObject::draw(cy::Matrix4f &viewProjection)
 
 void GameObject::draw(Camera* camera)
 {
-  draw(camera->getViewProjection());
+  cy::Matrix4f viewProjection = camera->getViewProjection();
+  draw(viewProjection);
 }
 
 void GameObject::draw(cy::Matrix4f &projection, cy::Matrix4f &view)

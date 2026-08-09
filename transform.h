@@ -15,9 +15,10 @@ class Transform
     virtual void setRotation(cy::Quatf rot);
     virtual void setScale(cy::Vec3f scale);
 
-    cy::Vec3f getPosition() { return this->position; }
-    cy::Quatf getRotation() { return this->rotation; }
-    cy::Vec3f getScale() { return this->scale; }
+    virtual cy::Vec3f getPosition() { return this->position; }
+    virtual cy::Quatf getRotation() { return this->rotation; }
+    virtual cy::Vec3f getScale() { return this->scale; }
+    virtual cy::Vec3f getNormalizedPosition() { return this->position.GetNormalized(); }
 
   private:
     cy::Matrix4f modelMatrix;

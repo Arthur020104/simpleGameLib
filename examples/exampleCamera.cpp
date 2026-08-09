@@ -54,8 +54,8 @@ void ExampleCamera::beforeUpdate()
     {
       for(Hit& hit: r.hits)
       {
-        this->scene->destroy(hit.hitObject);
-        //hit.hitObject->isSelected = true;
+        //this->scene->destroy(hit.hitObject);
+        hit.hitObject->isSelected = true;
 
       }
     }

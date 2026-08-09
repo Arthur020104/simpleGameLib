@@ -4,7 +4,6 @@
 #include <string.h>
 #include <cy/cyTriMesh.h>
 #include <cy/cyMatrix.h>
-#include <gameObject.h>
 #include <memory>
 
 class GameObject;
@@ -20,6 +19,14 @@ class Program
     void registerObjectUsingProgram(GameObject* obj);//for now passing the obj is useless, but later I may want to add a list of objects using this program
     uint16_t getUsingProgram();
     u_int16_t removeUsingProgram(GameObject* obj);
+
+    void bindFloat(const char* uniformName, float value);
+    void bindVec3(const char* uniformName, cy::Vec3f value);
+    void bindVec4(const char* uniformName, cy::Vec4f value);
+    void bindMat4(const char* uniformName, cy::Matrix4f value);
+    void bindInt(const char* uniformName, int value);
+    void bindBool(const char* uniformName, bool value);
+    void bindUint(const char* uniformName, unsigned int value);
 
   private:
     unsigned short id;

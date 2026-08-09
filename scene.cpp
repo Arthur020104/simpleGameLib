@@ -131,7 +131,29 @@ void Scene::erase(Component* obj)
   auto itemOnCameras = std::find(this->cameras.begin(), this->cameras.end(), obj);
   if(itemOnCameras != this->cameras.end()) this->cameras.erase(itemOnCameras);
 
+  auto itemOnLights = std::find(this->lights.begin(), this->lights.end(), obj);
+  if(itemOnLights != this->lights.end()) this->lights.erase(itemOnLights);
+
   delete obj;
+}
+
+void Scene::bindSceneLights(Program* shaderProgram)
+{
+  if(shaderProgram == nullptr) return;
+
+  for(uint16_t i = 0; i < this->lights.size(); i++)
+  {
+    this->lights[i]->bindUniforms(shaderProgram, "lights", i);
+  }
+
+  shaderProgram->bindUint("lightsSize", this->lights.size());
+}
+
+void Scene::addLight(Light* light)
+{
+  light->scene = this;
+  this->lights.push_back(light);
+  this->componentsWaitingToStart.push_back(light);
 }
 
 void Scene::destroy(Component* obj)

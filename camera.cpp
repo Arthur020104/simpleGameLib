@@ -38,9 +38,19 @@ void Camera::updateMatrices()
   this->invertedViewProjection = viewProjection.GetInverse();
 }
 
-cy::Matrix4f& Camera::getViewProjection()
+cy::Matrix4f Camera::getViewProjection()
 {
   return this->viewProjection;
+}
+
+cy::Matrix4f Camera::getView()
+{
+  return this->viewMatrix;
+}
+
+cy::Matrix4f Camera::getProjection()
+{
+  return this->projectionMatrix;
 }
 
 Ray Camera::generateRay(cy::Vec2f point)

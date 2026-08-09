@@ -11,7 +11,9 @@ class Camera : public Component
 public:
   Camera(cy::Vec3f initialPos);
 
-  cy::Matrix4f& getViewProjection();
+  cy::Matrix4f getViewProjection();
+  cy::Matrix4f getView();
+  cy::Matrix4f getProjection();
 
   Ray generateRay(cy::Vec2f point);
 

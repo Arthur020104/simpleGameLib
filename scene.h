@@ -1,4 +1,5 @@
 #pragma once
+#include <light.h>
 #include <vector>
 #include <gameObject.h>
 #include <ray.h>
@@ -7,6 +8,8 @@
 
 class GameObject;
 class Camera;
+class Program;
+class DirectionalLight;
 struct Ray;
 
 class Scene
@@ -24,6 +27,7 @@ class Scene
 
     void setActiveCam(Camera* cam);
 
+
     void draw();
 
     void handleStart();
@@ -35,10 +39,17 @@ class Scene
     void destroy(Component* obj);
 
     virtual bool intersectSceneObjects(Ray& ray);
+
+    void addLight(Light* light);
+
+    void bindSceneLights(Program* shaderProgram);
+
+    Camera* getActiveCamera() { return this->cameras[this->activeCamera]; }
   private:
     std::vector<GameObject*> objects;
     std::vector<Camera*> cameras;
     std::vector<Component*> components;
+    std::vector<Light*> lights;
 
     std::vector<Component*> componentsWaitingToStart;
     std::queue<Component*> destroyQueue;
