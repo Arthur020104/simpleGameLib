@@ -3,9 +3,10 @@
 #include <GL/glew.h>
 #include <ray.h>
 
-GameObject::GameObject(std::shared_ptr<Mesh> meshData, std::shared_ptr<Program> shader): mesh(meshData), shaderProgram(shader), Component()
+GameObject::GameObject(std::shared_ptr<Mesh> meshData, std::shared_ptr<Program> shader, std::shared_ptr<Material> material): mesh(meshData), shaderProgram(shader), Component()
 {
   this->shaderProgram->registerObjectUsingProgram(this);
+  this->useOnly(material);
 }
 
 const std::shared_ptr<Mesh> GameObject::getMesh()
@@ -20,7 +21,7 @@ const std::shared_ptr<Program> GameObject::getShaderProgram()
 
 GameObject::~GameObject()
 {
-  
+  glDeleteBuffers(1, &materialIndicesVBO);
 }
 
 void GameObject::draw(cy::Matrix4f &viewProjection)
@@ -40,6 +41,11 @@ void GameObject::draw(cy::Matrix4f &viewProjection)
   Camera* activeCamera = this->scene->getActiveCamera();
   this->shaderProgram->bindVec3("viewPosition", activeCamera->getPosition());
   
+  for(uint8_t i = 0; i < this->materials.size(); i++)
+  {
+    this->materials[i]->bind(this->shaderProgram.get(), "materials", i);
+  }
+
   this->mesh->renderMesh();
     
 }
@@ -79,4 +85,87 @@ bool GameObject::intersect(Ray& ray)
   }
   
   return true;
+}
+
+void GameObject::useOnly(std::shared_ptr<Material> material)
+{
+  uint8_t i;
+  for(i = 0; i < this->materials.size(); i++)
+  {
+    if(this->materials[i] == material) break;
+  }
+
+  if(i == this->materials.size())
+    this->materials.push_back(material);
+
+  this->materialIndices.assign(this->mesh->getVerticesAmount(), i);
+  this->loadMaterialIndicesToGPU();
+}
+
+void GameObject::loadMaterialIndicesToGPU()
+{
+  uint32_t amountOfVertices = this->materialIndices.size();
+  bool validMaterialIndices = amountOfVertices == this->mesh->getVerticesAmount();
+
+  if(!validMaterialIndices)
+    throw std::runtime_error("Error: The number of material indices does not match the number of vertices in the mesh.");
+
+  this->mesh->bindVAO();
+
+  if(!hasMaterialVBO)
+    glGenBuffers(1, &this->materialIndicesVBO);
+
+  glBindBuffer(GL_ARRAY_BUFFER, this->materialIndicesVBO);
+
+  glBufferData(
+    GL_ARRAY_BUFFER, 
+    amountOfVertices * sizeof(uint8_t), 
+    this->materialIndices.data(), 
+    GL_STATIC_DRAW
+  );
+
+  glEnableVertexAttribArray(3);
+  glVertexAttribIPointer(
+    3,
+    1,
+    GL_UNSIGNED_BYTE,
+    sizeof(uint8_t),
+    (void*)0
+  );
+  glBindVertexArray(0);
+
+  hasMaterialVBO = true;
+}
+
+void GameObject::addMaterial(std::shared_ptr<Material> material)
+{
+  this->materials.push_back(material);
+}
+
+void GameObject::useMaterial(std::shared_ptr<Material> material, uint32_t startIdx, uint32_t endIdx)
+{
+  if(startIdx > endIdx || endIdx >= this->materialIndices.size())
+    throw std::runtime_error("Error: Invalid start or end index for material assignment.");
+
+  uint8_t i;
+  for(i = 0; i < this->materials.size(); i++)
+  {
+    if(this->materials[i] == material) break;
+  }
+
+  if(i == this->materials.size())
+    throw std::runtime_error("Error: Material not found in the GameObject's material list.");
+
+  for(uint32_t j = startIdx; j <= endIdx; j++)
+  {
+    this->materialIndices[j] = i;
+  }
+
+  this->loadMaterialIndicesToGPU();
+}
+
+void GameObject::addMaterial(std::shared_ptr<Material> material, uint32_t startIdx, uint32_t endIdx)
+{
+  this->addMaterial(material);
+  this->useMaterial(material, startIdx, endIdx);
 }

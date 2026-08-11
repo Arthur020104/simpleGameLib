@@ -44,5 +44,5 @@ class Program
 
     uint16_t objectsUsingProgram;
 };
-//FIND A BETTER WAY AFTHER, IF NO ONE USES THIS PROGRAM MEMORY WILL LEAK
+
 extern std::shared_ptr<Program> DEFAULT_SHADER;

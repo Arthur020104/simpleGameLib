@@ -1,7 +1,7 @@
 #include <light.h>
 #include <string.h>
 
-void Light::bindUniforms(Program* shaderProgram)
+void Light::bind(Program* shaderProgram)
 {
   glUseProgram(shaderProgram->getProgram());//bind is happening in here and in GameObject draw
 
@@ -13,7 +13,7 @@ void Light::bindUniforms(Program* shaderProgram)
   shaderProgram->bindUint("lightType", this->getLightType());
 }
 
-void Light::bindUniforms(Program* shaderProgram, char* arrayName, uint16_t index)
+void Light::bind(Program* shaderProgram, char* arrayName, uint16_t index)
 {
   glUseProgram(shaderProgram->getProgram());//bind is happening in here and in GameObject draw
 
@@ -33,18 +33,18 @@ cy::Vec3f DirectionalLight::getPosition()
   return this->getNormalizedPosition();
 }
 
-void PointLight::bindUniforms(Program* shaderProgram) 
+void PointLight::bind(Program* shaderProgram) 
 {
-  Light::bindUniforms(shaderProgram);
+  Light::bind(shaderProgram);
 
   shaderProgram->bindFloat("constantFallOff", this->constantFallOff);
   shaderProgram->bindFloat("linearFallOff", this->linearFallOff);
   shaderProgram->bindFloat("quadraticFallOff", this->quadraticFallOff);
 }
 
-void PointLight::bindUniforms(Program* shaderProgram, char* arrayName, uint16_t index)
+void PointLight::bind(Program* shaderProgram, char* arrayName, uint16_t index)
 {
-  Light::bindUniforms(shaderProgram, arrayName, index);
+  Light::bind(shaderProgram, arrayName, index);
 
   std::string location = std::string(arrayName) + "[" + std::to_string(index) + "]";
 

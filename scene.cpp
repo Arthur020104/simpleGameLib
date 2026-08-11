@@ -143,7 +143,7 @@ void Scene::bindSceneLights(Program* shaderProgram)
 
   for(uint16_t i = 0; i < this->lights.size(); i++)
   {
-    this->lights[i]->bindUniforms(shaderProgram, "lights", i);
+    this->lights[i]->bind(shaderProgram, "lights", i);
   }
 
   shaderProgram->bindUint("lightsSize", this->lights.size());

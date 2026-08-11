@@ -11,38 +11,51 @@ struct Light {
   float linearFallOff;
   float quadraticFallOff;
 };
-vec3 applyLight(Light light, vec3 normal, vec3 viewDirection);
+vec3 applyLight(Light light, vec3 normal, vec3 viewDirection, float shininess, float specularStrength);
+
+struct Material {
+  vec3 diffuse;
+  float shininess;
+  float specularStrength;
+};
 
 const uint MAX_LIGHT_SIZE = 50;
+const uint MAX_MATERIAL_SIZE = 50;
 
 out vec4 FragColor;
 in vec3 worldFragPos;
 in vec3 normalV;
 
+flat in uint materialIdx;
+
 uniform Light lights[MAX_LIGHT_SIZE];
 uniform uint lightsSize;
+
+uniform Material materials[MAX_MATERIAL_SIZE];
 uniform bool isSelected;
 uniform vec3 viewPosition;
-
-float specularStrength = 0.5;
-float shininess = 32;
 
 void main()
 {  
   vec3 normal = normalize(normalV);
-  vec4 baseColor = isSelected ? vec4(1.0, 1.0, 1.0, 1.0):  vec4(0.3, 0.3, 1.0, 1.0);
+
+  Material mat = materials[materialIdx];
 
   vec3 viewDirection = normalize(viewPosition - worldFragPos);
   
   vec3 lightsEffect = vec3(0.0, 0.0, 0.0);
   for(uint i = 0; i < lightsSize; i++)
   {
-    lightsEffect += applyLight(lights[i], normal, viewDirection);
+    lightsEffect += applyLight(lights[i], normal, viewDirection, mat.shininess, mat.specularStrength);
   }
-  FragColor = vec4(lightsEffect * baseColor.xyz, 1.0);
+
+  if(lightsSize > MAX_LIGHT_SIZE)
+    lightsEffect = vec3(0.0, 0.0, 0.0);
+
+  FragColor = vec4(lightsEffect * mat.diffuse, 1.0);
 }
 
-vec3 applyLight(Light light, vec3 normal, vec3 viewDirection)
+vec3 applyLight(Light light, vec3 normal, vec3 viewDirection, float shininess, float specularStrength)
 {
   switch(light.type)
   {

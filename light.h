@@ -14,8 +14,8 @@ class Light: public Component
     virtual void beforeUpdate() override {};
     virtual void aftherUpdate() override {};
 
-    virtual void bindUniforms(Program* shaderProgram);
-    virtual void bindUniforms(Program* shaderProgram, char* arrayName, uint16_t index);
+    virtual void bind(Program* shaderProgram);
+    virtual void bind(Program* shaderProgram, char* arrayName, uint16_t index);
     virtual uint16_t getLightType() { return 0;};
 
     cy::Vec3f color;
@@ -43,8 +43,8 @@ class PointLight: public Light
 
     virtual uint16_t getLightType() { return PointLight::TYPE;};
 
-    virtual void bindUniforms(Program* shaderProgram) override;
-    virtual void bindUniforms(Program* shaderProgram, char* arrayName, uint16_t index) override;
+    virtual void bind(Program* shaderProgram) override;
+    virtual void bind(Program* shaderProgram, char* arrayName, uint16_t index) override;
 
     float constantFallOff = 1.0f;
     float linearFallOff = 0.09f;

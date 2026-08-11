@@ -28,6 +28,8 @@ class Mesh
 
     void registerObjectWithMesh(GameObject* obj);//for now passing the obj is useless, but later I may want to add a list of objects using this mesh
 
+    uint32_t getVerticesAmount() {return this->vertices.size();};
+
     uint16_t getUsingMesh();
 
     uint16_t removeUsingMesh(GameObject* obj);

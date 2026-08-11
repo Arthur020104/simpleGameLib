@@ -1,4 +1,5 @@
 #pragma once
+#include <material.h>
 #include <mesh.h>
 #include <program.h>
 #include <component.h>
@@ -15,7 +16,7 @@ class Scene;
 class GameObject: public Component
 {
   public:
-    GameObject(std::shared_ptr<Mesh> meshData, std::shared_ptr<Program> shader);
+    GameObject(std::shared_ptr<Mesh> meshData, std::shared_ptr<Program> shader, std::shared_ptr<Material> material = DEFAULT_MATERIAL);
 
     virtual ~GameObject();
 
@@ -31,6 +32,16 @@ class GameObject: public Component
 
     bool intersect(Ray& ray);
 
+    void useOnly(std::shared_ptr<Material> material);
+
+    void addMaterial(std::shared_ptr<Material> material);
+
+    void addMaterial(std::shared_ptr<Material> material, uint32_t startIdx, uint32_t endIdx);
+
+    void useMaterial(std::shared_ptr<Material> material, uint32_t startIdx, uint32_t endIdx);
+
+    uint32_t getMaterialIndicesSize() {return materialIndices.size();};
+
     bool isSelected = false;
 
     virtual void start() = 0;
@@ -39,4 +50,12 @@ class GameObject: public Component
   private:
     std::shared_ptr<Mesh> mesh;
     std::shared_ptr<Program> shaderProgram;
+    std::vector<std::shared_ptr<Material>> materials;
+
+    uint32_t materialIndicesVBO;
+    bool hasMaterialVBO = false;
+
+    std::vector<u_int8_t> materialIndices;
+
+    void loadMaterialIndicesToGPU();
 };

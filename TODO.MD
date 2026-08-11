@@ -3,7 +3,7 @@
 - 2. Add an execution queue with time, will run in a separate thread.
 - 3. Add texture.
 Materials: every game object should be able to have N materials, and we should be able to set by index. Create an VBO for the materials indices on the object, and a uniform buffer for the materials data.
-- 4. Add materials - look up creating a class that stores for an map for each class data varibles(maybe leave this precompiled thing for latter)
+- 4. Add materials, make sure to load materials in the .obj file - look up creating a class that stores for an map for each class data varibles(maybe leave this precompiled thing for latter)
 - 5. Create a simple game like a bomberman clone to test
 ## TODO LATER, NOT RANKED
 - think if component will inherit transform or if transform will be a component
@@ -49,3 +49,4 @@ bool MeshBvhNode::intersect(Ray& ray, GameObject* gameObject)
 - change mesh class to use smart pointers
 - review/refactor how scene class is working afther the creation of the component class
 - The update of the model matrix and camera matrices needs to be refactoring, they are being updated every time the get is called
+- Adding lights
