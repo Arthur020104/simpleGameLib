@@ -34,7 +34,7 @@ class Scene
 
     virtual void beforeDrawing();
 
-    virtual void aftherDrawing();
+    virtual void afterDrawing();
 
     void destroy(Component* obj);
 

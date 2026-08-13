@@ -8,6 +8,11 @@ path(path), wrapS(wrapS), wrapT(wrapT), minFilter(minFilter), magFilter(magFilte
   this->id = loadDataToGPU();
 }
 
+Texture::~Texture()
+{
+  glDeleteTextures(1, &this->id);
+}
+
 uint32_t Texture::loadDataToGPU()
 {
   stbi_set_flip_vertically_on_load(true);  

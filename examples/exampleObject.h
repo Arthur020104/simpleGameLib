@@ -8,6 +8,6 @@ class ExampleObject: public GameObject
 
     void start() override;
     void beforeUpdate() override;
-    void aftherUpdate() override;
+    void afterUpdate() override;
   private:
 };

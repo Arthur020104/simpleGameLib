@@ -35,7 +35,6 @@ void GameObject::draw(cy::Matrix4f &viewProjection)
   const cy::Matrix4f mvp = viewProjection * this->getModelMatrix();
 
   this->shaderProgram->bindMat4("mvp", mvp);
-  this->shaderProgram->bindBool("isSelected", this->isSelected);
   this->shaderProgram->bindMat4("modelMatrix", this->getModelMatrix());
   
   Camera* activeCamera = this->scene->getActiveCamera();

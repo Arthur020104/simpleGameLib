@@ -12,7 +12,7 @@ class Light: public Component
 
     virtual void start() override {};
     virtual void beforeUpdate() override {};
-    virtual void aftherUpdate() override {};
+    virtual void afterUpdate() override {};
 
     virtual void bind(Program* shaderProgram);
     virtual void bind(Program* shaderProgram, char* arrayName, uint16_t index);

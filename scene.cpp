@@ -64,11 +64,11 @@ void Scene::beforeDrawing()
   }
 }
 
-void Scene::aftherDrawing()
+void Scene::afterDrawing()
 {
   for(Component* obj: this->components)
   {
-    obj->aftherUpdate();
+    obj->afterUpdate();
   }
 }
 

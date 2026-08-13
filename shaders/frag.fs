@@ -11,7 +11,6 @@ struct Light {
   float linearFallOff;
   float quadraticFallOff;
 };
-vec3 applyLight(Light light, vec3 normal, vec3 viewDirection, float shininess, float specularStrength);
 
 struct Material {
   vec3 diffuse;
@@ -20,7 +19,12 @@ struct Material {
 
   bool hasDiffuseTex;
   int diffuseTexUnit;
+
+  bool hasSpecularTex;
+  int specularTexUnit;
 };
+
+vec3 applyLight(Light light, vec3 normal, vec3 viewDirection, Material mat);
 
 const uint MAX_LIGHT_SIZE = 50;
 const uint MAX_MATERIAL_SIZE = 50;
@@ -47,24 +51,25 @@ void main()
   vec3 normal = normalize(normalV);
 
   Material mat = materials[materialIdx];
-  vec3 diffuseColor = mat.hasDiffuseTex ? texture(textures[mat.diffuseTexUnit], texCoord).rgb : mat.diffuse;
 
   vec3 viewDirection = normalize(viewPosition - worldFragPos);
   
   vec3 lightsEffect = vec3(0.0, 0.0, 0.0);
   for(uint i = 0; i < lightsSize; i++)
   {
-    lightsEffect += applyLight(lights[i], normal, viewDirection, mat.shininess, mat.specularStrength);
+    lightsEffect += applyLight(lights[i], normal, viewDirection, mat);
   }
 
   if(lightsSize > MAX_LIGHT_SIZE)
     lightsEffect = vec3(0.0, 0.0, 0.0);
 
-  FragColor = vec4(lightsEffect * diffuseColor, 1.0);
+  FragColor = vec4(lightsEffect, 1.0);
 }
 
-vec3 applyLight(Light light, vec3 normal, vec3 viewDirection, float shininess, float specularStrength)
+vec3 applyLight(Light light, vec3 normal, vec3 viewDirection, Material mat)
 {
+  vec3 diffuseColor = mat.hasDiffuseTex ? texture(textures[mat.diffuseTexUnit], texCoord).rgb : mat.diffuse;
+
   switch(light.type)
   {
     case 1:
@@ -72,13 +77,15 @@ vec3 applyLight(Light light, vec3 normal, vec3 viewDirection, float shininess, f
       vec3 reflectDirection = reflect(-light.position, normal);  
       float theta = max(dot(normal, light.position), 0.0);
 
-      float spec = pow(max(dot(viewDirection, reflectDirection), 0.0), shininess);
-      vec3 specular = specularStrength * spec * light.color;  
+      float spec = pow(max(dot(viewDirection, reflectDirection), 0.0), mat.shininess);
+      vec3 specular = mat.hasSpecularTex ? 
+        texture(textures[mat.specularTexUnit], texCoord).rgb * mat.specularStrength * spec * light.color * light.intensity: 
+        mat.specularStrength * spec * light.color * diffuseColor * light.intensity;  
 
       vec3 diffuse = light.color * theta * light.intensity;
       vec3 ambient = light.color * light.ambientIntensity;
 
-      return diffuse + ambient + specular;
+      return (diffuse + ambient) * diffuseColor + specular ;
       break;
     }
     case 2:
@@ -93,13 +100,16 @@ vec3 applyLight(Light light, vec3 normal, vec3 viewDirection, float shininess, f
 
       float theta = max(dot(normal, lightDir), 0.0);
 
-      float spec = pow(max(dot(viewDirection, reflectDirection), 0.0), shininess);
+      float spec = pow(max(dot(viewDirection, reflectDirection), 0.0), mat.shininess);
 
-      vec3 specular = specularStrength * spec * light.color * light.intensity;  
+      vec3 specular = mat.hasSpecularTex ? 
+        texture(textures[mat.specularTexUnit], texCoord).rgb * mat.specularStrength * spec * light.color * light.intensity: 
+        mat.specularStrength * spec * light.color * diffuseColor * light.intensity;
+       
       vec3 diffuse = light.color * theta * light.intensity;
       vec3 ambient = light.color * light.ambientIntensity;
 
-      return (diffuse + ambient + specular) * attenuation;
+      return ((diffuse + ambient ) * diffuseColor + specular) * attenuation;
       break;
     }
     default:

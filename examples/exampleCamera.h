@@ -9,7 +9,7 @@ class ExampleCamera: public Camera
 
     void start() override;
     void beforeUpdate() override;
-    void aftherUpdate() override;
+    void afterUpdate() override;
   private:
     ExampleObject* lineRay = nullptr;
 

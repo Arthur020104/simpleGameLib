@@ -15,12 +15,17 @@ class Material
     Material(std::string diffuseTexturePath, float specularStrength, float shininess);
 
     void addDiffuseTexture(std::shared_ptr<Texture> diffuseTex);
+    void addDiffuseTexture(std::string diffuseTexturePath);
+
+    void addSpecularTexture(std::shared_ptr<Texture> specularTex);
+    void addSpecularTexture(std::string specularTexturePath);
     
     virtual void bind(Program* shaderProgram, char* arrayName, uint16_t index, uint8_t texUnit);
     
     cy::Vec3f diffuse = cy::Vec3f(1.0f, 1.0f, 1.0f);
 
     std::shared_ptr<Texture> diffuseTex = nullptr;
+    std::shared_ptr<Texture> specularTex = nullptr;
     uint8_t activeTextures = 0;
     float specularStrength = 1.0f, shininess = 1.0f;
   private:

@@ -10,7 +10,7 @@ void ExampleObject::beforeUpdate()
   return;
 }
 
-void ExampleObject::aftherUpdate()
+void ExampleObject::afterUpdate()
 {
   return;
 }

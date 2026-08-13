@@ -11,7 +11,7 @@ void ExampleCamera::start()
   return;
 }
 
-void ExampleCamera::aftherUpdate()
+void ExampleCamera::afterUpdate()
 {
   
   return;
@@ -36,6 +36,14 @@ void ExampleCamera::beforeUpdate()
   {
     this->setPosition(this->getPosition() + cy::Vec3f(+velocity, 0.0f, 0.0f) * WINDOW.deltaTime);
   }
+  if(glfwGetKey(WINDOW.window, GLFW_KEY_W) == GLFW_PRESS)
+  {
+    this->setPosition(this->getPosition() + cy::Vec3f(0.0f, 0.0f, -velocity) * WINDOW.deltaTime);
+  }
+  if(glfwGetKey(WINDOW.window, GLFW_KEY_S) == GLFW_PRESS)
+  {
+    this->setPosition(this->getPosition() + cy::Vec3f(0.0f, 0.0f, +velocity) * WINDOW.deltaTime);
+  }
 
   if(lineRay != nullptr && glfwGetMouseButton(WINDOW.window, GLFW_MOUSE_BUTTON_LEFT) == GLFW_PRESS)
   {
@@ -55,8 +63,6 @@ void ExampleCamera::beforeUpdate()
       for(Hit& hit: r.hits)
       {
         //this->scene->destroy(hit.hitObject);
-        hit.hitObject->isSelected = true;
-
       }
     }
 
@@ -68,7 +74,6 @@ void ExampleCamera::beforeUpdate()
     std::shared_ptr<Mesh> lineMesh = std::make_shared<Mesh>(vertices, MeshType::LINE_MESH);
 
     lineRay = new ExampleObject(lineMesh, DEFAULT_SHADER);
-    lineRay->isSelected = true;
     this->scene->addObject(lineRay);
   }
 

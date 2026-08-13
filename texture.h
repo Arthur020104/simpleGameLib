@@ -12,6 +12,8 @@ class Texture
       GLenum minFilter = GL_LINEAR_MIPMAP_LINEAR, GLenum magFilter = GL_LINEAR
     );
 
+    ~Texture();
+
     uint32_t loadDataToGPU();
 
     void bind(Program* shader, std::string uniformName, uint8_t texUnit);

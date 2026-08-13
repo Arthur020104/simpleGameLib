@@ -42,11 +42,9 @@ class GameObject: public Component
 
     uint32_t getMaterialIndicesSize() {return materialIndices.size();};
 
-    bool isSelected = false;
-
     virtual void start() = 0;
     virtual void beforeUpdate() = 0;
-    virtual void aftherUpdate() = 0;
+    virtual void afterUpdate() = 0;
   private:
     std::shared_ptr<Mesh> mesh;
     std::shared_ptr<Program> shaderProgram;
