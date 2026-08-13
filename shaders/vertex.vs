@@ -10,12 +10,15 @@ uniform mat4 modelMatrix;
 
 out vec3 worldFragPos;
 out vec3 normalV;
+out vec2 texCoord;
 flat out uint materialIdx;
 
 void main()
 {
+  texCoord = uv;
   materialIdx = materialIndice;
   normalV = normal;
+
   worldFragPos = (modelMatrix * vec4(vertexPos, 1.0)).xyz;
   gl_Position = mvp * vec4(vertexPos, 1.0);
 }

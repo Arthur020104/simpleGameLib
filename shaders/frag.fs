@@ -17,14 +17,19 @@ struct Material {
   vec3 diffuse;
   float shininess;
   float specularStrength;
+
+  bool hasDiffuseTex;
+  int diffuseTexUnit;
 };
 
 const uint MAX_LIGHT_SIZE = 50;
 const uint MAX_MATERIAL_SIZE = 50;
+const uint MAX_TEXTURES_SIZE = 50;
 
 out vec4 FragColor;
 in vec3 worldFragPos;
 in vec3 normalV;
+in vec2 texCoord;
 
 flat in uint materialIdx;
 
@@ -35,11 +40,14 @@ uniform Material materials[MAX_MATERIAL_SIZE];
 uniform bool isSelected;
 uniform vec3 viewPosition;
 
+uniform sampler2D textures[MAX_TEXTURES_SIZE];
+
 void main()
 {  
   vec3 normal = normalize(normalV);
 
   Material mat = materials[materialIdx];
+  vec3 diffuseColor = mat.hasDiffuseTex ? texture(textures[mat.diffuseTexUnit], texCoord).rgb : mat.diffuse;
 
   vec3 viewDirection = normalize(viewPosition - worldFragPos);
   
@@ -52,7 +60,7 @@ void main()
   if(lightsSize > MAX_LIGHT_SIZE)
     lightsEffect = vec3(0.0, 0.0, 0.0);
 
-  FragColor = vec4(lightsEffect * mat.diffuse, 1.0);
+  FragColor = vec4(lightsEffect * diffuseColor, 1.0);
 }
 
 vec3 applyLight(Light light, vec3 normal, vec3 viewDirection, float shininess, float specularStrength)

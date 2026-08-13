@@ -10,8 +10,8 @@
 
 ExampleScene::ExampleScene(): Scene()
 {
-  std::shared_ptr<Material> roughMaterial = std::make_shared<Material>(cy::Vec3f(0.5f, 0.5f, 0.5f), 0.1f, 2.0f);
-  std::shared_ptr<Material> shinyMaterial = std::make_shared<Material>(cy::Vec3f(0.5f, 0.5f, 0.5f), 1.0f, 32.0f);
+  std::shared_ptr<Material> roughMaterial = std::make_shared<Material>("/home/arthur/Documents/simpleGame/obj/awesomeface.png", 0.1f, 2.0f);
+  std::shared_ptr<Material> shinyMaterial = std::make_shared<Material>("/home/arthur/Documents/simpleGame/obj/container.jpg", 1.0f, 32.0f);
   std::shared_ptr<Material> goldMaterial = std::make_shared<Material>(cy::Vec3f(1.0f, 0.843f, 0.0f), 1.0f, 256.0f);
 
   std::shared_ptr<Mesh> teapotMesh = loadMesh("/home/arthur/Documents/simpleGame/obj/teapot.obj");

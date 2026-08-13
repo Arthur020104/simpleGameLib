@@ -14,7 +14,7 @@
 cy::Vec4f CLEAR_COLOR(0.529f, 0.808f, 0.922f, 1.0f);
 WindowController WINDOW = initContext(1280, 720, "Teste 11", CLEAR_COLOR);
 std::shared_ptr<Program> DEFAULT_SHADER = std::make_shared<Program>("/home/arthur/Documents/simpleGame/shaders/vertex.vs", "/home/arthur/Documents/simpleGame/shaders/frag.fs");
-std::shared_ptr<Material> DEFAULT_MATERIAL = std::make_shared<Material>(cy::Vec3f(1.0f, 1.0f, 1.0f), 1.0f, 32.0f);
+std::shared_ptr<Material> DEFAULT_MATERIAL = std::make_shared<Material>("/home/arthur/Documents/simpleGame/obj/wall.jpg", 1.0f, 32.0f);
 int main(void)
 {
   double lastTime = glfwGetTime();
@@ -27,7 +27,7 @@ int main(void)
   double fpsInterval = 5.0f;
 
   ExampleScene* scene = new ExampleScene();
-
+  
   while (!WINDOW.shouldClose())
   {
     scene->handleStart();

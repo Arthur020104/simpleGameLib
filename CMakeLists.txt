@@ -26,6 +26,7 @@ set(SOURCES
   ray.cpp
   light.cpp
   material.cpp
+  texture.cpp
 )
 
 set(HEADERS 
@@ -46,6 +47,7 @@ set(HEADERS
   meshBvhNode.h
   light.h
   material.h
+  texture.h
 )
 
 add_executable(Renderer ${SOURCES} ${HEADERS})

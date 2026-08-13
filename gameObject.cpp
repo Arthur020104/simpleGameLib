@@ -41,9 +41,11 @@ void GameObject::draw(cy::Matrix4f &viewProjection)
   Camera* activeCamera = this->scene->getActiveCamera();
   this->shaderProgram->bindVec3("viewPosition", activeCamera->getPosition());
   
+  uint8_t texUnit = 0;
   for(uint8_t i = 0; i < this->materials.size(); i++)
   {
-    this->materials[i]->bind(this->shaderProgram.get(), "materials", i);
+    this->materials[i]->bind(this->shaderProgram.get(), "materials", i, texUnit);
+    texUnit += this->materials[i]->activeTextures;
   }
 
   this->mesh->renderMesh();
