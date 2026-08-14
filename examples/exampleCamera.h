@@ -13,5 +13,5 @@ class ExampleCamera: public Camera
   private:
     ExampleObject* lineRay = nullptr;
 
-    float velocity = 15.0f;
+    float velocity = 100.0f;
 };

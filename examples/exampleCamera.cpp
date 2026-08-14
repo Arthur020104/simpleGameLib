@@ -62,7 +62,7 @@ void ExampleCamera::beforeUpdate()
     {
       for(Hit& hit: r.hits)
       {
-        //this->scene->destroy(hit.hitObject);
+        this->scene->destroy(hit.hitObject);
       }
     }
 

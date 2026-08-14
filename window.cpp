@@ -115,6 +115,7 @@ void defineGlPreferences()
   //glCullFace(GL_BACK);                   // Specify that back-facing triangles should be culled (not rendered)
   glFrontFace(GL_CCW);                    // Define counter-clockwise vertex winding as front-facing triangles
   glEnable(GL_BLEND);
+  glEnable(GL_TEXTURE_CUBE_MAP_SEAMLESS);
 }
 void frameBufferSizeCallback(GLFWwindow* window, int w, int h)
 {

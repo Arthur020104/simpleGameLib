@@ -3,6 +3,7 @@
 #include <vector>
 #include <gameObject.h>
 #include <ray.h>
+#include <cubeMap.h>
 #include <component.h>
 #include <queue>
 
@@ -40,6 +41,8 @@ class Scene
 
     virtual bool intersectSceneObjects(Ray& ray);
 
+    void addCubeMap(std::vector<std::string> facePaths);
+
     void addLight(Light* light);
 
     void bindSceneLights(Program* shaderProgram);
@@ -53,6 +56,9 @@ class Scene
 
     std::vector<Component*> componentsWaitingToStart;
     std::queue<Component*> destroyQueue;
+
+    CubeMap* cubeMap;
+    bool hasCubeMap = false;
 
     uint16_t activeCamera = 0;
 

@@ -53,6 +53,11 @@ cy::Matrix4f Camera::getProjection()
   return this->projectionMatrix;
 }
 
+cy::Matrix4f Camera::getInvertedViewProjection()
+{
+  return this->invertedViewProjection;
+}
+
 Ray Camera::generateRay(cy::Vec2f point)
 {
   cy::Vec4f farWorld = invertedViewProjection * cy::Vec4f(point.x, point.y, 1.0f, 1.0f);
@@ -84,7 +89,7 @@ void Camera::setPosition(cy::Vec3f pos)
 void Camera::setRotation(cy::Quatf rot)
 {
   Component::setRotation(rot);
-  this->direction = (rot.ToMatrix4() * cy::Vec4f(this->direction, 1.0f)).XYZ().GetNormalized(); ;
+  this->direction = (rot.ToMatrix4() * cy::Vec4f(this->direction, 1.0f)).XYZ().GetNormalized();
   this->updateMatrices();
 }
 

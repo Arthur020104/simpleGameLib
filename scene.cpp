@@ -6,10 +6,14 @@
 void Scene::draw()
 {
   if(cameras.size() <= 0) throw std::runtime_error("At least one camera is necessary for rendering");
+
   for(GameObject* obj: this->objects)
   {
     obj->draw(this->cameras[activeCamera]); 
   }
+
+  if(hasCubeMap)
+    cubeMap->draw(this->cameras[activeCamera]);
 }
 
 Scene::Scene()
@@ -27,6 +31,9 @@ Scene::~Scene()
   {
     delete obj;
   }
+
+  if(hasCubeMap)
+    delete cubeMap;
 }
 
 void Scene::handleStart()
@@ -70,6 +77,12 @@ void Scene::afterDrawing()
   {
     obj->afterUpdate();
   }
+}
+
+void Scene::addCubeMap(std::vector<std::string> facePaths)
+{
+  this->cubeMap = new CubeMap(facePaths);
+  this->hasCubeMap = true;
 }
 
 void Scene::addObject(GameObject* obj)

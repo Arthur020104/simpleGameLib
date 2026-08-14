@@ -19,9 +19,9 @@ ExampleScene::ExampleScene(): Scene()
   cy::Vec3f startPos(0.0f, 2.0f, -50.0f);
   float moveAmount = 20;
 
-  for(uint16_t i = 0; i < 5; i++)
+  for(uint16_t i = 0; i < 10; i++)
   {
-    for(uint16_t j = 0; j < 5; j++)
+    for(uint16_t j = 0; j < 10; j++)
     {
       std::shared_ptr<Material> material;
       if((i + j) % 3 == 0)
@@ -59,4 +59,13 @@ ExampleScene::ExampleScene(): Scene()
   this->addLight(light);
   this->addCamera(cam);
   this->setActiveCam(cam);
+
+  this->addCubeMap({
+    "/home/arthur/Documents/simpleGame/obj/cubemap/cubemap_posx.png",
+    "/home/arthur/Documents/simpleGame/obj/cubemap/cubemap_negx.png",
+    "/home/arthur/Documents/simpleGame/obj/cubemap/cubemap_posy.png",
+    "/home/arthur/Documents/simpleGame/obj/cubemap/cubemap_negy.png",
+    "/home/arthur/Documents/simpleGame/obj/cubemap/cubemap_posz.png",
+    "/home/arthur/Documents/simpleGame/obj/cubemap/cubemap_negz.png"
+  });
 }

@@ -1,4 +1,3 @@
-#define STB_IMAGE_IMPLEMENTATION
 #include <texture.h>
 #include <Libs/stb/stb_image.h>
 

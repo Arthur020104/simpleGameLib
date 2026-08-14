@@ -27,6 +27,7 @@ set(SOURCES
   light.cpp
   material.cpp
   texture.cpp
+  cubeMap.cpp
 )
 
 set(HEADERS 
@@ -48,6 +49,7 @@ set(HEADERS
   light.h
   material.h
   texture.h
+  cubeMap.h
 )
 
 add_executable(Renderer ${SOURCES} ${HEADERS})
