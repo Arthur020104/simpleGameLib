@@ -52,12 +52,14 @@ class GameObject: public Component
   private:
     std::shared_ptr<Mesh> mesh;
     std::shared_ptr<Program> shaderProgram;
-    std::vector<std::shared_ptr<Material>> materials;
+    
 
     uint32_t materialIndicesVBO;
     bool hasMaterialVBO = false;
 
-    std::vector<u_int8_t> materialIndices;
+    std::vector<uint8_t> materialIndices;
 
     void loadMaterialIndicesToGPU();
+  protected:
+    std::vector<std::shared_ptr<Material>> materials;
 };

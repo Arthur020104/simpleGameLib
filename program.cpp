@@ -94,7 +94,7 @@ uint16_t Program::getUsingProgram()
   return this->objectsUsingProgram;
 }
 
-u_int16_t Program::removeUsingProgram(GameObject* obj)
+uint16_t Program::removeUsingProgram(GameObject* obj)
 {
   return --this->objectsUsingProgram;
 }

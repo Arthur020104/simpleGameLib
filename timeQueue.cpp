@@ -15,9 +15,9 @@ TimeQueue::~TimeQueue()
 
 void TimeQueue::update()
 {
-  double sleepDurationInSeconds = 0.01;
   while(true)
   {
+    double sleepDurationInSeconds = 0.01;
     if(!this->isRunning) break;
 
     std::this_thread::sleep_for(std::chrono::duration<double>(sleepDurationInSeconds));
@@ -56,7 +56,7 @@ void TimeQueue::addToQueue(std::function<void()> call, double startDelay)
   this->waitingToBeAdded.push_back(item);
 }
 
-void TimeQueue::startRoutine(std::function<void()> call, double delay, double startDelay, u_int32_t maxExecutions)
+void TimeQueue::startRoutine(std::function<void()> call, double delay, double startDelay, uint32_t maxExecutions)
 {
   std::unique_lock<std::mutex> lock(mtx);
   
@@ -71,7 +71,7 @@ void TimeQueue::startRoutine(std::function<void()> call, double delay, double st
   std::unique_lock<std::mutex> lock(mtx);
 
   uint32_t maxExecutions = (timeExecuting - startDelay) / delay;
-  
+
   QueueItem item(call, WINDOW.getTime() + startDelay, delay, maxExecutions);
   this->waitingToBeAdded.push_back(item);
 }

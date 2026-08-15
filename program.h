@@ -18,7 +18,7 @@ class Program
 
     void registerObjectUsingProgram(GameObject* obj);//for now passing the obj is useless, but later I may want to add a list of objects using this program
     uint16_t getUsingProgram();
-    u_int16_t removeUsingProgram(GameObject* obj);
+    uint16_t removeUsingProgram(GameObject* obj);
 
     void bindFloat(const char* uniformName, float value);
     void bindVec3(const char* uniformName, cy::Vec3f value);

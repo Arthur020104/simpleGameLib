@@ -7,7 +7,7 @@
 class QueueItem 
 {
   public:
-    QueueItem(std::function<void()> call, double nextExecutionTime, double delay = 0.0, u_int32_t maxExecutions = 1):
+    QueueItem(std::function<void()> call, double nextExecutionTime, double delay = 0.0, uint32_t maxExecutions = 1):
       call(call), delay(delay), nextExecutionTime(nextExecutionTime), maxExecutions(maxExecutions), startTime(WINDOW.getTime()) {};
 
     void invoke();
@@ -15,8 +15,8 @@ class QueueItem
     double getNextExecutionTime() { return this->nextExecutionTime; };
   private:
     std::function<void()> call;
-    u_int32_t totalExecutions = 0;
-    u_int32_t maxExecutions = 1;
+    uint32_t totalExecutions = 0;
+    uint32_t maxExecutions = 1;
 
     double startTime = 0.0, delay = 0.0, nextExecutionTime = 0.0;
 };

@@ -12,7 +12,7 @@ class TimeQueue
     ~TimeQueue();
 
     void addToQueue(std::function<void()> call, double startDelay);
-    void startRoutine(std::function<void()> call, double delay, double startDelay = 0.0, u_int32_t maxExecutions = UINT32_MAX);
+    void startRoutine(std::function<void()> call, double delay, double startDelay = 0.0, uint32_t maxExecutions = UINT32_MAX);
     void startRoutine(std::function<void()> call, double delay, double startDelay, double timeExecuting);
   private:
     std::vector<QueueItem> queue;
