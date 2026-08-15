@@ -28,6 +28,8 @@ set(SOURCES
   material.cpp
   texture.cpp
   cubeMap.cpp
+  queueItem.cpp
+  timeQueue.cpp
 )
 
 set(HEADERS 
@@ -50,6 +52,8 @@ set(HEADERS
   material.h
   texture.h
   cubeMap.h
+  queueItem.h
+  timeQueue.h
 )
 
 add_executable(Renderer ${SOURCES} ${HEADERS})

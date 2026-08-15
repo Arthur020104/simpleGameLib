@@ -13,6 +13,7 @@ class WindowController
     bool shouldClose();
     void pollEvents();
     void swapBuffers();
+    double getTime();
 
     cy::Vec2f getMousePos(bool ndc = false);
 

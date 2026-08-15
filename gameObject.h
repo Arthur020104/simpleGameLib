@@ -34,6 +34,8 @@ class GameObject: public Component
 
     void useOnly(std::shared_ptr<Material> material);
 
+    void useOnly(uint8_t materialIndex);
+
     void addMaterial(std::shared_ptr<Material> material);
 
     void addMaterial(std::shared_ptr<Material> material, uint32_t startIdx, uint32_t endIdx);
@@ -41,6 +43,8 @@ class GameObject: public Component
     void useMaterial(std::shared_ptr<Material> material, uint32_t startIdx, uint32_t endIdx);
 
     uint32_t getMaterialIndicesSize() {return materialIndices.size();};
+
+    uint8_t getMaterialsSize() {return materials.size();};
 
     virtual void start() = 0;
     virtual void beforeUpdate() = 0;

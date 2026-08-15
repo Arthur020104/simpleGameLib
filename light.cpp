@@ -30,7 +30,7 @@ void Light::bind(Program* shaderProgram, char* arrayName, uint16_t index)
 
 cy::Vec3f DirectionalLight::getPosition()
 {
-  return -this->getNormalizedPosition();
+  return this->getNormalizedPosition();
 }
 
 void PointLight::bind(Program* shaderProgram) 

@@ -99,7 +99,15 @@ void GameObject::useOnly(std::shared_ptr<Material> material)
   if(i == this->materials.size())
     this->materials.push_back(material);
 
-  this->materialIndices.assign(this->mesh->getVerticesAmount(), i);
+  this->useOnly(i);
+}
+
+void GameObject::GameObject::useOnly(uint8_t materialIndex)
+{
+  if(materialIndex >= this->materials.size())
+    throw std::runtime_error("Error: Material index out of bounds.");
+
+  this->materialIndices.assign(this->mesh->getVerticesAmount(), materialIndex);
   this->loadMaterialIndicesToGPU();
 }
 

@@ -17,7 +17,7 @@ void main()
 {
   texCoord = uv;
   materialIdx = materialIndice;
-  normalV = normal;
+  normalV = (modelMatrix * vec4(normal, 0.0)).xyz;
 
   worldFragPos = (modelMatrix * vec4(vertexPos, 1.0)).xyz;
   gl_Position = mvp * vec4(vertexPos, 1.0);

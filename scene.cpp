@@ -132,21 +132,45 @@ bool Scene::intersectSceneObjects(Ray& ray)
 
 void Scene::erase(Component* obj)
 {
+  bool validForDeletion = false;
+
   auto itemOnObjects = std::find(this->objects.begin(), this->objects.end(), obj);
-  if(itemOnObjects != this->objects.end()) this->objects.erase(itemOnObjects);
+  if(itemOnObjects != this->objects.end())
+  {
+    this->objects.erase(itemOnObjects);
+    validForDeletion = true;
+  }
 
   auto itemOnComponents = std::find(this->components.begin(), this->components.end(), obj);
-  if(itemOnComponents != this->components.end()) this->components.erase(itemOnComponents);
+  if(itemOnComponents != this->components.end())
+  {
+    this->components.erase(itemOnComponents);
+    validForDeletion = true;
+  }
 
   auto itemOnStartComponents = std::find(this->componentsWaitingToStart.begin(), this->componentsWaitingToStart.end(), obj);
-  if(itemOnStartComponents != this->componentsWaitingToStart.end()) this->componentsWaitingToStart.erase(itemOnStartComponents);
+  if(itemOnStartComponents != this->componentsWaitingToStart.end())
+  {
+    this->componentsWaitingToStart.erase(itemOnStartComponents);
+    validForDeletion = true;
+  }
 
   auto itemOnCameras = std::find(this->cameras.begin(), this->cameras.end(), obj);
-  if(itemOnCameras != this->cameras.end()) this->cameras.erase(itemOnCameras);
+  if(itemOnCameras != this->cameras.end())
+  {
+    this->cameras.erase(itemOnCameras);
+    validForDeletion = true;
+  }
 
   auto itemOnLights = std::find(this->lights.begin(), this->lights.end(), obj);
-  if(itemOnLights != this->lights.end()) this->lights.erase(itemOnLights);
+  if(itemOnLights != this->lights.end())
+  {
+    this->lights.erase(itemOnLights);
+    validForDeletion = true;
+  }
 
+  if(!validForDeletion) return;
+  
   delete obj;
 }
 

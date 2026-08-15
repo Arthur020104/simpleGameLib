@@ -132,3 +132,8 @@ void frameBufferSizeCallback(GLFWwindow* window, int w, int h)
   //create an funtion to put ratioChanged = false and oldRatio = ratio(afther all cameras ratio are updated)
   //projMatrix = cy::Matrix4f::Perspective(FOV * cy::Deg2Rad<float>(), float(W)/float(H), N, F);
 }
+
+double WindowController::getTime()
+{
+  return glfwGetTime();
+}

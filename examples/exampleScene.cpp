@@ -42,7 +42,7 @@ ExampleScene::ExampleScene(): Scene()
  
   ExampleCamera* cam = new ExampleCamera(cy::Vec3f(-0.0f, 0.0f, 0.0f));
 
-  DirectionalLight* light = new DirectionalLight(cy::Vec3f(0.0f, 3.0f, 1.0f), cy::Vec3f(1.0, 0.8588, 0.7333), 0.6f);
+  DirectionalLight* light = new DirectionalLight(cy::Vec3f(0.0f, 3.0f, 2.0f), cy::Vec3f(1.0, 0.8588, 0.7333), 0.6f);
 
   ExamplePointLight* pointLight = new ExamplePointLight(cy::Vec3f(-5.0f, 6.0f, -7.0f), cy::Vec3f(1.0, 1.0, 1.0), 100.0f);
 
@@ -52,6 +52,8 @@ ExampleScene::ExampleScene(): Scene()
   std::shared_ptr<Mesh> boxMesh = loadMesh("/home/arthur/Documents/simpleGame/obj/square.obj");
 
   ExampleObject* specularTest = new ExampleObject(boxMesh, DEFAULT_SHADER, boxMaterial);
+
+  
   specularTest->setPosition(cy::Vec3f(0.0f, 0.0f, -10.0f));
   specularTest->setScale(cy::Vec3f(3.0f, 3.0f, 3.0f));
 

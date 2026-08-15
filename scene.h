@@ -6,6 +6,7 @@
 #include <cubeMap.h>
 #include <component.h>
 #include <queue>
+#include <timeQueue.h>
 
 class GameObject;
 class Camera;
@@ -47,6 +48,8 @@ class Scene
 
     void bindSceneLights(Program* shaderProgram);
 
+    TimeQueue* getTimeQueue() { return &this->timeQueue; }
+
     Camera* getActiveCamera() { return this->cameras[this->activeCamera]; }
   private:
     std::vector<GameObject*> objects;
@@ -56,6 +59,8 @@ class Scene
 
     std::vector<Component*> componentsWaitingToStart;
     std::queue<Component*> destroyQueue;
+
+    TimeQueue timeQueue;
 
     CubeMap* cubeMap;
     bool hasCubeMap = false;

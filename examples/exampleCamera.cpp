@@ -67,7 +67,7 @@ void ExampleCamera::beforeUpdate()
     {
       for(Hit& hit: r.hits)
       {
-        this->scene->destroy(hit.hitObject);
+        this->scene->getTimeQueue()->addToQueue([this, hit]() { this->scene->destroy(hit.hitObject); }, 5.0f);
       }
     }
 
