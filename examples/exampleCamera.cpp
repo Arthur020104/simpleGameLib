@@ -44,6 +44,11 @@ void ExampleCamera::beforeUpdate()
   {
     this->setPosition(this->getPosition() + cy::Vec3f(0.0f, 0.0f, +velocity) * WINDOW.deltaTime);
   }
+  if(glfwGetKey(WINDOW.window, GLFW_KEY_RIGHT) == GLFW_PRESS)
+  {
+    float rotationVelocity = 10.0f;
+    this->setRotation(this->getRotation() + cy::Vec3f(0.0f, -rotationVelocity, 0.0f) * WINDOW.deltaTime);
+  }
 
   if(lineRay != nullptr && glfwGetMouseButton(WINDOW.window, GLFW_MOUSE_BUTTON_LEFT) == GLFW_PRESS)
   {

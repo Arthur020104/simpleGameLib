@@ -71,7 +71,7 @@ bool GameObject::intersect(Ray& ray)
   cy::Vec4f modelSpaceOrigin = invertedModelMatrix * cy::Vec4f(ray.origin, 1.0f);
   cy::Vec4f modelSpaceDirection = invertedModelMatrix * cy::Vec4f(ray.direction, 0.0f);
   
-  float scale = modelSpaceDirection.XYZ().Length();
+  double scale = modelSpaceDirection.XYZ().Length();
 
   Ray modelSpaceRay;
   modelSpaceRay.origin = modelSpaceOrigin.XYZ();

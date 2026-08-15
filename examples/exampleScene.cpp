@@ -34,16 +34,17 @@ ExampleScene::ExampleScene(): Scene()
       ExampleObject* teapotObj = new ExampleObject(teapotMesh, DEFAULT_SHADER);
       teapotObj->setPosition(startPos + cy::Vec3f(moveAmount * i, moveAmount*j, 0.0f));
       teapotObj->addMaterial(material, 0, teapotObj->getMaterialIndicesSize() / 2);
-      //teapotObj->setRotation(cy::Quatf(cy::Deg2Rad<float>() * -45.0f, cy::Vec3f(1.0f, 0.0f, 0.0f)));
+      teapotObj->setScale(cy::Vec3f(0.5f, 0.5f, 0.5f));
+      teapotObj->setRotation(cy::Vec3f(-90.0f, 0.0f, 0.0f));
       this->addObject(teapotObj);
     }
   }
  
   ExampleCamera* cam = new ExampleCamera(cy::Vec3f(-0.0f, 0.0f, 0.0f));
 
-  DirectionalLight* light = new DirectionalLight(cy::Vec3f(0.0f, 30.0f, 10.0f), cy::Vec3f(1.0, 0.8588, 0.7333), 0.6f);
+  DirectionalLight* light = new DirectionalLight(cy::Vec3f(0.0f, 3.0f, 1.0f), cy::Vec3f(1.0, 0.8588, 0.7333), 0.6f);
 
-  ExamplePointLight* pointLight = new ExamplePointLight(cy::Vec3f(-5.0f, 6.0f, -7.0f), cy::Vec3f(1.0, 1.0, 1.0), 10.0f);
+  ExamplePointLight* pointLight = new ExamplePointLight(cy::Vec3f(-5.0f, 6.0f, -7.0f), cy::Vec3f(1.0, 1.0, 1.0), 100.0f);
 
   std::shared_ptr<Material> boxMaterial = std::make_shared<Material>("/home/arthur/Documents/simpleGame/obj/container2.png", 4.0f, 32.0f);
   boxMaterial->addSpecularTexture("/home/arthur/Documents/simpleGame/obj/container2_specular.png");

@@ -6,23 +6,22 @@
 class Transform
 {
   public:
-    Transform(cy::Vec3f pos = cy::Vec3f(0.0f, 0.0f, 0.0f), cy::Quatf rot = cy::Quatf(1.0f, 0.0f, 0.0f, 0.0f), cy::Vec3f scale = cy::Vec3f(1.0f, 1.0f, 1.0f));
+    Transform(cy::Vec3f pos = cy::Vec3f(0.0f, 0.0f, 0.0f), cy::Vec3f rot = cy::Vec3f(0.0f, 0.0f, 0.0f), cy::Vec3f scale = cy::Vec3f(1.0f, 1.0f, 1.0f));
 
     void updateModelMatrix();
     cy::Matrix4f getModelMatrix();
 
     virtual void setPosition(cy::Vec3f pos);
-    virtual void setRotation(cy::Quatf rot);
+    virtual void setRotation(cy::Vec3f rot);
     virtual void setScale(cy::Vec3f scale);
 
     virtual cy::Vec3f getPosition() { return this->position; }
-    virtual cy::Quatf getRotation() { return this->rotation; }
+    virtual cy::Vec3f getRotation() { return this->rotation; }
     virtual cy::Vec3f getScale() { return this->scale; }
     virtual cy::Vec3f getNormalizedPosition() { return this->position.GetNormalized(); }
 
   private:
     cy::Matrix4f modelMatrix;
 
-    cy::Vec3f position, scale;
-    cy::Quatf rotation;
+    cy::Vec3f position, scale, rotation;
 };

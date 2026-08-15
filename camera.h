@@ -21,7 +21,7 @@ public:
   void updateAspect(float aspect);
 
   virtual void setPosition(cy::Vec3f pos) override;
-  virtual void setRotation(cy::Quatf rot) override;
+  virtual void setRotation(cy::Vec3f rot) override;
   
   void updateMatrices();
 
@@ -30,6 +30,8 @@ private:
   const float FOV = 103.0f;
   float aspect;
   
+  cy::Vec3f defaultDirection = cy::Vec3f(0.0f, 0.0f, -1.0f);
+
   cy::Vec3f direction = cy::Vec3f(0.0f, 0.0f, -1.0f), defaultUp = cy::Vec3f(0.0f, 1.0f, 0.0f);
 
   cy::Matrix4f viewMatrix, projectionMatrix, viewProjection, invertedViewProjection;

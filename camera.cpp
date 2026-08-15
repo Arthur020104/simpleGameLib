@@ -86,10 +86,13 @@ void Camera::setPosition(cy::Vec3f pos)
   this->updateMatrices();
 }
 
-void Camera::setRotation(cy::Quatf rot)
+void Camera::setRotation(cy::Vec3f rot)
 {
   Component::setRotation(rot);
-  this->direction = (rot.ToMatrix4() * cy::Vec4f(this->direction, 1.0f)).XYZ().GetNormalized();
+
+  cy::Matrix4f rotationMatrix = cy::Matrix4f::RotationZ(rot.z) * cy::Matrix4f::RotationY(rot.y) * cy::Matrix4f::RotationX(rot.x);
+
+  this->direction = (rotationMatrix * cy::Vec4f(this->defaultDirection, 1.0f)).XYZ().GetNormalized();
   this->updateMatrices();
 }
 
