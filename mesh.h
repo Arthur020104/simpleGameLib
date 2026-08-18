@@ -2,6 +2,7 @@
 #include <ray.h>
 #include <vector>
 #include <vertex.h>
+#include <string>
 #include <cy/cyTriMesh.h>
 #include <gameObject.h>
 #include <meshBvhNode.h>
@@ -24,6 +25,12 @@ class Mesh
 
     Mesh(std::vector<Vertex> inputVertices, MeshType type = MeshType::TRIANGLE_MESH);
 
+    Mesh(std::string path);
+
+    Mesh(const char* path);
+
+    Mesh(cy::TriMesh& objTriMesh);
+
     ~Mesh();
 
     void registerObjectWithMesh(GameObject* obj);//for now passing the obj is useless, but later I may want to add a list of objects using this mesh
@@ -43,7 +50,6 @@ class Mesh
     void bindVAO();
 
     void renderMesh();
-    
 
     cy::Vec3f boundingVolume[2];
   private:
@@ -65,5 +71,7 @@ class Mesh
     MeshBvhNode* bvh = nullptr;
 
     void init(std::vector<Vertex>& inputVertices, MeshType type, cy::Vec3f boundingVolume[2]);
+
+    void loadMesh(cy::TriMesh& objTriMesh);
 };
 

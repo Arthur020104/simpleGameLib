@@ -14,7 +14,7 @@ class ExamplePointLight: public PointLight
 
     virtual void start() override
     {
-      std::shared_ptr<Mesh> mesh = loadMesh("/home/arthur/Documents/simpleGame/obj/square.obj");
+      std::shared_ptr<Mesh> mesh = std::make_shared<Mesh>("/home/arthur/Documents/simpleGame/obj/square.obj");
       this->body = new ExampleObject(mesh, DEFAULT_SHADER);
       this->body->setScale(cy::Vec3f(1.0f, 1.0f, 1.0f));
       this->body->setPosition(this->getPosition());

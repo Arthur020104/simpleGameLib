@@ -8,26 +8,32 @@
 class Material
 {
   public:
-    Material(cy::Vec3f diffuseColor, float specularStrength, float shininess): 
-      diffuse(diffuseColor), specularStrength(specularStrength), shininess(shininess), diffuseTex(nullptr) {};
+    Material(cy::Vec3f diffuseColor, cy::Vec3f specularColor, float shininess): 
+      diffuse(diffuseColor), specularColor(specularColor), shininess(shininess), diffuseTex(nullptr) {};
 
-    Material(std::shared_ptr<Texture> diffuseTex, float specularStrength, float shininess);
-    Material(std::string diffuseTexturePath, float specularStrength, float shininess);
+
+    Material(std::shared_ptr<Texture> diffuseTex, cy::Vec3f specularColor, float shininess);
+    Material(std::string diffuseTexturePath, cy::Vec3f specularColor, float shininess);
 
     void addDiffuseTexture(std::shared_ptr<Texture> diffuseTex);
     void addDiffuseTexture(std::string diffuseTexturePath);
 
     void addSpecularTexture(std::shared_ptr<Texture> specularTex);
     void addSpecularTexture(std::string specularTexturePath);
+
+    void addEmissiveTexture(std::shared_ptr<Texture> emissiveTex);
+    void addEmissiveTexture(std::string emissiveTexturePath);
     
     virtual void bind(Program* shaderProgram, char* arrayName, uint16_t index, uint8_t texUnit);
     
     cy::Vec3f diffuse = cy::Vec3f(1.0f, 1.0f, 1.0f);
+    cy::Vec3f specularColor = cy::Vec3f(1.0f, 1.0f, 1.0f);
 
     std::shared_ptr<Texture> diffuseTex = nullptr;
     std::shared_ptr<Texture> specularTex = nullptr;
+    std::shared_ptr<Texture> emissiveTex = nullptr;
     uint8_t activeTextures = 0;
-    float specularStrength = 1.0f, shininess = 1.0f;
+    float shininess = 1.0f;
   private:
 };
 

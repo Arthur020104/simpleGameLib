@@ -89,6 +89,7 @@ public:
 		Str   map_Ns;	//!< Specular exponent texture map
 		Str   map_d;	//!< Alpha texture map
 		Str   map_bump;	//!< Bump texture map
+		Str   map_Ke;	//!< Emissive texture map
 		Str   map_disp;	//!< Displacement texture map
 
 		//! Constructor sets the default material values
@@ -533,6 +534,7 @@ inline bool TriMesh::LoadFromFileObj( char const *filename, bool loadMtl, std::o
 					else if ( buffer.IsCommand("map_Kd"  ) ) buffer.Copy( m[mtlID].map_Kd,   7 );
 					else if ( buffer.IsCommand("map_Ks"  ) ) buffer.Copy( m[mtlID].map_Ks,   7 );
 					else if ( buffer.IsCommand("map_Ns"  ) ) buffer.Copy( m[mtlID].map_Ns,   7 );
+          else if ( buffer.IsCommand("map_Ke"  ) ) buffer.Copy( m[mtlID].map_Ke,   7 );
 					else if ( buffer.IsCommand("map_d"   ) ) buffer.Copy( m[mtlID].map_d,    6 );
 					else if ( buffer.IsCommand("map_bump") ) buffer.Copy( m[mtlID].map_bump, 9 );
 					else if ( buffer.IsCommand("bump"    ) ) buffer.Copy( m[mtlID].map_bump, 5 );

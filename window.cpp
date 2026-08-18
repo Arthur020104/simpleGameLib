@@ -107,7 +107,7 @@ void errorCallback(int error, const char* description)
 
 void defineGlPreferences()
 {
-  glfwSwapInterval(0);
+  // glfwSwapInterval(0);
   glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA); 
   glEnable(GL_DEPTH_TEST);
   glDepthFunc(GL_LESS);

@@ -49,9 +49,69 @@ Mesh::Mesh(std::vector<Vertex> inputVertices, MeshType type)
   init(inputVertices, type, boundingVolumeC);
 }
 
+Mesh::Mesh(const char* path)
+{
+  cy::TriMesh objTriMesh;
+  if(!objTriMesh.LoadFromFileObj(path, true, &std::cout)) 
+    throw std::invalid_argument("Failed to load Obj from file. Path: '" + std::string(path) + "'.\n");
+
+  this->loadMesh(objTriMesh);
+}
+
+Mesh::Mesh(std::string path)
+{
+  cy::TriMesh objTriMesh;
+  if(!objTriMesh.LoadFromFileObj(path.c_str(), true, &std::cout)) 
+    throw std::invalid_argument("Failed to load Obj from file. Path: '" + path + "'.\n");
+
+  this->loadMesh(objTriMesh);
+}
+
+Mesh::Mesh(cy::TriMesh& objTriMesh)
+{
+  this->loadMesh(objTriMesh);
+}
+
 Mesh::Mesh(std::vector<Vertex> inputVertices, cy::Vec3f boundingVolume[2], MeshType type)
 {
   init(inputVertices, type, boundingVolume);
+}
+
+
+void Mesh::loadMesh(cy::TriMesh& objTriMesh)
+{
+  if(!objTriMesh.HasNormals()) objTriMesh.ComputeNormals();
+
+  if(!objTriMesh.IsBoundBoxReady()) objTriMesh.ComputeBoundingBox();
+
+  std::vector<Vertex> meshData;
+
+  for(uint32_t i = 0; i < objTriMesh.NF(); i++)
+  {
+    const cy::TriMesh::TriFace faceVerticesPos = objTriMesh.F(i);
+    const cy::TriMesh::TriFace faceVerticesNormals = objTriMesh.FN(i);
+
+    cy::TriMesh::TriFace faceVerticesUv;
+
+    if(objTriMesh.HasTextureVertices()) faceVerticesUv = objTriMesh.FT(i);
+
+    for(uint8_t j = 0; j < 3; j++)
+    {
+      Vertex vertex;
+
+      vertex.pos = objTriMesh.V(faceVerticesPos.v[j]);
+
+      vertex.normal = objTriMesh.VN(faceVerticesNormals.v[j]);
+
+      vertex.uv = objTriMesh.HasTextureVertices() ? 
+                  objTriMesh.VT(faceVerticesUv.v[j]).XY() : 
+                  cy::Vec2f(0.0f, 0.0f);
+
+      meshData.push_back(vertex);
+    }
+  }
+  cy::Vec3f bbox[2] = {objTriMesh.boundMin, objTriMesh.boundMax};
+  init(meshData, MeshType::TRIANGLE_MESH, bbox);
 }
 
 void Mesh::init(std::vector<Vertex>& inputVertices, MeshType type, cy::Vec3f boundingVolume[2])

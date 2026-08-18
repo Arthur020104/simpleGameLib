@@ -3,10 +3,13 @@
 #include <GL/glew.h>
 #include <ray.h>
 
-GameObject::GameObject(std::shared_ptr<Mesh> meshData, std::shared_ptr<Program> shader, std::shared_ptr<Material> material): mesh(meshData), shaderProgram(shader), Component()
+GameObject::GameObject(std::shared_ptr<Mesh> meshData, std::shared_ptr<Program> shader, std::vector<std::shared_ptr<Material>> material): mesh(meshData), shaderProgram(shader), materials(material), Component()
 {
+  if(material.size() == 0)
+    throw std::runtime_error("Error: GameObject must have at least one material.");
+
   this->shaderProgram->registerObjectUsingProgram(this);
-  this->useOnly(material);
+  this->useOnly(material[0]);
 }
 
 const std::shared_ptr<Mesh> GameObject::getMesh()
@@ -117,7 +120,7 @@ void GameObject::loadMaterialIndicesToGPU()
   bool validMaterialIndices = amountOfVertices == this->mesh->getVerticesAmount();
 
   if(!validMaterialIndices)
-    throw std::runtime_error("Error: The number of material indices does not match the number of vertices in the mesh.");
+    throw std::runtime_error("Error: The number of material indices does not match the number of vertices in the mesh. Number of vertices: " + std::to_string(this->mesh->getVerticesAmount()) + ", Number of material indices: " + std::to_string(amountOfVertices));
 
   this->mesh->bindVAO();
 
@@ -177,4 +180,10 @@ void GameObject::addMaterial(std::shared_ptr<Material> material, uint32_t startI
 {
   this->addMaterial(material);
   this->useMaterial(material, startIdx, endIdx);
+}
+
+void GameObject::setMaterialIndices(std::vector<uint8_t> materialIndices)
+{
+  this->materialIndices = materialIndices;
+  this->loadMaterialIndicesToGPU();
 }

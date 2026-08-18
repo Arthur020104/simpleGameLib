@@ -9,12 +9,12 @@
 #include <../material.h>
 
 ExampleScene::ExampleScene(): Scene()
-{
-  std::shared_ptr<Material> roughMaterial = std::make_shared<Material>("/home/arthur/Documents/simpleGame/obj/container.jpg", 0.1f, 1.0f);
-  std::shared_ptr<Material> shinyMaterial = std::make_shared<Material>("/home/arthur/Documents/simpleGame/obj/awesomeface.png", 1.0f, 32.0f);
-  std::shared_ptr<Material> goldMaterial = std::make_shared<Material>(cy::Vec3f(1.0f, 0.843f, 0.0f), 9.0f, 256.0f);
+{ 
+  std::shared_ptr<Material> roughMaterial = std::make_shared<Material>("/home/arthur/Documents/simpleGame/obj/container.jpg", cy::Vec3f(0.1f, 0.1f, 0.1f), 1.0f);
+  std::shared_ptr<Material> shinyMaterial = std::make_shared<Material>("/home/arthur/Documents/simpleGame/obj/awesomeface.png", cy::Vec3f(1.0f, 1.0f, 1.0f), 32.0f);
+  std::shared_ptr<Material> goldMaterial = std::make_shared<Material>(cy::Vec3f(1.0f, 0.843f, 0.0f), cy::Vec3f(1.0f, 0.843f, 0.0f), 256.0f);
 
-  std::shared_ptr<Mesh> teapotMesh = loadMesh("/home/arthur/Documents/simpleGame/obj/teapot.obj");
+  std::shared_ptr<Mesh> teapotMesh = std::make_shared<Mesh>("/home/arthur/Documents/simpleGame/obj/teapot.obj");
 
   cy::Vec3f startPos(0.0f, 2.0f, -50.0f);
   float moveAmount = 20;
@@ -42,21 +42,26 @@ ExampleScene::ExampleScene(): Scene()
  
   ExampleCamera* cam = new ExampleCamera(cy::Vec3f(-0.0f, 0.0f, 0.0f));
 
-  DirectionalLight* light = new DirectionalLight(cy::Vec3f(0.0f, 3.0f, 2.0f), cy::Vec3f(1.0, 0.8588, 0.7333), 0.6f);
+  DirectionalLight* light = new DirectionalLight(cy::Vec3f(0.0f, 3.0f, 2.0f), cy::Vec3f(1.0, 0.8588, 0.7333), 1.0f);
 
-  ExamplePointLight* pointLight = new ExamplePointLight(cy::Vec3f(-5.0f, 6.0f, -7.0f), cy::Vec3f(1.0, 1.0, 1.0), 100.0f);
+  ExamplePointLight* pointLight = new ExamplePointLight(cy::Vec3f(-10.0f, 15.0f, -7.0f), cy::Vec3f(1.0, 1.0, 1.0), 0.0f);
 
-  std::shared_ptr<Material> boxMaterial = std::make_shared<Material>("/home/arthur/Documents/simpleGame/obj/container2.png", 4.0f, 32.0f);
-  boxMaterial->addSpecularTexture("/home/arthur/Documents/simpleGame/obj/container2_specular.png");
+  std::shared_ptr<Material> boxMaterial = std::make_shared<Material>("/home/arthur/Documents/simpleGame/obj/OldChildrensToysObj/textures/2k/T_Toys_BaseColor.tga", cy::Vec3f(1.0f, 1.0f, 1.0f), 32.0f);
+  //boxMaterial->addSpecularTexture("/home/arthur/Documents/simpleGame/obj/container2_specular.png");
 
-  std::shared_ptr<Mesh> boxMesh = loadMesh("/home/arthur/Documents/simpleGame/obj/square.obj");
+  std::shared_ptr<Mesh> boxMesh = std::make_shared<Mesh>("/home/arthur/Documents/simpleGame/obj/OldChildrensToysObj/meshes/ChildrensToys.obj");
 
-  ExampleObject* specularTest = new ExampleObject(boxMesh, DEFAULT_SHADER, boxMaterial);
+  ExampleObject* specularTest = new ExampleObject(boxMesh, DEFAULT_SHADER, {boxMaterial});
 
-  
   specularTest->setPosition(cy::Vec3f(0.0f, 0.0f, -10.0f));
-  specularTest->setScale(cy::Vec3f(3.0f, 3.0f, 3.0f));
+  specularTest->setRotation(cy::Vec3f(-90.0f, 0.0f, 90.0f));
+  specularTest->setScale(cy::Vec3f(20.0f, 20.0f, 20.0f));
 
+
+  // GameObject* test = loadGameObject("/home/arthur/Documents/simpleGame/obj/source/Cartoon_City_Free.obj", DEFAULT_SHADER);
+  // test->setScale(cy::Vec3f(0.5f, 0.5f, 0.5f));
+
+  // this->addObject(test);
   this->addObject(specularTest);
   this->addLight(pointLight);
   this->addLight(light);
@@ -64,11 +69,11 @@ ExampleScene::ExampleScene(): Scene()
   this->setActiveCam(cam);
 
   this->addCubeMap({
-    "/home/arthur/Documents/simpleGame/obj/cubemap/cubemap_posx.png",
-    "/home/arthur/Documents/simpleGame/obj/cubemap/cubemap_negx.png",
-    "/home/arthur/Documents/simpleGame/obj/cubemap/cubemap_posy.png",
-    "/home/arthur/Documents/simpleGame/obj/cubemap/cubemap_negy.png",
-    "/home/arthur/Documents/simpleGame/obj/cubemap/cubemap_posz.png",
-    "/home/arthur/Documents/simpleGame/obj/cubemap/cubemap_negz.png"
+    "/home/arthur/Documents/simpleGame/obj/Cubemaps_2025-07-25/20250717_210302_0772_rt.png",
+    "/home/arthur/Documents/simpleGame/obj/Cubemaps_2025-07-25/20250717_210302_0772_lf.png",
+    "/home/arthur/Documents/simpleGame/obj/Cubemaps_2025-07-25/20250717_210302_0772_up.png",
+    "/home/arthur/Documents/simpleGame/obj/Cubemaps_2025-07-25/20250717_210302_0772_dn.png",
+    "/home/arthur/Documents/simpleGame/obj/Cubemaps_2025-07-25/20250717_210302_0772_bk.png",
+    "/home/arthur/Documents/simpleGame/obj/Cubemaps_2025-07-25/20250717_210302_0772_ft.png"
   });
 }

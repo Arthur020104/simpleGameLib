@@ -14,14 +14,18 @@ struct Light {
 
 struct Material {
   vec3 diffuse;
+  vec3 specularColor;
+  
   float shininess;
-  float specularStrength;
 
   bool hasDiffuseTex;
   int diffuseTexUnit;
 
   bool hasSpecularTex;
   int specularTexUnit;
+
+  int emissiveTexUnit;
+  bool hasEmissiveTex;
 };
 
 vec3 applyLight(Light light, vec3 normal, vec3 viewDirection, Material mat);
@@ -59,6 +63,7 @@ void main()
   {
     lightsEffect += applyLight(lights[i], normal, viewDirection, mat);
   }
+  lightsEffect += mat.hasEmissiveTex ? texture(textures[mat.emissiveTexUnit], texCoord).rgb : vec3(0.0, 0.0, 0.0);
 
   if(lightsSize > MAX_LIGHT_SIZE)
     lightsEffect = vec3(0.0, 0.0, 0.0);
@@ -79,13 +84,13 @@ vec3 applyLight(Light light, vec3 normal, vec3 viewDirection, Material mat)
 
       float spec = pow(max(dot(viewDirection, reflectDirection), 0.0), mat.shininess);
       vec3 specular = mat.hasSpecularTex ? 
-        texture(textures[mat.specularTexUnit], texCoord).rgb * mat.specularStrength * spec * light.color * light.intensity: 
-        mat.specularStrength * spec * light.color * diffuseColor * light.intensity;  
+        texture(textures[mat.specularTexUnit], texCoord).rgb * mat.specularColor * spec * light.color * light.intensity: 
+        mat.specularColor * spec * light.color * diffuseColor * light.intensity;  
 
       vec3 diffuse = light.color * theta * light.intensity;
       vec3 ambient = light.color * light.ambientIntensity;
 
-      return (diffuse + ambient) * diffuseColor + specular ;
+      return (diffuse + ambient) * diffuseColor + specular;
       break;
     }
     case 2:
@@ -103,8 +108,8 @@ vec3 applyLight(Light light, vec3 normal, vec3 viewDirection, Material mat)
       float spec = pow(max(dot(viewDirection, reflectDirection), 0.0), mat.shininess);
 
       vec3 specular = mat.hasSpecularTex ? 
-        texture(textures[mat.specularTexUnit], texCoord).rgb * mat.specularStrength * spec * light.color * light.intensity: 
-        mat.specularStrength * spec * light.color * diffuseColor * light.intensity;
+        texture(textures[mat.specularTexUnit], texCoord).rgb * mat.specularColor * spec * light.color * light.intensity: 
+        mat.specularColor * spec * light.color * diffuseColor * light.intensity;
        
       vec3 diffuse = light.color * theta * light.intensity;
       vec3 ambient = light.color * light.ambientIntensity;
