@@ -19,10 +19,10 @@ void Material::bind(Program* shaderProgram, char* arrayName, uint16_t index, uin
     this->diffuseTex->bind(shaderProgram, (location + ".diffuseTexUnit").c_str(), texUnit);
 
   if(this->specularTex != nullptr)
-    this->specularTex->bind(shaderProgram, (location + ".specularTexUnit").c_str(), texUnit + 1);
+    this->specularTex->bind(shaderProgram, (location + ".specularTexUnit").c_str(), ++texUnit);
 
   if(this->emissiveTex != nullptr)
-    this->emissiveTex->bind(shaderProgram, (location + ".emissiveTexUnit").c_str(), texUnit + 2);
+    this->emissiveTex->bind(shaderProgram, (location + ".emissiveTexUnit").c_str(), ++texUnit);
 }
 
 Material::Material(std::string diffuseTexturePath, cy::Vec3f specularColor, float shininess): 

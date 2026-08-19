@@ -18,6 +18,12 @@ class GameObject: public Component
   public:
     GameObject(std::shared_ptr<Mesh> meshData, std::shared_ptr<Program> shader, std::vector<std::shared_ptr<Material>> material = {DEFAULT_MATERIAL});
     
+    GameObject(std::string path, std::shared_ptr<Program> shader);
+
+    GameObject(const char* path, std::shared_ptr<Program> shader);
+
+    GameObject(cy::TriMesh& objTriMesh, std::shared_ptr<Program> shader);
+
     virtual ~GameObject();
 
     const std::shared_ptr<Mesh> getMesh();
@@ -54,13 +60,13 @@ class GameObject: public Component
   private:
     std::shared_ptr<Mesh> mesh;
     std::shared_ptr<Program> shaderProgram;
-    
 
     uint32_t materialIndicesVBO;
     bool hasMaterialVBO = false;
 
     std::vector<uint8_t> materialIndices;
 
+    void loadGameObjectFromPath(cy::TriMesh& objTriMesh, std::shared_ptr<Program> shader);
     void loadMaterialIndicesToGPU();
   protected:
     std::vector<std::shared_ptr<Material>> materials;

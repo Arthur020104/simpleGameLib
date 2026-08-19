@@ -77,7 +77,6 @@ Mesh::Mesh(std::vector<Vertex> inputVertices, cy::Vec3f boundingVolume[2], MeshT
   init(inputVertices, type, boundingVolume);
 }
 
-
 void Mesh::loadMesh(cy::TriMesh& objTriMesh)
 {
   if(!objTriMesh.HasNormals()) objTriMesh.ComputeNormals();

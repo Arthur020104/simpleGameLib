@@ -42,9 +42,9 @@ ExampleScene::ExampleScene(): Scene()
  
   ExampleCamera* cam = new ExampleCamera(cy::Vec3f(-0.0f, 0.0f, 0.0f));
 
-  DirectionalLight* light = new DirectionalLight(cy::Vec3f(0.0f, 3.0f, 2.0f), cy::Vec3f(1.0, 0.8588, 0.7333), 1.0f);
+  DirectionalLight* light = new DirectionalLight(cy::Vec3f(0.0f, 3.0f, 2.0f), cy::Vec3f(1.0, 1.0, 1.0), 1.0f);
 
-  ExamplePointLight* pointLight = new ExamplePointLight(cy::Vec3f(-10.0f, 15.0f, -7.0f), cy::Vec3f(1.0, 1.0, 1.0), 0.0f);
+  ExamplePointLight* pointLight = new ExamplePointLight(cy::Vec3f(-10.0f, 15.0f, -15.0f), cy::Vec3f(1.0, 0.5, 0.8), 5.0f);
 
   std::shared_ptr<Material> boxMaterial = std::make_shared<Material>("/home/arthur/Documents/simpleGame/obj/OldChildrensToysObj/textures/2k/T_Toys_BaseColor.tga", cy::Vec3f(1.0f, 1.0f, 1.0f), 32.0f);
   //boxMaterial->addSpecularTexture("/home/arthur/Documents/simpleGame/obj/container2_specular.png");
@@ -57,11 +57,10 @@ ExampleScene::ExampleScene(): Scene()
   specularTest->setRotation(cy::Vec3f(-90.0f, 0.0f, 90.0f));
   specularTest->setScale(cy::Vec3f(20.0f, 20.0f, 20.0f));
 
+  ExampleObject* test = new ExampleObject("/home/arthur/Documents/simpleGame/obj/source/Cartoon_City_Free.obj", DEFAULT_SHADER);
+  test->setScale(cy::Vec3f(-0.5f, 0.5f, 0.5f));
 
-  // GameObject* test = loadGameObject("/home/arthur/Documents/simpleGame/obj/source/Cartoon_City_Free.obj", DEFAULT_SHADER);
-  // test->setScale(cy::Vec3f(0.5f, 0.5f, 0.5f));
-
-  // this->addObject(test);
+  this->addObject(test);
   this->addObject(specularTest);
   this->addLight(pointLight);
   this->addLight(light);

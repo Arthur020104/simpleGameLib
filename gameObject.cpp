@@ -11,6 +11,96 @@ GameObject::GameObject(std::shared_ptr<Mesh> meshData, std::shared_ptr<Program> 
   this->shaderProgram->registerObjectUsingProgram(this);
   this->useOnly(material[0]);
 }
+/* cy::TriMesh objTriMesh;
+  if(!objTriMesh.LoadFromFileObj(path.c_str(), true, &std::cout)) std::cerr << "Failed to load Obj from file. Path: '"<< path << "'.\n";*/
+
+GameObject::GameObject(std::string path, std::shared_ptr<Program> shader): Component()
+{
+  cy::TriMesh objTriMesh;
+  if(!objTriMesh.LoadFromFileObj(path.c_str(), true, &std::cout)) 
+    throw std::invalid_argument("Failed to load Obj from file. Path: '" + path + "'.\n");
+
+  this->loadGameObjectFromPath(objTriMesh, shader);
+}
+
+GameObject::GameObject(cy::TriMesh& objTriMesh, std::shared_ptr<Program> shader): Component()
+{
+  this->loadGameObjectFromPath(objTriMesh, shader);
+}
+
+GameObject::GameObject(const char* path, std::shared_ptr<Program> shader): Component()
+{
+  cy::TriMesh objTriMesh;
+  if(!objTriMesh.LoadFromFileObj(path, true, &std::cout)) 
+    throw std::invalid_argument("Failed to load Obj from file. Path: '" + std::string(path) + "'.\n");
+
+  this->loadGameObjectFromPath(objTriMesh, shader);
+}
+void GameObject::loadGameObjectFromPath(cy::TriMesh& objTriMesh, std::shared_ptr<Program> shader)
+{
+  this->mesh = std::make_shared<Mesh>(objTriMesh);
+  
+  this->materialIndices.reserve(mesh->getVerticesAmount());
+
+  for(uint32_t i = 0; i < objTriMesh.NF(); i++)
+  {
+    int materialIdx = objTriMesh.GetMaterialIndex(i);
+
+    if (materialIdx < 0) materialIdx = 0;
+
+    this->materialIndices.insert(this->materialIndices.end(), 3, (uint8_t)materialIdx);
+  }
+
+  if(objTriMesh.NM() == 0)
+    this->materials.push_back(DEFAULT_MATERIAL);
+
+  for(uint8_t i = 0; i < objTriMesh.NM(); i++)
+  { 
+    cy::TriMesh::Mtl material = objTriMesh.M(i);
+
+    cy::Vec3f diffuseColor = cy::Vec3f(material.Kd);
+    if(diffuseColor.Length() == 0.0f) diffuseColor = cy::Vec3f(1.0f, 1.0f, 1.0f);
+
+    cy::Vec3f specularColor = cy::Vec3f(material.Ks);
+    if(specularColor.Length() == 0.0f) specularColor = cy::Vec3f(1.0f, 1.0f, 1.0f);
+    
+    // cy::Vec3f ka = cy::Vec3f(material.Ka);
+      
+    float shininess = material.Ns > 0.0f ? material.Ns : 1.0f;
+    
+    this->materials.push_back(std::make_shared<Material>(diffuseColor, specularColor, shininess));
+
+    if(material.map_Kd != nullptr)
+      this->materials[i]->addDiffuseTexture(material.map_Kd.data);
+
+    if(material.map_Ks != nullptr)
+      this->materials[i]->addSpecularTexture(material.map_Ks.data);
+
+    if(material.map_Ke != nullptr)
+      this->materials[i]->addEmissiveTexture(material.map_Ke.data);
+  }
+  
+  /*
+    Str   name;		//!< Material name
+		float Ka[3];	//!< Ambient color
+		float Kd[3];	//!< Diffuse color
+		float Ks[3];	//!< Specular color
+		float Tf[3];	//!< Transmission color
+		float Ns;		//!< Specular exponent
+		float Ni;		//!< Index of refraction
+		int   illum;	//!< Illumination model
+		Str   map_Ka;	//!< Ambient color texture map
+		Str   map_Kd;	//!< Diffuse color texture map
+		Str   map_Ks;	//!< Specular color texture map
+		Str   map_Ns;	//!< Specular exponent texture map
+		Str   map_d;	//!< Alpha texture map
+		Str   map_bump;	//!< Bump texture map
+		Str   map_disp;	//!< Displacement texture map*/
+
+  this->shaderProgram = shader;
+  this->shaderProgram->registerObjectUsingProgram(this);
+  this->loadMaterialIndicesToGPU();
+}
 
 const std::shared_ptr<Mesh> GameObject::getMesh()
 {

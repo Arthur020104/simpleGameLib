@@ -27,7 +27,7 @@ public:
 
 private:
   const float N = 0.1f, F = 100000.0f;
-  const float FOV = 103.0f;
+  const float FOV = 90.0f;
   float aspect;
   
   cy::Vec3f defaultDirection = cy::Vec3f(0.0f, 0.0f, -1.0f);
