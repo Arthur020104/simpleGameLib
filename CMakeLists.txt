@@ -30,6 +30,7 @@ set(SOURCES
   cubeMap.cpp
   queueItem.cpp
   timeQueue.cpp
+  fpsCamera.cpp
 )
 
 set(HEADERS 
@@ -54,6 +55,7 @@ set(HEADERS
   cubeMap.h
   queueItem.h
   timeQueue.h
+  fpsCamera.h
 )
 
 add_executable(Renderer ${SOURCES} ${HEADERS})

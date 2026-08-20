@@ -13,13 +13,11 @@ Camera::Camera(cy::Vec3f initialPos): Component(initialPos)
 
 cy::Matrix4f& Camera::lookAtMatrix()
 {
-  cy::Vec3f forward = this->direction.GetNormalized();
+  cy::Vec3f forward = this->getForwardVector();
   
-  cy::Vec3f right = this->defaultUp ^ forward;
-  right.Normalize();
+  cy::Vec3f right = this->getRightVector();
 
-  cy::Vec3f up = forward ^ right;
-  up.Normalize();
+  cy::Vec3f up = this->getUpVector();
 
   cy::Vec3f pos = this->getPosition();
 
@@ -90,13 +88,35 @@ void Camera::setRotation(cy::Vec3f rot)
 {
   Component::setRotation(rot);
 
-  cy::Matrix4f rotationMatrix = cy::Matrix4f::RotationZ(rot.z) * cy::Matrix4f::RotationY(rot.y) * cy::Matrix4f::RotationX(rot.x);
+  float radX = rot.x * cy::Deg2Rad<float>();
+  float radY = rot.y * cy::Deg2Rad<float>();
+  float radZ = rot.z * cy::Deg2Rad<float>();
 
-  this->direction = (rotationMatrix * cy::Vec4f(this->defaultDirection, 1.0f)).XYZ().GetNormalized();
+  cy::Matrix4f rotationMatrix = cy::Matrix4f::RotationZ(radZ) * cy::Matrix4f::RotationY(radY) * cy::Matrix4f::RotationX(radX);
+
+  this->direction = (rotationMatrix * cy::Vec4f(this->defaultDirection, 0.0f)).XYZ().GetNormalized();
+  this->up        = (rotationMatrix * cy::Vec4f(this->defaultUp,        0.0f)).XYZ().GetNormalized();
+  this->right     = (rotationMatrix * cy::Vec4f(this->defaultRight,     0.0f)).XYZ().GetNormalized();
+
   this->updateMatrices();
 }
 
 void Camera::setScale(cy::Vec3f)
 {
   return;
+}
+
+cy::Vec3f Camera::getRightVector()
+{
+  return this->right;
+}
+
+cy::Vec3f Camera::getUpVector()
+{
+  return this->up;
+}
+
+cy::Vec3f Camera::getForwardVector()
+{
+  return this->direction;
 }

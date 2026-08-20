@@ -16,12 +16,13 @@ void Transform::updateModelMatrix()
 {
   cy::Matrix4f positionMatrix = cy::Matrix4f::Translation(this->position);
 
-  cy::Matrix4f objRotMat = cy::Matrix4f::Rotation(cy::Vec3f(1.0f, 0.0f, 0.0f), cy::Deg2Rad<float>() * this->getRotation().x); // rotate around X (pitch)
-    objRotMat = objRotMat * cy::Matrix4f::Rotation(cy::Vec3f(0.0f, 1.0f, 0.0f), cy::Deg2Rad<float>() * this->getRotation().y); // rotate around Y (yaw)
-    objRotMat = objRotMat * cy::Matrix4f::Rotation(cy::Vec3f(0.0f, 0.0f, 1.0f), cy::Deg2Rad<float>() * this->getRotation().z); // rotate around Z (roll)
+  this->rotationMatrix = cy::Matrix4f::Rotation(cy::Vec3f(1.0f, 0.0f, 0.0f), cy::Deg2Rad<float>() * this->getRotation().x);
+  this->rotationMatrix = this->rotationMatrix * cy::Matrix4f::Rotation(cy::Vec3f(0.0f, 1.0f, 0.0f), cy::Deg2Rad<float>() * this->getRotation().y); 
+  this->rotationMatrix = this->rotationMatrix * cy::Matrix4f::Rotation(cy::Vec3f(0.0f, 0.0f, 1.0f), cy::Deg2Rad<float>() * this->getRotation().z);
+
   cy::Matrix4f scaleMatrix = cy::Matrix4f::Scale(this->scale);
 
-  this->modelMatrix = positionMatrix * objRotMat * scaleMatrix;
+  this->modelMatrix = positionMatrix * rotationMatrix * scaleMatrix;
 }
 
 cy::Matrix4f Transform::getModelMatrix()
@@ -46,4 +47,19 @@ void Transform::setScale(cy::Vec3f scale)
 {
   this->scale = scale;
   this->updateModelMatrix();
+}
+
+cy::Vec3f Transform::getForwardVector()
+{
+  return -this->rotationMatrix.Column(2).XYZ().GetNormalized();
+}
+
+cy::Vec3f Transform::getRightVector()
+{
+  return this->rotationMatrix.Column(0).XYZ().GetNormalized();
+}
+
+cy::Vec3f Transform::getUpVector()
+{
+  return this->rotationMatrix.Column(1).XYZ().GetNormalized();
 }

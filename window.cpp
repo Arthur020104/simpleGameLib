@@ -60,6 +60,7 @@ WindowController::WindowController(uint16_t w, uint16_t h, const char* title, ui
   glfwMakeContextCurrent(this->window);
   glfwSetWindowUserPointer(this->window, this);
   glfwSetFramebufferSizeCallback(window, frameBufferSizeCallback);
+  glfwSetInputMode(window, GLFW_CURSOR, GLFW_CURSOR_DISABLED);
   glViewport(0, 0, w, h);
 }
 

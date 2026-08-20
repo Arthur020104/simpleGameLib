@@ -1,17 +1,15 @@
 #pragma once
-#include <../gameObject.h>
 #include <exampleObject.h>
+#include <../fpsCamera.h>
 
-class ExampleCamera: public Camera
+class ExampleCamera: public FPSCamera
 {
   public:
-    using Camera::Camera;
+    using FPSCamera::FPSCamera;
 
     void start() override;
     void beforeUpdate() override;
     void afterUpdate() override;
   private:
     ExampleObject* lineRay = nullptr;
-
-    float velocity = 100.0f;
 };

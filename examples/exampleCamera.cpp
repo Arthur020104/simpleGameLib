@@ -1,5 +1,4 @@
 #include <exampleCamera.h>
-#include <exampleObject.h>
 #include <window.h>
 #include <../ray.h>
 #include <../vertex.h>
@@ -19,47 +18,17 @@ void ExampleCamera::afterUpdate()
 
 void ExampleCamera::beforeUpdate()
 {
-
-  if(glfwGetKey(WINDOW.window, GLFW_KEY_E) == GLFW_PRESS)
-  {
-    this->setPosition(this->getPosition() + cy::Vec3f(0.0f, velocity, 0.0f) * WINDOW.deltaTime);
-  }
-  if(glfwGetKey(WINDOW.window, GLFW_KEY_Q) == GLFW_PRESS)
-  {
-    this->setPosition(this->getPosition() + cy::Vec3f(0.0f, -velocity, 0.0f) * WINDOW.deltaTime);
-  }
-  if(glfwGetKey(WINDOW.window, GLFW_KEY_D) == GLFW_PRESS)
-  {
-    this->setPosition(this->getPosition() + cy::Vec3f(-velocity, 0.0f, 0.0f) * WINDOW.deltaTime);
-  }
-  if(glfwGetKey(WINDOW.window, GLFW_KEY_A) == GLFW_PRESS)
-  {
-    this->setPosition(this->getPosition() + cy::Vec3f(+velocity, 0.0f, 0.0f) * WINDOW.deltaTime);
-  }
-  if(glfwGetKey(WINDOW.window, GLFW_KEY_W) == GLFW_PRESS)
-  {
-    this->setPosition(this->getPosition() + cy::Vec3f(0.0f, 0.0f, -velocity) * WINDOW.deltaTime);
-  }
-  if(glfwGetKey(WINDOW.window, GLFW_KEY_S) == GLFW_PRESS)
-  {
-    this->setPosition(this->getPosition() + cy::Vec3f(0.0f, 0.0f, +velocity) * WINDOW.deltaTime);
-  }
-  if(glfwGetKey(WINDOW.window, GLFW_KEY_RIGHT) == GLFW_PRESS)
-  {
-    float rotationVelocity = 10.0f;
-    this->setRotation(this->getRotation() + cy::Vec3f(0.0f, -rotationVelocity, 0.0f) * WINDOW.deltaTime);
-  }
-
+  FPSCamera::beforeUpdate();
   if(lineRay != nullptr && glfwGetMouseButton(WINDOW.window, GLFW_MOUSE_BUTTON_LEFT) == GLFW_PRESS)
   {
     this->scene->destroy(lineRay);
     //delete lineRay;
     this->lineRay = nullptr;
   }
-  //if click fire mouse
+  
   if(glfwGetMouseButton(WINDOW.window, GLFW_MOUSE_BUTTON_LEFT) == GLFW_PRESS)
   {
-    cy::Vec2f mousePos = WINDOW.getMousePos(true);
+    cy::Vec2f mousePos = cy::Vec2f(0.0f, 0.0f);
     Ray r = generateRay(mousePos);
 
     bool hit = this->scene->intersectSceneObjects(r);

@@ -1,6 +1,7 @@
 #include <exampleScene.h>
 #include <exampleObject.h>
 #include <examplePointLight.h>
+#include <exampleCamera.h>
 #include <../mesh.h>
 #include <../utils.h>
 #include <../program.h>

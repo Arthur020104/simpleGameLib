@@ -22,6 +22,10 @@ public:
 
   virtual void setPosition(cy::Vec3f pos) override;
   virtual void setRotation(cy::Vec3f rot) override;
+
+  virtual cy::Vec3f getForwardVector() override;
+  virtual cy::Vec3f getRightVector() override;
+  virtual cy::Vec3f getUpVector() override;
   
   void updateMatrices();
 
@@ -31,8 +35,12 @@ private:
   float aspect;
   
   cy::Vec3f defaultDirection = cy::Vec3f(0.0f, 0.0f, -1.0f);
+  cy::Vec3f defaultUp        = cy::Vec3f(0.0f, 1.0f, 0.0f);
+  cy::Vec3f defaultRight     = cy::Vec3f(1.0f, 0.0f, 0.0f);
 
-  cy::Vec3f direction = cy::Vec3f(0.0f, 0.0f, -1.0f), defaultUp = cy::Vec3f(0.0f, 1.0f, 0.0f);
+  cy::Vec3f direction = cy::Vec3f(0.0f, 0.0f, -1.0f);
+  cy::Vec3f up        = cy::Vec3f(0.0f, 1.0f, 0.0f);
+  cy::Vec3f right     = cy::Vec3f(1.0f, 0.0f, 0.0f);
 
   cy::Matrix4f viewMatrix, projectionMatrix, viewProjection, invertedViewProjection;
 

@@ -20,8 +20,12 @@ class Transform
     virtual cy::Vec3f getScale() { return this->scale; }
     virtual cy::Vec3f getNormalizedPosition() { return this->position.GetNormalized(); }
 
+    virtual cy::Vec3f getForwardVector();
+    virtual cy::Vec3f getRightVector();
+    virtual cy::Vec3f getUpVector();
+
   private:
-    cy::Matrix4f modelMatrix;
+    cy::Matrix4f modelMatrix, rotationMatrix;
 
     cy::Vec3f position, scale, rotation;
 };
