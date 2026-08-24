@@ -27,7 +27,6 @@ void Transform::updateModelMatrix()
 
 cy::Matrix4f Transform::getModelMatrix()
 {
-  this->updateModelMatrix();
   return this->modelMatrix;
 }
 

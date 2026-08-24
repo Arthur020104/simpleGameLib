@@ -10,6 +10,7 @@ find_package(glfw3 REQUIRED)
 find_package(GLEW REQUIRED)
 
 set(SOURCES 
+  ui.cpp
   main.cpp 
   window.cpp
   transform.cpp
@@ -33,7 +34,8 @@ set(SOURCES
   fpsCamera.cpp
 )
 
-set(HEADERS 
+set(HEADERS
+  ui.h
   window.h
   transform.h
   program.h

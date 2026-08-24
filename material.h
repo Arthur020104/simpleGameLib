@@ -24,7 +24,7 @@ class Material
     void addEmissiveTexture(std::shared_ptr<Texture> emissiveTex);
     void addEmissiveTexture(std::string emissiveTexturePath);
     
-    virtual void bind(Program* shaderProgram, char* arrayName, uint16_t index, uint8_t texUnit);
+    virtual void bind(Program* shaderProgram, char* arrayName, uint16_t index, uint16_t texUnit);
     
     cy::Vec3f diffuse = cy::Vec3f(1.0f, 1.0f, 1.0f);
     cy::Vec3f specularColor = cy::Vec3f(1.0f, 1.0f, 1.0f);
@@ -32,7 +32,7 @@ class Material
     std::shared_ptr<Texture> diffuseTex = nullptr;
     std::shared_ptr<Texture> specularTex = nullptr;
     std::shared_ptr<Texture> emissiveTex = nullptr;
-    uint8_t activeTextures = 0;
+    uint16_t activeTextures = 0;
     float shininess = 1.0f;
   private:
 };

@@ -1,6 +1,6 @@
 #include <material.h>
 
-void Material::bind(Program* shaderProgram, char* arrayName, uint16_t index, uint8_t texUnit)
+void Material::bind(Program* shaderProgram, char* arrayName, uint16_t index, uint16_t texUnit)
 {
   glUseProgram(shaderProgram->getProgram());//bind is happening in here, GameObject and Light draw
 

@@ -19,6 +19,8 @@ enum MeshType {
 class Mesh
 {
   public:
+    static std::shared_ptr<Mesh> getQuadMesh();
+  
     bool intersectMesh(Ray& ray, GameObject* gameObject);
 
     Mesh(std::vector<Vertex> inputVertices, cy::Vec3f boundingVolume[2], MeshType type = MeshType::TRIANGLE_MESH);
@@ -73,5 +75,6 @@ class Mesh
     void init(std::vector<Vertex>& inputVertices, MeshType type, cy::Vec3f boundingVolume[2]);
 
     void loadMesh(cy::TriMesh& objTriMesh);
-};
 
+    static std::shared_ptr<Mesh> createQuadMesh();
+};

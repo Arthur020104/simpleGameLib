@@ -1,15 +1,17 @@
 # Todo
-- 1. Make materials load from the .obj file
+Create, ui. We can create a child of the game object for instancing, and for the ui component we can create its own scene and when components inside change, we can
+update the ui, by rendering the ui scene to a texture and then drawing it on the screen.
 - 2. Add input handling for the window
 - 3. Create a simple game like a bomberman clone to test
 
 
 ## TODO LATER, NOT RANKED
 
-- think about if component will inherit transform or if transform will be a component
-- Clean up the code, remove commented code and improve code structure
 - Create scene bvh that just intersect the gameObject that is in bound, will be useful for big scenes with a lot of objects, and new forms of intersection
 Make sure to create an base abstract class for bvh. Functions like insideBoundingVolume, alterBoudingMax and alterBoudingMin should be an static function of this abstract class; methods like getNewPoint will be an virtual function that will be implemented on the parent class, but can be overridden, intersect will be only implemented in the child class.
+- think about if component will inherit transform or if transform will be a component
+- Clean up the code, remove commented code and improve code structure
+
 This "intersectBoundingVolume" also must be a static function of the parent class.
 ```cpp
 bool MeshBvhNode::intersect(Ray& ray, GameObject* gameObject)
@@ -48,9 +50,10 @@ bool MeshBvhNode::intersect(Ray& ray, GameObject* gameObject)
 - move the drawing of the mesh to the mesh class
 - change mesh class to use smart pointers
 - review/refactor how scene class is working afther the creation of the component class
-- The update of the model matrix and camera matrices needs to be refactoring, they are being updated every time the get is called
+- The update of the model matrix and camera matrices needs to be refactored, they are being updated every time the get is called
 - Adding lights
 - Add texture.
 Materials: every game object should be able to have N materials, and we should be able to set by index. Create an VBO for the materials indices on the object, and a uniform buffer for the materials data.
 - Add materials, make sure to load materials in the .obj file - look up creating a class that stores for an map for each class data varibles(maybe leave this precompiled thing for latter)
 - Add an execution queue with time, will run in a separate thread.
+- Make materials load from the .obj file

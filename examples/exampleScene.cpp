@@ -59,10 +59,15 @@ ExampleScene::ExampleScene(): Scene()
   specularTest->setScale(cy::Vec3f(20.0f, 20.0f, 20.0f));
 
   ExampleObject* test = new ExampleObject("/home/arthur/Documents/simpleGame/obj/source/Cartoon_City_Free.obj", DEFAULT_SHADER);
-  test->setScale(cy::Vec3f(-0.5f, 0.5f, 0.5f));
+  test->setScale(cy::Vec3f(0.5f, 0.5f, 0.5f));
+
+  ExampleObject* quad = new ExampleObject(Mesh::getQuadMesh(), DEFAULT_SHADER);
+  quad->setPosition(cy::Vec3f(0.0f, 0.0f, -5.0f));
+  quad->setScale(cy::Vec3f(50.0f, 50.0f, 50.0f));
 
   this->addObject(test);
   this->addObject(specularTest);
+  this->addObject(quad);
   this->addLight(pointLight);
   this->addLight(light);
   this->addCamera(cam);
@@ -76,4 +81,14 @@ ExampleScene::ExampleScene(): Scene()
     "/home/arthur/Documents/simpleGame/obj/Cubemaps_2025-07-25/20250717_210302_0772_bk.png",
     "/home/arthur/Documents/simpleGame/obj/Cubemaps_2025-07-25/20250717_210302_0772_ft.png"
   });
+
+  UIItem* crosshair = new UIItem("/home/arthur/Documents/simpleGame/obj/crosshair.png");
+  crosshair->setScale(cy::Vec3f(0.05f, 0.07f, 0.1f));
+
+  UIItem* testItem = new UIItem("/home/arthur/Documents/simpleGame/obj/container.jpg");
+  testItem->setScale(cy::Vec3f(0.1f, 0.1f, 0.1f));
+  testItem->setPosition(cy::Vec3f(-0.9f, 0.9f, 0.0f));
+
+  this->addUIItem(crosshair);
+  this->addUIItem(testItem);
 }

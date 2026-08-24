@@ -14,10 +14,14 @@ void Scene::draw()
 
   if(hasCubeMap)
     cubeMap->draw(this->cameras[activeCamera]);
+
+  this->ui->draw();
 }
 
 Scene::Scene()
 { 
+  this->ui = new UI();
+  this->componentsWaitingToStart.push_back(this->ui);
 }
 
 Scene::~Scene()
@@ -34,6 +38,11 @@ Scene::~Scene()
 
   if(hasCubeMap)
     delete cubeMap;
+}
+
+void Scene::addUIItem(UIItem* uiItem)
+{ 
+  this->ui->addUIItem(uiItem); 
 }
 
 void Scene::handleStart()

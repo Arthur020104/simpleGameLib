@@ -2,6 +2,7 @@
 #include <light.h>
 #include <vector>
 #include <gameObject.h>
+#include <ui.h>
 #include <ray.h>
 #include <cubeMap.h>
 #include <component.h>
@@ -13,6 +14,8 @@ class Camera;
 class Program;
 class DirectionalLight;
 struct Ray;
+class UIItem;
+class UI;
 
 class Scene
 {
@@ -29,6 +32,7 @@ class Scene
 
     void setActiveCam(Camera* cam);
 
+    void addUIItem(UIItem* uiItem);
 
     void draw();
 
@@ -63,6 +67,9 @@ class Scene
     TimeQueue timeQueue;
 
     CubeMap* cubeMap;
+
+    UI* ui;
+
     bool hasCubeMap = false;
 
     uint16_t activeCamera = 0;

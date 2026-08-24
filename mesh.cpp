@@ -7,6 +7,24 @@
 #include <ray.h>
 #include <algorithm>
 
+//PRE-DEFINED MESHES
+std::shared_ptr<Mesh> Mesh::createQuadMesh()
+{
+  Vertex v1, v2, v3, v4;
+  v1.pos = cy::Vec3f(-1.0f, -1.0f, 0.0f); v1.normal = cy::Vec3f(0.0f, 0.0f, 1.0f); v1.uv = cy::Vec2f(0.0f, 0.0f);
+  v2.pos = cy::Vec3f(1.0f, -1.0f, 0.0f); v2.normal = cy::Vec3f(0.0f, 0.0f, 1.0f); v2.uv = cy::Vec2f(1.0f, 0.0f);
+  v3.pos = cy::Vec3f(-1.0f, 1.0f, 0.0f); v3.normal = cy::Vec3f(0.0f, 0.0f, 1.0f); v3.uv = cy::Vec2f(0.0f, 1.0f);
+  v4.pos = cy::Vec3f(1.0f, 1.0f, 0.0f); v4.normal = cy::Vec3f(0.0f, 0.0f, 1.0f); v4.uv = cy::Vec2f(1.0f, 1.0f);
+
+  return std::make_shared<Mesh>(Mesh({v1, v2, v4, v1, v4, v3}, MeshType::TRIANGLE_MESH));;
+}
+
+std::shared_ptr<Mesh> Mesh::getQuadMesh()
+{
+  static std::shared_ptr<Mesh> quadMesh = createQuadMesh();
+  return quadMesh;
+}
+
 const std::vector<Vertex>& Mesh::getVertices() 
 { 
   return this->vertices; 

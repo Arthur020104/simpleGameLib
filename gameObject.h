@@ -32,9 +32,9 @@ class GameObject: public Component
 
     virtual void draw(cy::Matrix4f &projection, cy::Matrix4f &view);
 
-    void draw(cy::Matrix4f &viewProjection);
+    virtual void draw(cy::Matrix4f &viewProjection);
 
-    void draw(Camera* camera);
+    virtual void draw(Camera* camera);
 
     bool intersect(Ray& ray);
 
@@ -58,8 +58,6 @@ class GameObject: public Component
     virtual void beforeUpdate() = 0;
     virtual void afterUpdate() = 0;
   private:
-    std::shared_ptr<Mesh> mesh;
-    std::shared_ptr<Program> shaderProgram;
 
     uint32_t materialIndicesVBO;
     bool hasMaterialVBO = false;
@@ -70,4 +68,8 @@ class GameObject: public Component
     void loadMaterialIndicesToGPU();
   protected:
     std::vector<std::shared_ptr<Material>> materials;
+    std::shared_ptr<Mesh> mesh;
+    std::shared_ptr<Program> shaderProgram;
+
+    GameObject(): Component() {};
 };
