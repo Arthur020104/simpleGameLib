@@ -59,7 +59,7 @@ class Mesh
     std::vector<Vertex> vertices;
     //if later want to add material indice create the vbo on the gameObject as an separeted buffer(idk if is possible check later)
     //Add EBO SUPPORT LATER
-    uint32_t VAO, VBO;
+    GLuint VAO, VBO;
     uint32_t triangleCount;
 
     MeshType type;

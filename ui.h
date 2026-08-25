@@ -5,51 +5,68 @@
 #include <cy/cyMatrix.h>
 #include <mesh.h>
 #include <component.h>
+#include <queue>
 
 class Mesh;
 class Texture;
 class Program;
 
-class UIItem: public Transform
+class UIItem: public Component
 {
   public:
     UIItem(std::string texturePath);
     UIItem(Texture* texture);
     ~UIItem();
 
+    virtual void start() {};
+    virtual void beforeUpdate() {};
+    virtual void afterUpdate() {};
+    
     Texture* texture;
+
+    cy::Matrix4f lastModelMatrix;
+    Texture* lastTexture;
 };
 
 class UI: public Component
 {
   public:
-    UI(std::vector<UIItem*> uiItems);
+    UI(std::vector<UIItem*> uiItems, Scene* scene);
     UI();
     ~UI();
 
-    virtual void start() override {};
+    virtual void start();
     virtual void beforeUpdate();
-    virtual void afterUpdate() override {};
+    virtual void afterUpdate();
 
     virtual void fakeDraw();
-    virtual void addUIItem(UIItem* uiItem) { this->uiItems.push_back(uiItem);};
+    virtual void addUIItem(UIItem* uiItem); 
+    virtual void removeUIItem(UIItem* uiItem);
     virtual void draw();
 
   private:
     std::vector<UIItem*> uiItems;
+
+    GLuint depthBufferID = 0, framebufferId = 0, originalFBO = 0, VBO = 0;
+
     std::shared_ptr<Program> uiItemShader, uiShader;
     std::shared_ptr<Mesh> mesh;
     Mesh* instanceMesh;
 
-    uint16_t depthBufferID = 0, framebufferId = 0, originalFBO = 0, VBO = 0;
+    Texture* combinedTextures;
 
-    uint16_t lastW, lastH;
+    std::queue<UIItem*> destroyQueue;
+
+    uint16_t lastW, lastH, lastUIItemCount;
+    cy::Matrix4f lastModelMatrix;
+
     bool isFirstFrame = true;
-
+  
     void loadVBOData();
     void init();
+    void erase(UIItem* uiItem);
 
-    Texture* combinedTextures;
+    bool hasChanged();
 };
 
 struct uiItemData

@@ -59,7 +59,7 @@ class GameObject: public Component
     virtual void afterUpdate() = 0;
   private:
 
-    uint32_t materialIndicesVBO;
+    GLuint materialIndicesVBO;
     bool hasMaterialVBO = false;
 
     std::vector<uint8_t> materialIndices;

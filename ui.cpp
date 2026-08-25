@@ -4,11 +4,15 @@
 UIItem::UIItem(std::string texturePath)
 {
   this->texture = new Texture(texturePath);
+  this->lastTexture = this->texture;
+  this->lastModelMatrix = this->getModelMatrix();
 }
 
 UIItem::UIItem(Texture* texture)
 {
   this->texture = texture;
+  this->lastTexture = this->texture;
+  this->lastModelMatrix = this->getModelMatrix();
 }
 
 UIItem::~UIItem()
@@ -26,8 +30,15 @@ UI::~UI()
   delete this->instanceMesh;
 }
 
-UI::UI(std::vector<UIItem*> uiItems): Component(), uiItems(uiItems)
+UI::UI(std::vector<UIItem*> uiItems, Scene* scene): Component(), uiItems(uiItems)
 {
+  this->scene = scene;
+
+  for(UIItem* item: this->uiItems)
+  {
+    item->scene = scene;
+  }
+
   init();
 }
 
@@ -36,12 +47,29 @@ UI::UI(): Component()
   init();
 }
 
+void UI::addUIItem(UIItem* uiItem)
+{
+  this->uiItems.push_back(uiItem);
+  uiItem->scene = this->scene;
+}
+
+void UI::removeUIItem(UIItem* uiItem)
+{
+  this->destroyQueue.push(uiItem);
+}
+
+void UI::erase(UIItem* uiItem)
+{
+  auto itemOnUIItems = std::find(this->uiItems.begin(), this->uiItems.end(), uiItem);
+  if(itemOnUIItems == this->uiItems.end()) return;
+  
+  this->uiItems.erase(itemOnUIItems);
+  delete uiItem;
+}
+
 void UI::init()
 {
-  this->lastW = WINDOW.w;
-  this->lastH = WINDOW.h;
-
-  this->uiItemShader = std::make_shared<Program>("/home/arthur/Documents/simpleGame/shaders/ui copy.vs", "/home/arthur/Documents/simpleGame/shaders/ui copy.fs");
+  this->uiItemShader = std::make_shared<Program>("/home/arthur/Documents/simpleGame/shaders/uiItem.vs", "/home/arthur/Documents/simpleGame/shaders/uiItem.fs");
   this->uiShader = std::make_shared<Program>("/home/arthur/Documents/simpleGame/shaders/ui.vs", "/home/arthur/Documents/simpleGame/shaders/ui.fs");
 
   this->mesh = Mesh::getQuadMesh();
@@ -49,6 +77,11 @@ void UI::init()
   this->instanceMesh = new Mesh(this->mesh->getVertices(), MeshType::TRIANGLE_MESH);
 
   this->combinedTextures = new Texture(WINDOW.w, WINDOW.h, GL_RGBA, nullptr);
+
+  this->lastW = WINDOW.w;
+  this->lastH = WINDOW.h;
+  this->lastUIItemCount = this->uiItems.size();
+  this->lastModelMatrix = this->getModelMatrix();
 
   glGetIntegerv( GL_DRAW_FRAMEBUFFER_BINDING, (GLint*)&originalFBO );
   
@@ -128,17 +161,90 @@ void UI::draw()
   glEnable(GL_DEPTH_TEST);
   glDepthMask(GL_TRUE);
 
-  
   glBindVertexArray(0);
   glBindBuffer(GL_ARRAY_BUFFER, 0); 
   glUseProgram(0);
 }
 
+bool UI::hasChanged()
+{
+  bool changed = this->isFirstFrame;
+
+  if(this->lastW != WINDOW.w || this->lastH != WINDOW.h) changed = true;
+
+  this->lastW = WINDOW.w; this->lastH = WINDOW.h;
+
+  if(!changed && this->lastModelMatrix != this->getModelMatrix()) changed = true;
+
+  this->lastModelMatrix = this->getModelMatrix();
+
+  if(!changed && this->lastUIItemCount != this->uiItems.size()) changed = true;
+
+  this->lastUIItemCount = this->uiItems.size();
+
+  for(UIItem* item: this->uiItems)
+  {
+    if(!changed && item->lastModelMatrix != item->getModelMatrix()) changed = true;
+    if(!changed && item->lastTexture != item->texture) changed = true;
+
+    item->lastModelMatrix = item->getModelMatrix();
+    item->lastTexture = item->texture;
+  }
+
+  return changed;
+}
+
 void UI::beforeUpdate()
 {
-  if(true)//if ui items have changed, window size has changed or this tranform has changed.
+  for(UIItem* item: this->uiItems)
+  {
+    item->beforeUpdate();
+  }
+
+  if(WINDOW.w != this->lastW || WINDOW.h != this->lastH)
+  {
+    this->combinedTextures->setResolution(WINDOW.w, WINDOW.h);
+
+    glBindFramebuffer(GL_FRAMEBUFFER, this->framebufferId);
+
+    glBindRenderbuffer(GL_RENDERBUFFER, this->depthBufferID);
+    glRenderbufferStorage(GL_RENDERBUFFER, GL_DEPTH_COMPONENT16, WINDOW.w, WINDOW.h);
+    glBindRenderbuffer(GL_RENDERBUFFER, 0);
+
+    glFramebufferTexture(GL_FRAMEBUFFER, GL_COLOR_ATTACHMENT0, this->combinedTextures->getId(), 0);
+
+    if(glCheckFramebufferStatus(GL_FRAMEBUFFER) != GL_FRAMEBUFFER_COMPLETE)
+      std::cout << "UI: framebuffer incomplete after resize!" << std::endl;
+    
+    glBindFramebuffer(GL_FRAMEBUFFER, this->originalFBO);
+  }
+
+  if(this->hasChanged())
   {
     this->fakeDraw();
+  }
+}
+
+void UI::start()
+{
+  for(UIItem* item: this->uiItems)
+  {
+    item->start();
+  }
+}
+
+void UI::afterUpdate()
+{
+  for(UIItem* item: this->uiItems)
+  {
+    item->afterUpdate();
+  }
+
+  while(!this->destroyQueue.empty())
+  {
+    UIItem* item = this->destroyQueue.front();
+    this->destroyQueue.pop();
+    erase(item);
   }
 }
 

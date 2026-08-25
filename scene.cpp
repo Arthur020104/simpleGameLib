@@ -21,6 +21,7 @@ void Scene::draw()
 Scene::Scene()
 { 
   this->ui = new UI();
+  this->ui->scene = this;
   this->componentsWaitingToStart.push_back(this->ui);
 }
 

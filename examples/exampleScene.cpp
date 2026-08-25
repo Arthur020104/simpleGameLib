@@ -8,6 +8,7 @@
 #include <exampleCamera.h>
 #include <utils.h>
 #include <../material.h>
+#include <uiItemExample.h>
 
 ExampleScene::ExampleScene(): Scene()
 { 
@@ -85,7 +86,7 @@ ExampleScene::ExampleScene(): Scene()
   UIItem* crosshair = new UIItem("/home/arthur/Documents/simpleGame/obj/crosshair.png");
   crosshair->setScale(cy::Vec3f(0.05f, 0.07f, 0.1f));
 
-  UIItem* testItem = new UIItem("/home/arthur/Documents/simpleGame/obj/container.jpg");
+  ExampleUIItem* testItem = new ExampleUIItem("/home/arthur/Documents/simpleGame/obj/container.jpg");
   testItem->setScale(cy::Vec3f(0.1f, 0.1f, 0.1f));
   testItem->setPosition(cy::Vec3f(-0.9f, 0.9f, 0.0f));
 

@@ -35,7 +35,7 @@ class Texture
     
     std::string path;
   private:
-    uint32_t id;
+    GLuint id;
     bool alreadyLoaded;
     GLenum wrapS, wrapT, minFilter, magFilter, textureFormat;
     uint16_t width, height;

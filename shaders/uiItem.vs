@@ -10,15 +10,15 @@ layout (location = 7) in vec4 modelMatrixRow3;
 layout (location = 8) in uint textureIdx;
 
 out vec2 texCoord;
+
 flat out uint textureIndex;
 
 void main()
 {
-  // mat4 modelMatrix = mat4(modelMatrixRow0, modelMatrixRow1, modelMatrixRow2, modelMatrixRow3);
+  mat4 modelMatrix = transpose(mat4(modelMatrixRow0, modelMatrixRow1, modelMatrixRow2, modelMatrixRow3));
+  vec4 pos = modelMatrix *  vec4(vertexPos.xyz, 1.0);
 
-  vec4 pos = vec4(vertexPos.xyz, 1.0);
-
-  // textureIndex = textureIdx;
+  textureIndex = textureIdx;
   texCoord = uv;
   gl_Position = pos;
 }

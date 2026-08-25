@@ -11,7 +11,6 @@ class Material
     Material(cy::Vec3f diffuseColor, cy::Vec3f specularColor, float shininess): 
       diffuse(diffuseColor), specularColor(specularColor), shininess(shininess), diffuseTex(nullptr) {};
 
-
     Material(std::shared_ptr<Texture> diffuseTex, cy::Vec3f specularColor, float shininess);
     Material(std::string diffuseTexturePath, cy::Vec3f specularColor, float shininess);
 

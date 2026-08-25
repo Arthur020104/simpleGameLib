@@ -29,7 +29,7 @@ class Program
     void bindUint(const char* uniformName, unsigned int value);
 
   private:
-    unsigned short id;
+    GLuint id;
     std::string vertexShaderPath, fragmentShaderPath;
     const std::unordered_map<const char*, GLint> SHADER_TYPES = {
       {"FRAGMENT", GL_FRAGMENT_SHADER},
