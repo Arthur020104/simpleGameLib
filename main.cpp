@@ -6,15 +6,15 @@
 #include <cy/cyGL.h>
 #include <cy/cyCore.h>
 #include <cy/cyTriMesh.h>
-#include <cy/cyMatrix.h>
 #include <material.h>
+#include <glm/glm.hpp>
 #include <examples/exampleScene.h>
 
 
-cy::Vec4f CLEAR_COLOR(0.529f, 0.808f, 0.922f, 1.0f);
+glm::vec4 CLEAR_COLOR(0.529f, 0.808f, 0.922f, 1.0f);
 WindowController WINDOW = initContext(1280, 720, "Teste 11", CLEAR_COLOR);
 std::shared_ptr<Program> DEFAULT_SHADER = std::make_shared<Program>("/home/arthur/Documents/simpleGame/shaders/vertex.vs", "/home/arthur/Documents/simpleGame/shaders/frag.fs");
-std::shared_ptr<Material> DEFAULT_MATERIAL = std::make_shared<Material>(cy::Vec3f(1.0f, 1.0f, 1.0f), cy::Vec3f(1.0f, 1.0f, 1.0f), 256.0f);
+std::shared_ptr<Material> DEFAULT_MATERIAL = std::make_shared<Material>(glm::vec3(1.0f, 1.0f, 1.0f), glm::vec3(1.0f, 1.0f, 1.0f), 256.0f);
 int main(void)
 {
   double lastTime = glfwGetTime();

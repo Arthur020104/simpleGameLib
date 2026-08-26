@@ -11,10 +11,10 @@
 std::shared_ptr<Mesh> Mesh::createQuadMesh()
 {
   Vertex v1, v2, v3, v4;
-  v1.pos = cy::Vec3f(-1.0f, -1.0f, 0.0f); v1.normal = cy::Vec3f(0.0f, 0.0f, 1.0f); v1.uv = cy::Vec2f(0.0f, 0.0f);
-  v2.pos = cy::Vec3f(1.0f, -1.0f, 0.0f); v2.normal = cy::Vec3f(0.0f, 0.0f, 1.0f); v2.uv = cy::Vec2f(1.0f, 0.0f);
-  v3.pos = cy::Vec3f(-1.0f, 1.0f, 0.0f); v3.normal = cy::Vec3f(0.0f, 0.0f, 1.0f); v3.uv = cy::Vec2f(0.0f, 1.0f);
-  v4.pos = cy::Vec3f(1.0f, 1.0f, 0.0f); v4.normal = cy::Vec3f(0.0f, 0.0f, 1.0f); v4.uv = cy::Vec2f(1.0f, 1.0f);
+  v1.pos = glm::vec3(-1.0f, -1.0f, 0.0f); v1.normal = glm::vec3(0.0f, 0.0f, 1.0f); v1.uv = glm::vec2(0.0f, 0.0f);
+  v2.pos = glm::vec3(1.0f, -1.0f, 0.0f); v2.normal = glm::vec3(0.0f, 0.0f, 1.0f); v2.uv = glm::vec2(1.0f, 0.0f);
+  v3.pos = glm::vec3(-1.0f, 1.0f, 0.0f); v3.normal = glm::vec3(0.0f, 0.0f, 1.0f); v3.uv = glm::vec2(0.0f, 1.0f);
+  v4.pos = glm::vec3(1.0f, 1.0f, 0.0f); v4.normal = glm::vec3(0.0f, 0.0f, 1.0f); v4.uv = glm::vec2(1.0f, 1.0f);
 
   return std::make_shared<Mesh>(Mesh({v1, v2, v4, v1, v4, v3}, MeshType::TRIANGLE_MESH));;
 }
@@ -49,14 +49,14 @@ Mesh::~Mesh()
 
 Mesh::Mesh(std::vector<Vertex> inputVertices, MeshType type)
 {
-  cy::Vec3f positiveInfinity = cy::Vec3f(INFINITY, INFINITY, INFINITY);
-  cy::Vec3f negativeInfinity = cy::Vec3f(-INFINITY, -INFINITY, -INFINITY);
+  glm::vec3 positiveInfinity = glm::vec3(INFINITY, INFINITY, INFINITY);
+  glm::vec3 negativeInfinity = glm::vec3(-INFINITY, -INFINITY, -INFINITY);
 
-  cy::Vec3f boundingVolumeC[2] = {positiveInfinity, negativeInfinity};
+  glm::vec3 boundingVolumeC[2] = {positiveInfinity, negativeInfinity};
 
   for(Vertex& vertex: inputVertices)
   {
-    cy::Vec3f itemsBBox[2] = { positiveInfinity, negativeInfinity };
+    glm::vec3 itemsBBox[2] = { positiveInfinity, negativeInfinity };
 
     alterBoudingMin(vertex.pos, itemsBBox[0]);
     alterBoudingMin(vertex.pos, itemsBBox[1]);
@@ -90,7 +90,7 @@ Mesh::Mesh(cy::TriMesh& objTriMesh)
   this->loadMesh(objTriMesh);
 }
 
-Mesh::Mesh(std::vector<Vertex> inputVertices, cy::Vec3f boundingVolume[2], MeshType type)
+Mesh::Mesh(std::vector<Vertex> inputVertices, glm::vec3 boundingVolume[2], MeshType type)
 {
   init(inputVertices, type, boundingVolume);
 }
@@ -116,22 +116,34 @@ void Mesh::loadMesh(cy::TriMesh& objTriMesh)
     {
       Vertex vertex;
 
-      vertex.pos = objTriMesh.V(faceVerticesPos.v[j]);
+      cy::Vec3f auxVec = objTriMesh.V(faceVerticesPos.v[j]);
+      vertex.pos = glm::vec3(auxVec.x, auxVec.y, auxVec.z);
 
-      vertex.normal = objTriMesh.VN(faceVerticesNormals.v[j]);
+      auxVec = objTriMesh.VN(faceVerticesNormals.v[j]);
+      vertex.normal = glm::vec3(auxVec.x, auxVec.y, auxVec.z);
 
-      vertex.uv = objTriMesh.HasTextureVertices() ? 
-                  objTriMesh.VT(faceVerticesUv.v[j]).XY() : 
-                  cy::Vec2f(0.0f, 0.0f);
+      if(objTriMesh.HasTextureVertices())
+      {
+        auxVec = objTriMesh.VT(faceVerticesUv.v[j]);
+        vertex.uv = glm::vec2(auxVec.x, auxVec.y);
+      }
+      else
+      {
+        vertex.uv = glm::vec2(0.0f, 0.0f);
+      }
 
       meshData.push_back(vertex);
     }
   }
-  cy::Vec3f bbox[2] = {objTriMesh.boundMin, objTriMesh.boundMax};
+
+  glm::vec3 boundMin = glm::vec3(objTriMesh.boundMin.x, objTriMesh.boundMin.y, objTriMesh.boundMin.z);
+  glm::vec3 boundMax = glm::vec3(objTriMesh.boundMax.x, objTriMesh.boundMax.y, objTriMesh.boundMax.z);
+
+  glm::vec3 bbox[2] = {boundMin, boundMax};
   init(meshData, MeshType::TRIANGLE_MESH, bbox);
 }
 
-void Mesh::init(std::vector<Vertex>& inputVertices, MeshType type, cy::Vec3f boundingVolume[2])
+void Mesh::init(std::vector<Vertex>& inputVertices, MeshType type, glm::vec3 boundingVolume[2])
 {
   this->id = nextMeshId++;
   this->vertices = inputVertices;

@@ -1,7 +1,7 @@
 #include <ray.h>
 #include <algorithm>
 
-bool intersectBoundingVolume(Ray& r, cy::Vec3f* boundingVolume)
+bool intersectBoundingVolume(Ray& r, glm::vec3* boundingVolume)
 {
   float t1x = (boundingVolume[0].x - r.origin.x) / r.direction.x;
   float t2x = (boundingVolume[1].x - r.origin.x) / r.direction.x;
@@ -36,33 +36,33 @@ bool intersectBoundingVolume(Ray& r, cy::Vec3f* boundingVolume)
 bool intersectTriangle(Ray& ray, GameObject* gameObject, Vertex &v0, Vertex &v1, Vertex &v2)
 {
   //using parallelogram area bc the ratio will be the same
-  cy::Vec3f planeNormal = (v1.pos - v0.pos) ^ (v2.pos - v0.pos);
+  glm::vec3 planeNormal = glm::cross((v1.pos - v0.pos), (v2.pos - v0.pos));
 
-  float area = planeNormal.Length();
+  float area = glm::length(planeNormal);
 
   if(abs(area) <= ERROR_MARGIN) return false;
 
-  float overArea = 1.0f / planeNormal.Length();
+  float overArea = 1.0f / area;
 
-  planeNormal.Normalize();
+  planeNormal = glm::normalize(planeNormal);
 
-  cy::Vec3f centerPoint = (v0.pos + v1.pos + v2.pos) *  0.33333333333f;
+  glm::vec3 centerPoint = (v0.pos + v1.pos + v2.pos) *  0.33333333333f;
 
-  float v = planeNormal % ray.direction;
+  float v = glm::dot(planeNormal, ray.direction);
   if(abs(v) <= ERROR_MARGIN) return false;
 
-  const float t = (planeNormal % (centerPoint - ray.origin)) / v;
+  const float t = (glm::dot(planeNormal, (centerPoint - ray.origin))) / v;
 
   if(t < TMIN) return false;
 
-  cy::Vec3f pointOnPlane = ray.origin + ray.direction * t;
+  glm::vec3 pointOnPlane = ray.origin + ray.direction * t;
 
   float total = 0;
 
-  float alpha = (((v1.pos - pointOnPlane) ^ (v2.pos - pointOnPlane)) % planeNormal) * overArea;
+  float alpha = glm::dot(glm::cross(v1.pos - pointOnPlane, v2.pos - pointOnPlane), planeNormal) * overArea;
   if (alpha < 0.0f || alpha > 1.0f) return false;
 
-  float beta = (((v2.pos - pointOnPlane) ^ (v0.pos - pointOnPlane)) % planeNormal) * overArea;
+  float beta = glm::dot(glm::cross(v2.pos - pointOnPlane, v0.pos - pointOnPlane), planeNormal) * overArea;
   if (beta < 0.0f || beta > 1.0f) return false;
 
   float gamma = 1.0f - alpha - beta;

@@ -6,7 +6,7 @@ class Scene;
 class Component: public Transform
 {
   public:
-    Component(cy::Vec3f position): Transform(position), scene(nullptr) {};
+    Component(glm::vec3 position): Transform(position), scene(nullptr) {};
     Component(): Transform(), scene(nullptr){};
 
     Scene* scene;

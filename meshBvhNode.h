@@ -9,14 +9,14 @@ class MeshBvhNode
 {
   public:
     MeshBvhNode(std::vector<Vertex>& items, uint32_t depth);
-    MeshBvhNode(std::vector<Vertex>& items, cy::Vec3f boundingVolume[2], uint32_t depth);
+    MeshBvhNode(std::vector<Vertex>& items, glm::vec3 boundingVolume[2], uint32_t depth);
 
     ~MeshBvhNode();
 
     std::vector<Vertex> items;
     MeshBvhNode* children[2] = {nullptr, nullptr};
 
-    cy::Vec3f boundingVolume[2];
+    glm::vec3 boundingVolume[2];
 
     uint32_t depth;
     bool isLeaf;
@@ -25,9 +25,9 @@ class MeshBvhNode
   
     private:  
 
-    void init(std::vector<Vertex>& items, cy::Vec3f boundingVolume[2], uint32_t depth);
+    void init(std::vector<Vertex>& items, glm::vec3 boundingVolume[2], uint32_t depth);
     
-    cy::Vec3f getNewPoint(bool firstChild = true);
+    glm::vec3 getNewPoint(bool firstChild = true);
 
 
     GameObject* object = nullptr;
@@ -37,8 +37,8 @@ class MeshBvhNode
     static const uint8_t MAX_DEPTH = 15;
 };
 
-void alterBoudingMin(cy::Vec3f& newVec, cy::Vec3f& baseVec);
+void alterBoudingMin(glm::vec3& newVec, glm::vec3& baseVec);
 
-void alterBoudingMax(cy::Vec3f& newVec, cy::Vec3f& baseVec);
+void alterBoudingMax(glm::vec3& newVec, glm::vec3& baseVec);
 
-bool insideBoundingVolume(cy::Vec3f& point, cy::Vec3f* boundingVolume);
+bool insideBoundingVolume(glm::vec3& point, glm::vec3* boundingVolume);

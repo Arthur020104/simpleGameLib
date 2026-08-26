@@ -20,7 +20,7 @@ extern "C" {
 }
 #endif
 
-WindowController initContext(uint16_t w, uint16_t h, const char* title, cy::Vec4f clearColor)
+WindowController initContext(uint16_t w, uint16_t h, const char* title, glm::vec4 clearColor)
 {
   glfwSetErrorCallback(errorCallback);
 
@@ -85,12 +85,12 @@ void WindowController::pollEvents()
   glfwPollEvents();
 }
 
-cy::Vec2f WindowController::getMousePos(bool ndc)
+glm::vec2 WindowController::getMousePos(bool ndc)
 {
   double x, y;
   glfwGetCursorPos(this->window, &x, &y);
 
-  if(!ndc) return cy::Vec2f(x, y);
+  if(!ndc) return glm::vec2(x, y);
 
   x = (x * (1.0f / (float)this->w)) * 2.0f - 1.0f;
   y = 1.0f - (y * (1.0f / (float)this->h)) * 2.0f;
@@ -98,7 +98,7 @@ cy::Vec2f WindowController::getMousePos(bool ndc)
   x = std::clamp(x, -1.0, 1.0);
   y = std::clamp(y, -1.0, 1.0);
 
-  return cy::Vec2f(x, y);
+  return glm::vec2(x, y);
 }
 
 void errorCallback(int error, const char* description)
@@ -131,7 +131,7 @@ void frameBufferSizeCallback(GLFWwindow* window, int w, int h)
   myWindow->updateCameras = myWindow->aspect != oldAspect;
   //should create an variable called ratio  and oldRatio when ratio !== oldRatio, put the bool ratioChanged as true.
   //create an funtion to put ratioChanged = false and oldRatio = ratio(afther all cameras ratio are updated)
-  //projMatrix = cy::Matrix4f::Perspective(FOV * cy::Deg2Rad<float>(), float(W)/float(H), N, F);
+  //projMatrix = glm::mat4::Perspective(FOV * cy::Deg2Rad<float>(), float(W)/float(H), N, F);
 }
 
 double WindowController::getTime()

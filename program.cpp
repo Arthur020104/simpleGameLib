@@ -104,20 +104,20 @@ void Program::bindFloat(const char* uniformName, float value)
   GLuint location = glGetUniformLocation(this->id, uniformName);
   glUniform1f(location, value);
 }
-void Program::bindVec3(const char* uniformName, cy::Vec3f value)
+void Program::bindVec3(const char* uniformName, glm::vec3 value)
 {
   GLuint location = glGetUniformLocation(this->id, uniformName);
   glUniform3f(location, value.x, value.y, value.z);
 }
-void Program::bindVec4(const char* uniformName, cy::Vec4f value)
+void Program::bindVec4(const char* uniformName, glm::vec4 value)
 {
   GLuint location = glGetUniformLocation(this->id, uniformName);
   glUniform4f(location, value.x, value.y, value.z, value.w);
 }
-void Program::bindMat4(const char* uniformName, cy::Matrix4f value)
+void Program::bindMat4(const char* uniformName, glm::mat4 value)
 {
   GLuint location = glGetUniformLocation(this->id, uniformName);
-  glUniformMatrix4fv(location, 1, GL_FALSE, value.cell);
+  glUniformMatrix4fv(location, 1, GL_FALSE, &value[0][0]);
 }
 void Program::bindInt(const char* uniformName, int value)
 {

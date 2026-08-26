@@ -5,55 +5,55 @@ void Material::bind(Program* shaderProgram, char* arrayName, uint16_t index, uin
   glUseProgram(shaderProgram->getProgram());//bind is happening in here, GameObject and Light draw
 
   char location[32];
-  snprintf(location, sizeof(location), "%s[%u]", arrayName, index);
+  std::snprintf(location, sizeof(location), "%s[%u]", arrayName, index);
 
   char strBuffer[32];
 
-  snprintf(strBuffer, sizeof(strBuffer), "%s.diffuse", location);
+  std::snprintf(strBuffer, sizeof(strBuffer), "%s.diffuse", location);
   shaderProgram->bindVec3(strBuffer, this->diffuse);
 
-  snprintf(strBuffer, sizeof(strBuffer), "%s.specularColor", location);
+  std::snprintf(strBuffer, sizeof(strBuffer), "%s.specularColor", location);
   shaderProgram->bindVec3(strBuffer, this->specularColor);
 
-  snprintf(strBuffer, sizeof(strBuffer), "%s.shininess", location);
+  std::snprintf(strBuffer, sizeof(strBuffer), "%s.shininess", location);
   shaderProgram->bindFloat(strBuffer, this->shininess);
 
-  snprintf(strBuffer, sizeof(strBuffer), "%s.hasDiffuseTex", location);
+  std::snprintf(strBuffer, sizeof(strBuffer), "%s.hasDiffuseTex", location);
   shaderProgram->bindBool(strBuffer, this->diffuseTex != nullptr);
 
-  snprintf(strBuffer, sizeof(strBuffer), "%s.hasSpecularTex", location);
+  std::snprintf(strBuffer, sizeof(strBuffer), "%s.hasSpecularTex", location);
   shaderProgram->bindBool(strBuffer, this->specularTex != nullptr);
 
-  snprintf(strBuffer, sizeof(strBuffer), "%s.hasEmissiveTex", location);
+  std::snprintf(strBuffer, sizeof(strBuffer), "%s.hasEmissiveTex", location);
   shaderProgram->bindBool(strBuffer, this->emissiveTex != nullptr);
 
   if(this->diffuseTex != nullptr)
   {
-    snprintf(strBuffer, sizeof(strBuffer), "%s.diffuseTexUnit", location);
+    std::snprintf(strBuffer, sizeof(strBuffer), "%s.diffuseTexUnit", location);
     this->diffuseTex->bind(shaderProgram, strBuffer, texUnit);
   }
 
   if(this->specularTex != nullptr)
   {
-    snprintf(strBuffer, sizeof(strBuffer), "%s.specularTexUnit", location);
+    std::snprintf(strBuffer, sizeof(strBuffer), "%s.specularTexUnit", location);
     this->specularTex->bind(shaderProgram, strBuffer, ++texUnit);
   }
 
   if(this->emissiveTex != nullptr)
   {
-    snprintf(strBuffer, sizeof(strBuffer), "%s.emissiveTexUnit", location);
+    std::snprintf(strBuffer, sizeof(strBuffer), "%s.emissiveTexUnit", location);
     this->emissiveTex->bind(shaderProgram, strBuffer, ++texUnit);
   }
     
 }
 
-Material::Material(std::string diffuseTexturePath, cy::Vec3f specularColor, float shininess): 
+Material::Material(std::string diffuseTexturePath, glm::vec3 specularColor, float shininess): 
 specularColor(specularColor), shininess(shininess) 
 {
   this->addDiffuseTexture(diffuseTexturePath);
 }
 
-Material::Material(std::shared_ptr<Texture> diffuseTex, cy::Vec3f specularColor, float shininess): 
+Material::Material(std::shared_ptr<Texture> diffuseTex, glm::vec3 specularColor, float shininess): 
 specularColor(specularColor), shininess(shininess) 
 {
   this->addDiffuseTexture(diffuseTex);

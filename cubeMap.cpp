@@ -25,9 +25,9 @@ CubeMap::CubeMap(std::vector<std::string> facesPath): facesPath(facesPath)
   
   float defaultZ = 0.9999999f;
   Vertex v1, v2, v3;
-  v1.pos = cy::Vec3f(-1.0f, -1.0f, defaultZ); v1.normal = cy::Vec3f(0.0f, 0.0f, 0.0f);
-  v2.pos = cy::Vec3f(3.0f, -1.0f, defaultZ); v2.normal = cy::Vec3f(0.0f, 0.0f, 0.0f);
-  v3.pos = cy::Vec3f(-1.0f, 3.0f, defaultZ); v3.normal = cy::Vec3f(0.0f, 0.0f, 0.0f);
+  v1.pos = glm::vec3(-1.0f, -1.0f, defaultZ); v1.normal = glm::vec3(0.0f, 0.0f, 0.0f);
+  v2.pos = glm::vec3(3.0f, -1.0f, defaultZ); v2.normal = glm::vec3(0.0f, 0.0f, 0.0f);
+  v3.pos = glm::vec3(-1.0f, 3.0f, defaultZ); v3.normal = glm::vec3(0.0f, 0.0f, 0.0f);
   
   this->mesh = new Mesh({v1, v2, v3}, MeshType::TRIANGLE_MESH);
   this->shaderProgram = new Program("/home/arthur/Documents/simpleGame/shaders/cubeMap.vs", "/home/arthur/Documents/simpleGame/shaders/cubeMap.fs");

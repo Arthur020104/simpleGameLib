@@ -1,9 +1,7 @@
 #include <transform.h>
-#include <cy/cyTriMesh.h>
-#include <cy/cyMatrix.h>
-#include <cy/cyQuat.h>
+#include <glm/gtc/matrix_transform.hpp>
 
-Transform::Transform(cy::Vec3f pos, cy::Vec3f rot, cy::Vec3f scale)
+Transform::Transform(glm::vec3 pos, glm::vec3 rot, glm::vec3 scale)
 {
   this->position = pos;
   this->rotation = rot;
@@ -14,51 +12,51 @@ Transform::Transform(cy::Vec3f pos, cy::Vec3f rot, cy::Vec3f scale)
 
 void Transform::updateModelMatrix()
 {
-  cy::Matrix4f positionMatrix = cy::Matrix4f::Translation(this->position);
+  glm::mat4 positionMatrix = glm::translate(glm::mat4(1.0f), this->position);
 
-  this->rotationMatrix = cy::Matrix4f::Rotation(cy::Vec3f(1.0f, 0.0f, 0.0f), cy::Deg2Rad<float>() * this->getRotation().x);
-  this->rotationMatrix = this->rotationMatrix * cy::Matrix4f::Rotation(cy::Vec3f(0.0f, 1.0f, 0.0f), cy::Deg2Rad<float>() * this->getRotation().y); 
-  this->rotationMatrix = this->rotationMatrix * cy::Matrix4f::Rotation(cy::Vec3f(0.0f, 0.0f, 1.0f), cy::Deg2Rad<float>() * this->getRotation().z);
-
-  cy::Matrix4f scaleMatrix = cy::Matrix4f::Scale(this->scale);
+  this->rotationMatrix = glm::rotate(glm::mat4(1.0f), glm::radians(this->getRotation().z), glm::vec3(0.0f, 0.0f, 1.0f));
+  this->rotationMatrix = glm::rotate(glm::mat4(1.0f), glm::radians(this->getRotation().y), glm::vec3(0.0f, 1.0f, 0.0f)) * this->rotationMatrix;
+  this->rotationMatrix = glm::rotate(glm::mat4(1.0f), glm::radians(this->getRotation().x), glm::vec3(1.0f, 0.0f, 0.0f)) * this->rotationMatrix;
+  
+  glm::mat4 scaleMatrix = glm::scale(glm::mat4(1.0f), this->scale);
 
   this->modelMatrix = positionMatrix * rotationMatrix * scaleMatrix;
 }
 
-const cy::Matrix4f& Transform::getModelMatrix()
+const glm::mat4& Transform::getModelMatrix()
 {
   return this->modelMatrix;
 }
 
-void Transform::setPosition(cy::Vec3f pos)
+void Transform::setPosition(glm::vec3 pos)
 {
   this->position = pos;
   this->updateModelMatrix();
 }
 
-void Transform::setRotation(cy::Vec3f rot)
+void Transform::setRotation(glm::vec3 rot)
 {
   this->rotation = rot;
   this->updateModelMatrix();
 }
 
-void Transform::setScale(cy::Vec3f scale)
+void Transform::setScale(glm::vec3 scale)
 {
   this->scale = scale;
   this->updateModelMatrix();
 }
 
-cy::Vec3f Transform::getForwardVector()
+glm::vec3 Transform::getForwardVector()
 {
-  return -this->rotationMatrix.Column(2).XYZ().GetNormalized();
+  return -glm::normalize(glm::vec3(this->rotationMatrix[2]));
 }
 
-cy::Vec3f Transform::getRightVector()
+glm::vec3 Transform::getRightVector()
 {
-  return this->rotationMatrix.Column(0).XYZ().GetNormalized();
+  return glm::normalize(glm::vec3(this->rotationMatrix[0]));
 }
 
-cy::Vec3f Transform::getUpVector()
+glm::vec3 Transform::getUpVector()
 {
-  return this->rotationMatrix.Column(1).XYZ().GetNormalized();
+  return glm::normalize(glm::vec3(this->rotationMatrix[1]));
 }

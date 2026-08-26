@@ -1,4 +1,5 @@
 #include <timeQueue.h>
+#include <stdexcept>
 
 TimeQueue::TimeQueue()
 {

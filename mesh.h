@@ -23,7 +23,7 @@ class Mesh
   
     bool intersectMesh(Ray& ray, GameObject* gameObject);
 
-    Mesh(std::vector<Vertex> inputVertices, cy::Vec3f boundingVolume[2], MeshType type = MeshType::TRIANGLE_MESH);
+    Mesh(std::vector<Vertex> inputVertices, glm::vec3 boundingVolume[2], MeshType type = MeshType::TRIANGLE_MESH);
 
     Mesh(std::vector<Vertex> inputVertices, MeshType type = MeshType::TRIANGLE_MESH);
 
@@ -53,7 +53,7 @@ class Mesh
 
     void renderMesh();
 
-    cy::Vec3f boundingVolume[2];
+    glm::vec3 boundingVolume[2];
   private:
     uint32_t id;
     std::vector<Vertex> vertices;
@@ -72,7 +72,7 @@ class Mesh
 
     MeshBvhNode* bvh = nullptr;
 
-    void init(std::vector<Vertex>& inputVertices, MeshType type, cy::Vec3f boundingVolume[2]);
+    void init(std::vector<Vertex>& inputVertices, MeshType type, glm::vec3 boundingVolume[2]);
 
     void loadMesh(cy::TriMesh& objTriMesh);
 

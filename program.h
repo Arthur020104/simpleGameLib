@@ -1,10 +1,9 @@
 #pragma once
 #include <unordered_map>
 #include <GL/glew.h>
-#include <string.h>
-#include <cy/cyTriMesh.h>
-#include <cy/cyMatrix.h>
+#include <string>
 #include <memory>
+#include <glm/glm.hpp>
 
 class GameObject;
 
@@ -21,9 +20,9 @@ class Program
     uint16_t removeUsingProgram(GameObject* obj);
 
     void bindFloat(const char* uniformName, float value);
-    void bindVec3(const char* uniformName, cy::Vec3f value);
-    void bindVec4(const char* uniformName, cy::Vec4f value);
-    void bindMat4(const char* uniformName, cy::Matrix4f value);
+    void bindVec3(const char* uniformName, glm::vec3 value);
+    void bindVec4(const char* uniformName, glm::vec4 value);
+    void bindMat4(const char* uniformName, glm::mat4 value);
     void bindInt(const char* uniformName, int value);
     void bindBool(const char* uniformName, bool value);
     void bindUint(const char* uniformName, unsigned int value);

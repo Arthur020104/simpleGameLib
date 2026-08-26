@@ -8,11 +8,11 @@
 class Material
 {
   public:
-    Material(cy::Vec3f diffuseColor, cy::Vec3f specularColor, float shininess): 
+    Material(glm::vec3 diffuseColor, glm::vec3 specularColor, float shininess): 
       diffuse(diffuseColor), specularColor(specularColor), shininess(shininess), diffuseTex(nullptr) {};
 
-    Material(std::shared_ptr<Texture> diffuseTex, cy::Vec3f specularColor, float shininess);
-    Material(std::string diffuseTexturePath, cy::Vec3f specularColor, float shininess);
+    Material(std::shared_ptr<Texture> diffuseTex, glm::vec3 specularColor, float shininess);
+    Material(std::string diffuseTexturePath, glm::vec3 specularColor, float shininess);
 
     void addDiffuseTexture(std::shared_ptr<Texture> diffuseTex);
     void addDiffuseTexture(std::string diffuseTexturePath);
@@ -25,8 +25,8 @@ class Material
     
     virtual void bind(Program* shaderProgram, char* arrayName, uint16_t index, uint16_t texUnit);
     
-    cy::Vec3f diffuse = cy::Vec3f(1.0f, 1.0f, 1.0f);
-    cy::Vec3f specularColor = cy::Vec3f(1.0f, 1.0f, 1.0f);
+    glm::vec3 diffuse = glm::vec3(1.0f, 1.0f, 1.0f);
+    glm::vec3 specularColor = glm::vec3(1.0f, 1.0f, 1.0f);
 
     std::shared_ptr<Texture> diffuseTex = nullptr;
     std::shared_ptr<Texture> specularTex = nullptr;

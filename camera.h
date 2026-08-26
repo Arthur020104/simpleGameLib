@@ -9,23 +9,23 @@ class Scene;
 class Camera : public Component
 {
 public:
-  Camera(cy::Vec3f initialPos);
+  Camera(glm::vec3 initialPos);
 
-  cy::Matrix4f getViewProjection();
-  cy::Matrix4f getInvertedViewProjection();
-  cy::Matrix4f getView();
-  cy::Matrix4f getProjection();
+  glm::mat4 getViewProjection();
+  glm::mat4 getInvertedViewProjection();
+  glm::mat4 getView();
+  glm::mat4 getProjection();
 
-  Ray generateRay(cy::Vec2f point);
+  Ray generateRay(glm::vec2 point);
 
   void updateAspect(float aspect);
 
-  virtual void setPosition(cy::Vec3f pos) override;
-  virtual void setRotation(cy::Vec3f rot) override;
+  virtual void setPosition(glm::vec3 pos) override;
+  virtual void setRotation(glm::vec3 rot) override;
 
-  virtual cy::Vec3f getForwardVector() override;
-  virtual cy::Vec3f getRightVector() override;
-  virtual cy::Vec3f getUpVector() override;
+  virtual glm::vec3 getForwardVector() override;
+  virtual glm::vec3 getRightVector() override;
+  virtual glm::vec3 getUpVector() override;
   
   void updateMatrices();
 
@@ -34,17 +34,17 @@ private:
   const float FOV = 90.0f;
   float aspect;
   
-  cy::Vec3f defaultDirection = cy::Vec3f(0.0f, 0.0f, -1.0f);
-  cy::Vec3f defaultUp        = cy::Vec3f(0.0f, 1.0f, 0.0f);
-  cy::Vec3f defaultRight     = cy::Vec3f(1.0f, 0.0f, 0.0f);
+  glm::vec3 defaultDirection = glm::vec3(0.0f, 0.0f, -1.0f);
+  glm::vec3 defaultUp        = glm::vec3(0.0f, 1.0f, 0.0f);
+  glm::vec3 defaultRight     = glm::vec3(1.0f, 0.0f, 0.0f);
 
-  cy::Vec3f direction = cy::Vec3f(0.0f, 0.0f, -1.0f);
-  cy::Vec3f up        = cy::Vec3f(0.0f, 1.0f, 0.0f);
-  cy::Vec3f right     = cy::Vec3f(1.0f, 0.0f, 0.0f);
+  glm::vec3 direction = glm::vec3(0.0f, 0.0f, -1.0f);
+  glm::vec3 up        = glm::vec3(0.0f, 1.0f, 0.0f);
+  glm::vec3 right     = glm::vec3(1.0f, 0.0f, 0.0f);
 
-  cy::Matrix4f viewMatrix, projectionMatrix, viewProjection, invertedViewProjection;
+  glm::mat4 viewMatrix, projectionMatrix, viewProjection, invertedViewProjection;
 
-  cy::Matrix4f& lookAtMatrix();
+  glm::mat4& lookAtMatrix();
   
-  virtual void setScale(cy::Vec3f scale) override;
+  virtual void setScale(glm::vec3 scale) override;
 };

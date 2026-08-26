@@ -3,7 +3,7 @@
 
 struct Vertex 
 {
-  cy::Vec3f pos;
-  cy::Vec3f normal;
-  cy::Vec2f uv;
+  glm::vec3 pos;
+  glm::vec3 normal;
+  glm::vec2 uv;
 };

@@ -13,7 +13,7 @@ void FPSCamera::afterUpdate()
 
 void FPSCamera::beforeUpdate()
 {
-  cy::Vec3f moveVector = cy::Vec3f(0.0f, 0.0f, 0.0f);
+  glm::vec3 moveVector = glm::vec3(0.0f, 0.0f, 0.0f);
 
   if(glfwGetKey(WINDOW.window, GLFW_KEY_E) == GLFW_PRESS) moveVector += this->getUpVector();
   if(glfwGetKey(WINDOW.window, GLFW_KEY_Q) == GLFW_PRESS) moveVector -= this->getUpVector();
@@ -25,7 +25,7 @@ void FPSCamera::beforeUpdate()
   moveVector *= this->velocity * WINDOW.deltaTime;
   this->setPosition(moveVector + this->getPosition());
 
-  cy::Vec2f mousePos = WINDOW.getMousePos();
+  glm::vec2 mousePos = WINDOW.getMousePos();
 
   if (this->firstMouse)
   {
@@ -33,13 +33,14 @@ void FPSCamera::beforeUpdate()
     this->firstMouse = false;
   }
 
-  cy::Vec2f mouseDelta = (mousePos - this->lastMousePos) * this->sensitivity;
+  glm::vec2 mouseDelta = (mousePos - this->lastMousePos) * this->sensitivity;
   this->lastMousePos = mousePos;
 
-  cy::Vec3f currentRot = this->getRotation();
+  glm::vec3 currentRot = this->getRotation();
 
   float pitch = std::clamp(currentRot.x - mouseDelta.y, -89.0f, 89.0f);
-  float yaw   = currentRot.y - mouseDelta.x;
 
-  this->setRotation(cy::Vec3f(pitch, yaw, currentRot.z));
+  float yaw = currentRot.y - mouseDelta.x;
+
+  this->setRotation(glm::vec3(pitch, yaw, 0.0f));
 }

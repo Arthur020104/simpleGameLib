@@ -1,4 +1,5 @@
 #include <texture.h>
+#include <stdexcept>
 #include <Libs/stb/stb_image.h>
 
 Texture::Texture(std::string path, GLenum wrapS, GLenum wrapT, GLenum minFilter, GLenum magFilter):

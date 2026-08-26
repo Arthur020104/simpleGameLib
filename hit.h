@@ -9,5 +9,5 @@ class GameObject;
 struct Hit
 {
   GameObject* hitObject;
-  cy::Vec3f point;
+  glm::vec3 point;
 };

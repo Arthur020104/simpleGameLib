@@ -1,5 +1,6 @@
 #include <ui.h>
 #include <window.h>
+#include <glm/gtc/matrix_access.hpp>
 
 UIItem::UIItem(std::string texturePath)
 {
@@ -266,10 +267,10 @@ void UI::loadVBOData()
   for (UIItem* item : this->uiItems)
   {
     uiItemData data;
-    data.modelMatrixRow0 = item->getModelMatrix().GetRow(0);
-    data.modelMatrixRow1 = item->getModelMatrix().GetRow(1);
-    data.modelMatrixRow2 = item->getModelMatrix().GetRow(2);
-    data.modelMatrixRow3 = item->getModelMatrix().GetRow(3);
+    data.modelMatrixRow0 = glm::row(item->getModelMatrix(), 0);
+    data.modelMatrixRow1 = glm::row(item->getModelMatrix(), 1);
+    data.modelMatrixRow2 = glm::row(item->getModelMatrix(), 2);
+    data.modelMatrixRow3 = glm::row(item->getModelMatrix(), 3);
 
     data.textureIdx = textureCounter;
 
@@ -282,7 +283,7 @@ void UI::loadVBOData()
 
   glBufferData(GL_ARRAY_BUFFER, sizeof(uiItemData) * gpuData.size(), gpuData.data(), GL_STATIC_DRAW);
 
-  std::size_t vec4Size = sizeof(cy::Vec4f);
+  std::size_t vec4Size = sizeof(glm::vec4);
   
   for(uint8_t i = 0; i < 4; i++)
   {

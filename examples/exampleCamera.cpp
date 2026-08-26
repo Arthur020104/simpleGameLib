@@ -28,7 +28,7 @@ void ExampleCamera::beforeUpdate()
   
   if(glfwGetMouseButton(WINDOW.window, GLFW_MOUSE_BUTTON_LEFT) == GLFW_PRESS)
   {
-    cy::Vec2f mousePos = cy::Vec2f(0.0f, 0.0f);
+    glm::vec2 mousePos = glm::vec2(0.0f, 0.0f);
     Ray r = generateRay(mousePos);
 
     bool hit = this->scene->intersectSceneObjects(r);
@@ -40,8 +40,8 @@ void ExampleCamera::beforeUpdate()
       }
     }
 
-    Vertex origin = {.pos = r.origin, .normal = cy::Vec3f(0.0f, 0.0f, 0.0f), .uv = cy::Vec2f(0.0f, 0.0f)};
-    Vertex hitPoint = {.pos = r.origin + (r.direction * 1000.0f), .normal = cy::Vec3f(0.0f, 0.0f, 0.0f), .uv = cy::Vec2f(0.0f, 0.0f)};
+    Vertex origin = {.pos = r.origin, .normal = glm::vec3(0.0f, 0.0f, 0.0f), .uv = glm::vec2(0.0f, 0.0f)};
+    Vertex hitPoint = {.pos = r.origin + (r.direction * 1000.0f), .normal = glm::vec3(0.0f, 0.0f, 0.0f), .uv = glm::vec2(0.0f, 0.0f)};
           
     std::vector<Vertex> vertices{origin, hitPoint};
 

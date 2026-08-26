@@ -1,30 +1,31 @@
 #include <camera.h>
-#include <cy/cyMatrix.h>
+#include <glm/glm.hpp>
+#include <glm/gtc/matrix_transform.hpp>
 #include <window.h>
 
-Camera::Camera(cy::Vec3f initialPos): Component(initialPos)
+Camera::Camera(glm::vec3 initialPos): Component(initialPos)
 {
   this->aspect = WINDOW.aspect;
-  this->projectionMatrix = cy::Matrix4f::Perspective(FOV * cy::Deg2Rad<float>(), WINDOW.aspect, N, F);
-  this->direction = direction.GetNormalized();
+  this->projectionMatrix = glm::perspective(glm::radians(FOV), WINDOW.aspect, N, F);
+  this->direction = glm::normalize(direction);
   
   updateMatrices();
 }
 
-cy::Matrix4f& Camera::lookAtMatrix()
+glm::mat4& Camera::lookAtMatrix()
 {
-  cy::Vec3f forward = this->getForwardVector();
+  glm::vec3 forward = this->getForwardVector();
   
-  cy::Vec3f right = this->getRightVector();
+  glm::vec3 right = this->getRightVector();
 
-  cy::Vec3f up = this->getUpVector();
+  glm::vec3 up = this->getUpVector();
 
-  cy::Vec3f pos = this->getPosition();
+  glm::vec3 pos = this->getPosition();
 
-  viewMatrix.column[0] = cy::Vec4f(right.x, up.x, -forward.x, 0.0f);
-  viewMatrix.column[1] = cy::Vec4f(right.y, up.y, -forward.y, 0.0f);
-  viewMatrix.column[2] = cy::Vec4f(right.z, up.z, -forward.z, 0.0f);
-  viewMatrix.column[3] = cy::Vec4f(-(pos % right), -(pos % up), pos % forward, 1.0f);
+  viewMatrix[0] = glm::vec4(right.x, up.x, -forward.x, 0.0f);
+  viewMatrix[1] = glm::vec4(right.y, up.y, -forward.y, 0.0f);
+  viewMatrix[2] = glm::vec4(right.z, up.z, -forward.z, 0.0f);
+  viewMatrix[3] = glm::vec4(-glm::dot(pos, right), -glm::dot(pos, up), glm::dot(pos, forward), 1.0f);
 
   return viewMatrix;
 }
@@ -33,39 +34,39 @@ void Camera::updateMatrices()
 {
   if(WINDOW.aspect != this->aspect) this->updateAspect(WINDOW.aspect);
   this->viewProjection = this->projectionMatrix * lookAtMatrix();
-  this->invertedViewProjection = viewProjection.GetInverse();
+  this->invertedViewProjection = glm::inverse(this->viewProjection);
 }
 
-cy::Matrix4f Camera::getViewProjection()
+glm::mat4 Camera::getViewProjection()
 {
   return this->viewProjection;
 }
 
-cy::Matrix4f Camera::getView()
+glm::mat4 Camera::getView()
 {
   return this->viewMatrix;
 }
 
-cy::Matrix4f Camera::getProjection()
+glm::mat4 Camera::getProjection()
 {
   return this->projectionMatrix;
 }
 
-cy::Matrix4f Camera::getInvertedViewProjection()
+glm::mat4 Camera::getInvertedViewProjection()
 {
   return this->invertedViewProjection;
 }
 
-Ray Camera::generateRay(cy::Vec2f point)
+Ray Camera::generateRay(glm::vec2 point)
 {
-  cy::Vec4f farWorld = invertedViewProjection * cy::Vec4f(point.x, point.y, 1.0f, 1.0f);
+  glm::vec4 farWorld = invertedViewProjection * glm::vec4(point.x, point.y, 1.0f, 1.0f);
   
   farWorld /= farWorld.w;
-  cy::Vec3f pos = this->getPosition();
+  glm::vec3 pos = this->getPosition();
 
   Ray ray;
   ray.origin = pos;
-  ray.direction = (farWorld.XYZ() - pos).GetNormalized();
+  ray.direction = glm::normalize(glm::vec3(farWorld) - pos);
 
   return ray;
 }
@@ -73,50 +74,50 @@ Ray Camera::generateRay(cy::Vec2f point)
 void Camera::updateAspect(float aspect)
 {
   this->aspect = aspect;
-  this->projectionMatrix = cy::Matrix4f::Perspective(FOV * cy::Deg2Rad<float>(), aspect, N, F);
+  this->projectionMatrix = glm::perspective(glm::radians(FOV), aspect, N, F);
 
   this->updateMatrices();
 }
 
-void Camera::setPosition(cy::Vec3f pos)
+void Camera::setPosition(glm::vec3 pos)
 {
   Component::setPosition(pos);
   this->updateMatrices();
 }
 
-void Camera::setRotation(cy::Vec3f rot)
+void Camera::setRotation(glm::vec3 rot)
 {
   Component::setRotation(rot);
 
-  float radX = rot.x * cy::Deg2Rad<float>();
-  float radY = rot.y * cy::Deg2Rad<float>();
-  float radZ = rot.z * cy::Deg2Rad<float>();
+  float radX = glm::radians(rot.x);
+  float radY = glm::radians(rot.y);
 
-  cy::Matrix4f rotationMatrix = cy::Matrix4f::RotationZ(radZ) * cy::Matrix4f::RotationY(radY) * cy::Matrix4f::RotationX(radX);
+  glm::mat4 rotationMatrix = glm::rotate(glm::mat4(1.0f), radY, glm::vec3(0.0f, 1.0f, 0.0f));
+  rotationMatrix = glm::rotate(rotationMatrix, radX, glm::vec3(1.0f, 0.0f, 0.0f));
 
-  this->direction = (rotationMatrix * cy::Vec4f(this->defaultDirection, 0.0f)).XYZ().GetNormalized();
-  this->up        = (rotationMatrix * cy::Vec4f(this->defaultUp,        0.0f)).XYZ().GetNormalized();
-  this->right     = (rotationMatrix * cy::Vec4f(this->defaultRight,     0.0f)).XYZ().GetNormalized();
+  this->direction = glm::normalize(rotationMatrix * glm::vec4(this->defaultDirection, 0.0f));
+  this->up = glm::normalize(rotationMatrix * glm::vec4(this->defaultUp, 0.0f));
+  this->right = glm::normalize(rotationMatrix * glm::vec4(this->defaultRight, 0.0f));
 
   this->updateMatrices();
 }
 
-void Camera::setScale(cy::Vec3f)
+void Camera::setScale(glm::vec3)
 {
   return;
 }
 
-cy::Vec3f Camera::getRightVector()
+glm::vec3 Camera::getRightVector()
 {
   return this->right;
 }
 
-cy::Vec3f Camera::getUpVector()
+glm::vec3 Camera::getUpVector()
 {
   return this->up;
 }
 
-cy::Vec3f Camera::getForwardVector()
+glm::vec3 Camera::getForwardVector()
 {
   return this->direction;
 }

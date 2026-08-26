@@ -1,31 +1,29 @@
 #pragma once
-#include <cy/cyTriMesh.h>
-#include <cy/cyMatrix.h>
-#include <cy/cyQuat.h>
+#include <glm/glm.hpp>
 
 class Transform
 {
   public:
-    Transform(cy::Vec3f pos = cy::Vec3f(0.0f, 0.0f, 0.0f), cy::Vec3f rot = cy::Vec3f(0.0f, 0.0f, 0.0f), cy::Vec3f scale = cy::Vec3f(1.0f, 1.0f, 1.0f));
+    Transform(glm::vec3 pos = glm::vec3(0.0f, 0.0f, 0.0f), glm::vec3 rot = glm::vec3(0.0f, 0.0f, 0.0f), glm::vec3 scale = glm::vec3(1.0f, 1.0f, 1.0f));
 
     void updateModelMatrix();
-    const cy::Matrix4f& getModelMatrix();
+    const glm::mat4& getModelMatrix();
 
-    virtual void setPosition(cy::Vec3f pos);
-    virtual void setRotation(cy::Vec3f rot);
-    virtual void setScale(cy::Vec3f scale);
+    virtual void setPosition(glm::vec3 pos);
+    virtual void setRotation(glm::vec3 rot);
+    virtual void setScale(glm::vec3 scale);
 
-    virtual cy::Vec3f getPosition() { return this->position; }
-    virtual cy::Vec3f getRotation() { return this->rotation; }
-    virtual cy::Vec3f getScale() { return this->scale; }
-    virtual cy::Vec3f getNormalizedPosition() { return this->position.GetNormalized(); }
+    virtual glm::vec3 getPosition() { return this->position; }
+    virtual glm::vec3 getRotation() { return this->rotation; }
+    virtual glm::vec3 getScale() { return this->scale; }
+    virtual glm::vec3 getNormalizedPosition() { return glm::normalize(this->position); }
 
-    virtual cy::Vec3f getForwardVector();
-    virtual cy::Vec3f getRightVector();
-    virtual cy::Vec3f getUpVector();
+    virtual glm::vec3 getForwardVector();
+    virtual glm::vec3 getRightVector();
+    virtual glm::vec3 getUpVector();
 
   private:
-    cy::Matrix4f modelMatrix, rotationMatrix;
+    glm::mat4 modelMatrix, rotationMatrix;
 
-    cy::Vec3f position, scale, rotation;
+    glm::vec3 position, scale, rotation;
 };

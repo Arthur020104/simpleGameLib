@@ -12,13 +12,13 @@
 
 ExampleScene::ExampleScene(): Scene()
 { 
-  std::shared_ptr<Material> roughMaterial = std::make_shared<Material>("/home/arthur/Documents/simpleGame/obj/container.jpg", cy::Vec3f(0.1f, 0.1f, 0.1f), 1.0f);
-  std::shared_ptr<Material> shinyMaterial = std::make_shared<Material>("/home/arthur/Documents/simpleGame/obj/awesomeface.png", cy::Vec3f(1.0f, 1.0f, 1.0f), 32.0f);
-  std::shared_ptr<Material> goldMaterial = std::make_shared<Material>(cy::Vec3f(1.0f, 0.843f, 0.0f), cy::Vec3f(1.0f, 0.843f, 0.0f), 256.0f);
+  std::shared_ptr<Material> roughMaterial = std::make_shared<Material>("/home/arthur/Documents/simpleGame/obj/container.jpg", glm::vec3(0.1f, 0.1f, 0.1f), 1.0f);
+  std::shared_ptr<Material> shinyMaterial = std::make_shared<Material>("/home/arthur/Documents/simpleGame/obj/awesomeface.png", glm::vec3(1.0f, 1.0f, 1.0f), 32.0f);
+  std::shared_ptr<Material> goldMaterial = std::make_shared<Material>(glm::vec3(1.0f, 0.843f, 0.0f), glm::vec3(1.0f, 0.843f, 0.0f), 256.0f);
 
   std::shared_ptr<Mesh> teapotMesh = std::make_shared<Mesh>("/home/arthur/Documents/simpleGame/obj/teapot.obj");
 
-  cy::Vec3f startPos(0.0f, 2.0f, -50.0f);
+  glm::vec3 startPos(0.0f, 2.0f, -50.0f);
   float moveAmount = 20;
 
   for(uint16_t i = 0; i < 10; i++)
@@ -34,35 +34,35 @@ ExampleScene::ExampleScene(): Scene()
         material = goldMaterial;
 
       ExampleObject* teapotObj = new ExampleObject(teapotMesh, DEFAULT_SHADER);
-      teapotObj->setPosition(startPos + cy::Vec3f(moveAmount * i, moveAmount*j, 0.0f));
+      teapotObj->setPosition(startPos + glm::vec3(moveAmount * i, moveAmount*j, 0.0f));
       teapotObj->addMaterial(material, 0, teapotObj->getMaterialIndicesSize() / 2);
-      teapotObj->setScale(cy::Vec3f(0.5f, 0.5f, 0.5f));
-      teapotObj->setRotation(cy::Vec3f(-90.0f, 0.0f, 0.0f));
+      teapotObj->setScale(glm::vec3(0.5f, 0.5f, 0.5f));
+      teapotObj->setRotation(glm::vec3(-90.0f, 0.0f, 0.0f));
       teapotObj->isIntersectable = true;
 
       this->addObject(teapotObj);
     }
   }
  
-  ExampleCamera* cam = new ExampleCamera(cy::Vec3f(-0.0f, 0.0f, 0.0f));
+  ExampleCamera* cam = new ExampleCamera(glm::vec3(-0.0f, 0.0f, 0.0f));
 
-  DirectionalLight* light = new DirectionalLight(cy::Vec3f(0.0f, 3.0f, 2.0f), cy::Vec3f(1.0, 1.0, 1.0), 1.0f);
+  DirectionalLight* light = new DirectionalLight(glm::vec3(0.0f, 3.0f, 2.0f), glm::vec3(1.0, 1.0, 1.0), 1.0f);
 
-  ExamplePointLight* pointLight = new ExamplePointLight(cy::Vec3f(-10.0f, 15.0f, -15.0f), cy::Vec3f(1.0, 0.5, 0.8), 5.0f);
+  ExamplePointLight* pointLight = new ExamplePointLight(glm::vec3(-10.0f, 15.0f, -15.0f), glm::vec3(1.0, 0.5, 0.8), 5.0f);
 
-  std::shared_ptr<Material> boxMaterial = std::make_shared<Material>("/home/arthur/Documents/simpleGame/obj/OldChildrensToysObj/textures/2k/T_Toys_BaseColor.tga", cy::Vec3f(1.0f, 1.0f, 1.0f), 32.0f);
+  std::shared_ptr<Material> boxMaterial = std::make_shared<Material>("/home/arthur/Documents/simpleGame/obj/OldChildrensToysObj/textures/2k/T_Toys_BaseColor.tga", glm::vec3(1.0f, 1.0f, 1.0f), 32.0f);
   //boxMaterial->addSpecularTexture("/home/arthur/Documents/simpleGame/obj/container2_specular.png");
 
   std::shared_ptr<Mesh> boxMesh = std::make_shared<Mesh>("/home/arthur/Documents/simpleGame/obj/OldChildrensToysObj/meshes/ChildrensToys.obj");
 
   ExampleObject* specularTest = new ExampleObject(boxMesh, DEFAULT_SHADER, {boxMaterial});
 
-  specularTest->setPosition(cy::Vec3f(0.0f, 0.0f, -10.0f));
-  specularTest->setRotation(cy::Vec3f(-90.0f, 0.0f, 90.0f));
-  specularTest->setScale(cy::Vec3f(20.0f, 20.0f, 20.0f));
+  specularTest->setPosition(glm::vec3(0.0f, 0.0f, -10.0f));
+  specularTest->setRotation(glm::vec3(-90.0f, 0.0f, 90.0f));
+  specularTest->setScale(glm::vec3(20.0f, 20.0f, 20.0f));
 
   ExampleObject* test = new ExampleObject("/home/arthur/Documents/simpleGame/obj/source/Cartoon_City_Free.obj", DEFAULT_SHADER);
-  test->setScale(cy::Vec3f(0.5f, 0.5f, 0.5f));
+  test->setScale(glm::vec3(0.5f, 0.5f, 0.5f));
 
   this->addObject(test);
   this->addObject(specularTest);
@@ -81,11 +81,11 @@ ExampleScene::ExampleScene(): Scene()
   });
 
   UIItem* crosshair = new UIItem("/home/arthur/Documents/simpleGame/obj/crosshair.png");
-  crosshair->setScale(cy::Vec3f(0.05f, 0.07f, 0.1f));
+  crosshair->setScale(glm::vec3(0.05f, 0.07f, 0.1f));
 
   ExampleUIItem* testItem = new ExampleUIItem("/home/arthur/Documents/simpleGame/obj/container.jpg");
-  testItem->setScale(cy::Vec3f(0.1f, 0.1f, 0.1f));
-  testItem->setPosition(cy::Vec3f(-0.9f, 0.9f, 0.0f));
+  testItem->setScale(glm::vec3(0.1f, 0.1f, 0.1f));
+  testItem->setPosition(glm::vec3(-0.9f, 0.9f, 0.0f));
 
   this->addUIItem(crosshair);
   this->addUIItem(testItem);

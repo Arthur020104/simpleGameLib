@@ -2,7 +2,7 @@
 #include <memory>
 #include <string>
 #include <vector>
-#include <cy/cyMatrix.h>
+#include <glm/glm.hpp>
 #include <mesh.h>
 #include <component.h>
 #include <queue>
@@ -24,7 +24,7 @@ class UIItem: public Component
     
     Texture* texture;
 
-    cy::Matrix4f lastModelMatrix;
+    glm::mat4 lastModelMatrix;
     Texture* lastTexture;
 };
 
@@ -58,7 +58,7 @@ class UI: public Component
     std::queue<UIItem*> destroyQueue;
 
     uint16_t lastW, lastH, lastUIItemCount;
-    cy::Matrix4f lastModelMatrix;
+    glm::mat4 lastModelMatrix;
 
     bool isFirstFrame = true;
   
@@ -71,9 +71,9 @@ class UI: public Component
 
 struct uiItemData
 {
-  cy::Vec4f modelMatrixRow0;
-  cy::Vec4f modelMatrixRow1;
-  cy::Vec4f modelMatrixRow2;
-  cy::Vec4f modelMatrixRow3;
+  glm::vec4 modelMatrixRow0;
+  glm::vec4 modelMatrixRow1;
+  glm::vec4 modelMatrixRow2;
+  glm::vec4 modelMatrixRow3;
   GLuint textureIdx;
 };

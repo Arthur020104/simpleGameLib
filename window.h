@@ -1,6 +1,6 @@
 #pragma once
 #include <GLFW/glfw3.h>
-#include <cy/cyTriMesh.h>
+#include <glm/glm.hpp>
 
 class WindowController
 {
@@ -15,7 +15,7 @@ class WindowController
     void swapBuffers();
     double getTime();
 
-    cy::Vec2f getMousePos(bool ndc = false);
+    glm::vec2 getMousePos(bool ndc = false);
 
     float aspect = 0.0f;
 
@@ -29,7 +29,7 @@ class WindowController
 
 extern WindowController WINDOW;
 
-WindowController initContext(uint16_t w, uint16_t h, const char* title, cy::Vec4f clearColor);
+WindowController initContext(uint16_t w, uint16_t h, const char* title, glm::vec4 clearColor);
 void frameBufferSizeCallback(GLFWwindow* window, uint16_t w, uint16_t h);
 void defineGlPreferences();
 void errorCallback(int error, const char* description);

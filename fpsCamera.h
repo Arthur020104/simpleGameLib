@@ -13,6 +13,6 @@ class FPSCamera : public Camera
     float velocity = 100.0f;
     float sensitivity = 0.1f;
   private:
-    cy::Vec2f lastMousePos = cy::Vec2f(0.0f, 0.0f);
+    glm::vec2 lastMousePos = glm::vec2(0.0f, 0.0f);
     bool firstMouse = true;
 };

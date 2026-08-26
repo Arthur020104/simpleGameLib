@@ -1,9 +1,8 @@
+#include <utils.h>
 #include <fstream>
 #include <string>
 #include <sstream>
-#include <utils.h>
 #include <mesh.h>
-#include <cy/cyTriMesh.h>
 
 std::string readFile(const char* path)
 {

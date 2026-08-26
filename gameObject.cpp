@@ -58,13 +58,13 @@ void GameObject::loadGameObjectFromPath(cy::TriMesh& objTriMesh, std::shared_ptr
   { 
     cy::TriMesh::Mtl material = objTriMesh.M(i);
 
-    cy::Vec3f diffuseColor = cy::Vec3f(material.Kd);
-    if(diffuseColor.Length() == 0.0f) diffuseColor = cy::Vec3f(1.0f, 1.0f, 1.0f);
+    glm::vec3 diffuseColor = glm::vec3(material.Kd[0], material.Kd[1], material.Kd[2]);
+    if(glm::length(diffuseColor) == 0.0f) diffuseColor = glm::vec3(1.0f, 1.0f, 1.0f);
 
-    cy::Vec3f specularColor = cy::Vec3f(material.Ks);
-    if(specularColor.Length() == 0.0f) specularColor = cy::Vec3f(1.0f, 1.0f, 1.0f);
+    glm::vec3 specularColor = glm::vec3(material.Ks[0], material.Ks[1], material.Ks[2]);
+    if(glm::length(specularColor) == 0.0f) specularColor = glm::vec3(1.0f, 1.0f, 1.0f);
     
-    // cy::Vec3f ka = cy::Vec3f(material.Ka);
+    // glm::vec3 ka = glm::vec3(material.Ka);
       
     float shininess = material.Ns > 0.0f ? material.Ns : 1.0f;
     
@@ -117,7 +117,7 @@ GameObject::~GameObject()
   glDeleteBuffers(1, &materialIndicesVBO);
 }
 
-void GameObject::draw(cy::Matrix4f &viewProjection)
+void GameObject::draw(glm::mat4 &viewProjection)
 {
   this->mesh->bindVAO();
 
@@ -125,7 +125,7 @@ void GameObject::draw(cy::Matrix4f &viewProjection)
   glUseProgram(shaderID);
   this->scene->bindSceneLights(this->shaderProgram.get());
 
-  const cy::Matrix4f mvp = viewProjection * this->getModelMatrix();
+  const glm::mat4 mvp = viewProjection * this->getModelMatrix();
 
   this->shaderProgram->bindMat4("mvp", mvp);
   this->shaderProgram->bindMat4("modelMatrix", this->getModelMatrix());
@@ -146,35 +146,33 @@ void GameObject::draw(cy::Matrix4f &viewProjection)
 
 void GameObject::draw(Camera* camera)
 {
-  cy::Matrix4f viewProjection = camera->getViewProjection();
+  glm::mat4 viewProjection = camera->getViewProjection();
   draw(viewProjection);
 }
 
-void GameObject::draw(cy::Matrix4f &projection, cy::Matrix4f &view)
+void GameObject::draw(glm::mat4 &projection, glm::mat4 &view)
 {
-  cy::Matrix4f viewProjection = projection * view;
+  glm::mat4 viewProjection = projection * view;
   draw(viewProjection);
 }
 
 bool GameObject::intersect(Ray& ray)
 {
   //the ray vector will be transformed to the object space
-  cy::Matrix4f invertedModelMatrix = this->getModelMatrix().GetInverse();
+  glm::mat4 invertedModelMatrix = glm::inverse(this->getModelMatrix());
 
-  cy::Vec4f modelSpaceOrigin = invertedModelMatrix * cy::Vec4f(ray.origin, 1.0f);
-  cy::Vec4f modelSpaceDirection = invertedModelMatrix * cy::Vec4f(ray.direction, 0.0f);
+  glm::vec4 modelSpaceOrigin = invertedModelMatrix * glm::vec4(ray.origin, 1.0f);
+  glm::vec4 modelSpaceDirection = invertedModelMatrix * glm::vec4(ray.direction, 0.0f);
   
-  double scale = modelSpaceDirection.XYZ().Length();
-
   Ray modelSpaceRay;
-  modelSpaceRay.origin = modelSpaceOrigin.XYZ();
-  modelSpaceRay.direction = modelSpaceDirection.XYZ() / scale;
+  modelSpaceRay.origin = glm::vec3(modelSpaceOrigin);
+  modelSpaceRay.direction = glm::normalize(glm::vec3(modelSpaceDirection));
 
   if(!this->mesh->intersectMesh(modelSpaceRay, this)) return false;
 
   for(Hit& hit : modelSpaceRay.hits)
   {
-    hit.point = (this->getModelMatrix() * cy::Vec4f(hit.point, 1.0f)).XYZ();
+    hit.point = glm::vec3(this->getModelMatrix() * glm::vec4(hit.point, 1.0f));
     ray.hits.push_back(hit);
   }
   

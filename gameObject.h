@@ -30,9 +30,9 @@ class GameObject: public Component
 
     const std::shared_ptr<Program> getShaderProgram();
 
-    virtual void draw(cy::Matrix4f &projection, cy::Matrix4f &view);
+    virtual void draw(glm::mat4 &projection, glm::mat4 &view);
 
-    virtual void draw(cy::Matrix4f &viewProjection);
+    virtual void draw(glm::mat4 &viewProjection);
 
     virtual void draw(Camera* camera);
 

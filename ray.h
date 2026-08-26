@@ -8,10 +8,10 @@ class GameObject;
 
 struct Ray 
 {
-  cy::Vec3f origin;
-  cy::Vec3f direction;
+  glm::vec3 origin;
+  glm::vec3 direction;
   std::vector<Hit> hits;
 };
 
-bool intersectBoundingVolume(Ray& r, cy::Vec3f* boundingVolume);
+bool intersectBoundingVolume(Ray& r, glm::vec3* boundingVolume);
 bool intersectTriangle(Ray& ray, GameObject* gameObject, Vertex &v0, Vertex &v1, Vertex &v2);

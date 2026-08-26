@@ -2,15 +2,15 @@
 #include <vector>
 #include <algorithm>
 
-void MeshBvhNode::init(std::vector<Vertex>& items, cy::Vec3f boundingVolume[2], uint32_t depth)
+void MeshBvhNode::init(std::vector<Vertex>& items, glm::vec3 boundingVolume[2], uint32_t depth)
 {
   this->depth = depth;
   this->isLeaf = false;
 
   if(this->depth == 0)
   {
-    this->boundingVolume[0] = cy::Vec3f(INFINITY, INFINITY, INFINITY);
-    this->boundingVolume[1] = cy::Vec3f(-INFINITY, -INFINITY, -INFINITY);
+    this->boundingVolume[0] = glm::vec3(INFINITY, INFINITY, INFINITY);
+    this->boundingVolume[1] = glm::vec3(-INFINITY, -INFINITY, -INFINITY);
     for(Vertex& item: items)
     {
       alterBoudingMin(item.pos, this->boundingVolume[0]);
@@ -29,8 +29,8 @@ void MeshBvhNode::init(std::vector<Vertex>& items, cy::Vec3f boundingVolume[2], 
     }
   }
 
-  cy::Vec3f firstChildBoundingVolume[2] = {this->boundingVolume[0], getNewPoint(true)};
-  cy::Vec3f secondChildboundingVolume[2] = {getNewPoint(false), this->boundingVolume[1]};
+  glm::vec3 firstChildBoundingVolume[2] = {this->boundingVolume[0], getNewPoint(true)};
+  glm::vec3 secondChildboundingVolume[2] = {getNewPoint(false), this->boundingVolume[1]};
   
   std::vector<Vertex> firstChildItems;
   std::vector<Vertex> secondChildItems;
@@ -38,7 +38,7 @@ void MeshBvhNode::init(std::vector<Vertex>& items, cy::Vec3f boundingVolume[2], 
   //Spliting the items into two bvh children based on the bounding volume
   for(uint32_t i = 0; i < items.size(); i += 3)
   {
-    cy::Vec3f traingleCenterPoint = (items[i].pos + items[i+1].pos + items[i+2].pos) * 0.333333f;
+    glm::vec3 traingleCenterPoint = (items[i].pos + items[i+1].pos + items[i+2].pos) * 0.333333f;
     
     if(insideBoundingVolume(traingleCenterPoint, firstChildBoundingVolume))
     {
@@ -62,14 +62,14 @@ void MeshBvhNode::init(std::vector<Vertex>& items, cy::Vec3f boundingVolume[2], 
 
 MeshBvhNode::MeshBvhNode(std::vector<Vertex>& items, uint32_t depth )
 {
-  cy::Vec3f positiveInfinity = cy::Vec3f(INFINITY, INFINITY, INFINITY);
-  cy::Vec3f negativeInfinity = cy::Vec3f(-INFINITY, -INFINITY, -INFINITY);
-  cy::Vec3f boundingVolume[2] = { positiveInfinity, negativeInfinity };
+  glm::vec3 positiveInfinity = glm::vec3(INFINITY, INFINITY, INFINITY);
+  glm::vec3 negativeInfinity = glm::vec3(-INFINITY, -INFINITY, -INFINITY);
+  glm::vec3 boundingVolume[2] = { positiveInfinity, negativeInfinity };
 
   init(items, boundingVolume, depth);
 }
 
-MeshBvhNode::MeshBvhNode(std::vector<Vertex>& items, cy::Vec3f boundingVolume[2], uint32_t depth)
+MeshBvhNode::MeshBvhNode(std::vector<Vertex>& items, glm::vec3 boundingVolume[2], uint32_t depth)
 {
   init(items, boundingVolume, depth);
 }
@@ -107,9 +107,9 @@ bool MeshBvhNode::intersect(Ray& ray, GameObject* gameObject)
   return false;
 }
 
-cy::Vec3f MeshBvhNode::getNewPoint(bool firstChild)
+glm::vec3 MeshBvhNode::getNewPoint(bool firstChild)
 {
-  cy::Vec3f baseVec = firstChild ? this->boundingVolume[1] : this->boundingVolume[0];
+  glm::vec3 baseVec = firstChild ? this->boundingVolume[1] : this->boundingVolume[0];
   switch (depth % 3)
   {
   case 0:
@@ -126,10 +126,10 @@ cy::Vec3f MeshBvhNode::getNewPoint(bool firstChild)
     break;
   }
 
-  return cy::Vec3f();
+  return glm::vec3();
 }
 
-bool insideBoundingVolume(cy::Vec3f& point, cy::Vec3f* boundingVolume)
+bool insideBoundingVolume(glm::vec3& point, glm::vec3* boundingVolume)
 {
   if(point.x < boundingVolume[0].x) return false;
   if(point.y < boundingVolume[0].y) return false;
@@ -142,7 +142,7 @@ bool insideBoundingVolume(cy::Vec3f& point, cy::Vec3f* boundingVolume)
   return true;
 }
 
-void alterBoudingMin(cy::Vec3f& newVec, cy::Vec3f& baseVec)
+void alterBoudingMin(glm::vec3& newVec, glm::vec3& baseVec)
 {
   baseVec.x = newVec.x < baseVec.x ? newVec.x : baseVec.x;
 
@@ -151,7 +151,7 @@ void alterBoudingMin(cy::Vec3f& newVec, cy::Vec3f& baseVec)
   baseVec.z = newVec.z < baseVec.z ? newVec.z : baseVec.z;
 }
 
-void alterBoudingMax(cy::Vec3f& newVec, cy::Vec3f& baseVec)
+void alterBoudingMax(glm::vec3& newVec, glm::vec3& baseVec)
 {
  baseVec.x = newVec.x > baseVec.x ? newVec.x : baseVec.x;
 

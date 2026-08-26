@@ -16,7 +16,7 @@ class ExamplePointLight: public PointLight
     {
       std::shared_ptr<Mesh> mesh = std::make_shared<Mesh>("/home/arthur/Documents/simpleGame/obj/square.obj");
       this->body = new ExampleObject(mesh, DEFAULT_SHADER);
-      this->body->setScale(cy::Vec3f(1.0f, 1.0f, 1.0f));
+      this->body->setScale(glm::vec3(1.0f, 1.0f, 1.0f));
       this->body->setPosition(this->getPosition());
       this->scene->addObject(this->body);
     };
