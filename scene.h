@@ -6,7 +6,7 @@
 #include <ray.h>
 #include <cubeMap.h>
 #include <component.h>
-#include <queue>
+#include <set>
 #include <timeQueue.h>
 
 class GameObject;
@@ -62,7 +62,7 @@ class Scene
     std::vector<Light*> lights;
 
     std::vector<Component*> componentsWaitingToStart;
-    std::queue<Component*> destroyQueue;
+    std::set<Component*> destroyQueue;
 
     TimeQueue timeQueue;
 

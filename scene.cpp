@@ -50,9 +50,9 @@ void Scene::handleStart()
 {
   while(!this->destroyQueue.empty())
   {
-    Component* obj = this->destroyQueue.front();
-    this->destroyQueue.pop();
-    erase(obj);
+    Component* obj = *this->destroyQueue.begin();
+    this->erase(obj);
+    this->destroyQueue.erase(this->destroyQueue.begin());
   }
 
   for(Component* obj: this->componentsWaitingToStart)
@@ -66,6 +66,12 @@ void Scene::handleStart()
 
 void Scene::beforeDrawing()
 {
+  //Placeholder
+  if(glfwGetKey(WINDOW.window, GLFW_KEY_ESCAPE) == GLFW_PRESS)
+  {
+    glfwSetWindowShouldClose(WINDOW.window, true);
+  }
+
   if(WINDOW.updateCameras)
   {
     for(Camera* cam: this->cameras)
@@ -134,7 +140,8 @@ bool Scene::intersectSceneObjects(Ray& ray)
 
   for(GameObject* obj: this->objects)
   {
-    if(obj->intersect(ray)) hitSomething = true;
+
+    if(obj->isIntersectable && obj->intersect(ray)) hitSomething = true;
   }
 
   return hitSomething;
@@ -143,7 +150,7 @@ bool Scene::intersectSceneObjects(Ray& ray)
 void Scene::erase(Component* obj)
 {
   bool validForDeletion = false;
-
+  
   auto itemOnObjects = std::find(this->objects.begin(), this->objects.end(), obj);
   if(itemOnObjects != this->objects.end())
   {
@@ -205,5 +212,7 @@ void Scene::addLight(Light* light)
 
 void Scene::destroy(Component* obj)
 {
-  this->destroyQueue.push(obj);
+  if(obj == nullptr) return;
+  
+  this->destroyQueue.insert(obj);
 }

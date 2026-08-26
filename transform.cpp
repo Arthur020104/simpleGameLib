@@ -25,7 +25,7 @@ void Transform::updateModelMatrix()
   this->modelMatrix = positionMatrix * rotationMatrix * scaleMatrix;
 }
 
-cy::Matrix4f Transform::getModelMatrix()
+const cy::Matrix4f& Transform::getModelMatrix()
 {
   return this->modelMatrix;
 }

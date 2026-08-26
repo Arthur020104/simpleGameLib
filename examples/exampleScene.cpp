@@ -38,6 +38,8 @@ ExampleScene::ExampleScene(): Scene()
       teapotObj->addMaterial(material, 0, teapotObj->getMaterialIndicesSize() / 2);
       teapotObj->setScale(cy::Vec3f(0.5f, 0.5f, 0.5f));
       teapotObj->setRotation(cy::Vec3f(-90.0f, 0.0f, 0.0f));
+      teapotObj->isIntersectable = true;
+
       this->addObject(teapotObj);
     }
   }
@@ -62,13 +64,8 @@ ExampleScene::ExampleScene(): Scene()
   ExampleObject* test = new ExampleObject("/home/arthur/Documents/simpleGame/obj/source/Cartoon_City_Free.obj", DEFAULT_SHADER);
   test->setScale(cy::Vec3f(0.5f, 0.5f, 0.5f));
 
-  ExampleObject* quad = new ExampleObject(Mesh::getQuadMesh(), DEFAULT_SHADER);
-  quad->setPosition(cy::Vec3f(0.0f, 0.0f, -5.0f));
-  quad->setScale(cy::Vec3f(50.0f, 50.0f, 50.0f));
-
   this->addObject(test);
   this->addObject(specularTest);
-  this->addObject(quad);
   this->addLight(pointLight);
   this->addLight(light);
   this->addCamera(cam);

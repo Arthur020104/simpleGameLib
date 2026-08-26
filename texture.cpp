@@ -140,8 +140,8 @@ void Texture::bind(Program* shader, const char* uniformName, uint16_t texUnit)
 {
   glActiveTexture(GL_TEXTURE0 + texUnit); 
   glBindTexture(GL_TEXTURE_2D, this->id);
-
-  shader->bindInt(("textures[" + std::to_string(texUnit) + "]").c_str(), texUnit);
+  
+  shader->bindInt(TEXTURE::TEXTURE_UNIFORMS[texUnit], texUnit);
   shader->bindInt(uniformName, texUnit);
 }
 
@@ -150,5 +150,5 @@ void Texture::bind(Program* shader, uint16_t texUnit)
   glActiveTexture(GL_TEXTURE0 + texUnit); 
   glBindTexture(GL_TEXTURE_2D, this->id);
 
-  shader->bindInt(("textures[" + std::to_string(texUnit) + "]").c_str(), texUnit);
+  shader->bindInt(TEXTURE::TEXTURE_UNIFORMS[texUnit], texUnit);
 }

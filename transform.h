@@ -9,7 +9,7 @@ class Transform
     Transform(cy::Vec3f pos = cy::Vec3f(0.0f, 0.0f, 0.0f), cy::Vec3f rot = cy::Vec3f(0.0f, 0.0f, 0.0f), cy::Vec3f scale = cy::Vec3f(1.0f, 1.0f, 1.0f));
 
     void updateModelMatrix();
-    cy::Matrix4f getModelMatrix();
+    const cy::Matrix4f& getModelMatrix();
 
     virtual void setPosition(cy::Vec3f pos);
     virtual void setRotation(cy::Vec3f rot);

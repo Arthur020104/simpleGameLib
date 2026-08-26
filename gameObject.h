@@ -57,6 +57,8 @@ class GameObject: public Component
     virtual void start() = 0;
     virtual void beforeUpdate() = 0;
     virtual void afterUpdate() = 0;
+
+    bool isIntersectable = false;
   private:
 
     GLuint materialIndicesVBO;

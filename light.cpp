@@ -17,15 +17,25 @@ void Light::bind(Program* shaderProgram, char* arrayName, uint16_t index)
 {
   glUseProgram(shaderProgram->getProgram());//bind is happening in here and in GameObject draw
 
-  std::string location = std::string(arrayName) + "[" + std::to_string(index) + "]";
+  char location[32];
+  snprintf(location, sizeof(location), "%s[%u]", arrayName, index);
 
-  shaderProgram->bindVec3((location + ".color").c_str(), this->color);
-  shaderProgram->bindVec3((location + ".position").c_str(), this->getPosition());
+  char strBuffer[32];
 
-  shaderProgram->bindFloat((location + ".intensity").c_str(), this->intensity);
-  shaderProgram->bindFloat((location + ".ambientIntensity").c_str(), this->ambientIntensity);
+  snprintf(strBuffer, sizeof(strBuffer), "%s.color", location);
+  shaderProgram->bindVec3(strBuffer, this->color);
 
-  shaderProgram->bindUint((location + ".type").c_str(), this->getLightType());
+  snprintf(strBuffer, sizeof(strBuffer), "%s.position", location);
+  shaderProgram->bindVec3(strBuffer, this->getPosition());
+
+  snprintf(strBuffer, sizeof(strBuffer), "%s.intensity", location);
+  shaderProgram->bindFloat(strBuffer, this->intensity);
+
+  snprintf(strBuffer, sizeof(strBuffer), "%s.ambientIntensity", location);
+  shaderProgram->bindFloat(strBuffer, this->ambientIntensity);
+
+  snprintf(strBuffer, sizeof(strBuffer), "%s.type", location);
+  shaderProgram->bindUint(strBuffer, this->getLightType());
 }
 
 cy::Vec3f DirectionalLight::getPosition()
@@ -46,9 +56,17 @@ void PointLight::bind(Program* shaderProgram, char* arrayName, uint16_t index)
 {
   Light::bind(shaderProgram, arrayName, index);
 
-  std::string location = std::string(arrayName) + "[" + std::to_string(index) + "]";
+  char location[32];
+  snprintf(location, sizeof(location), "%s[%u]", arrayName, index);
 
-  shaderProgram->bindFloat((location + ".constantFallOff").c_str(), this->constantFallOff);
-  shaderProgram->bindFloat((location + ".linearFallOff").c_str(), this->linearFallOff);
-  shaderProgram->bindFloat((location + ".quadraticFallOff").c_str(), this->quadraticFallOff);
+  char strBuffer[32];
+
+  snprintf(strBuffer, sizeof(strBuffer), "%s.constantFallOff", location);
+  shaderProgram->bindFloat(strBuffer, this->constantFallOff);
+
+  snprintf(strBuffer, sizeof(strBuffer), "%s.linearFallOff", location);
+  shaderProgram->bindFloat(strBuffer, this->linearFallOff);
+  
+  snprintf(strBuffer, sizeof(strBuffer), "%s.quadraticFallOff", location);
+  shaderProgram->bindFloat(strBuffer, this->quadraticFallOff);
 }
