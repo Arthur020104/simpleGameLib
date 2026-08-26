@@ -1,8 +1,8 @@
 #pragma once
-#include <functional>
+#include <memory>
 #include <cstdint>
 #include <window.h>
-#include <memory>
+#include <functional>
 
 class QueueItem 
 {

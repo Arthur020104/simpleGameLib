@@ -1,11 +1,12 @@
 #pragma once
+#include <mesh.h>
 #include <memory>
 #include <string>
 #include <vector>
-#include <glm/glm.hpp>
-#include <mesh.h>
-#include <component.h>
 #include <queue>
+#include <GL/glew.h>
+#include <glm/glm.hpp>
+#include <component.h>
 
 class Mesh;
 class Texture;

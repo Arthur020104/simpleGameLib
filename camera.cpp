@@ -1,7 +1,7 @@
+#define GLM_FORCE_SWIZZLE
 #include <camera.h>
-#include <glm/glm.hpp>
-#include <glm/gtc/matrix_transform.hpp>
 #include <window.h>
+#include <glm/gtc/matrix_transform.hpp>
 
 Camera::Camera(glm::vec3 initialPos): Component(initialPos)
 {
@@ -66,7 +66,7 @@ Ray Camera::generateRay(glm::vec2 point)
 
   Ray ray;
   ray.origin = pos;
-  ray.direction = glm::normalize(glm::vec3(farWorld) - pos);
+  ray.direction = glm::normalize(farWorld.xyz() - pos);
 
   return ray;
 }

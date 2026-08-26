@@ -1,9 +1,9 @@
 #pragma once
-#include <unordered_map>
-#include <GL/glew.h>
 #include <string>
 #include <memory>
+#include <GL/glew.h>
 #include <glm/glm.hpp>
+#include <unordered_map>
 
 class GameObject;
 
@@ -27,6 +27,8 @@ class Program
     void bindBool(const char* uniformName, bool value);
     void bindUint(const char* uniformName, unsigned int value);
 
+    static std::shared_ptr<Program> getDefaultShader();
+
   private:
     GLuint id;
     std::string vertexShaderPath, fragmentShaderPath;
@@ -39,9 +41,8 @@ class Program
     void checkCompileErrors(unsigned short id,const char* type);
     void prepareProgram(unsigned short* shaders, unsigned short size);
     void destroyProgram();
+    static std::shared_ptr<Program> createDefaultShader();
 
 
     uint16_t objectsUsingProgram;
 };
-
-extern std::shared_ptr<Program> DEFAULT_SHADER;

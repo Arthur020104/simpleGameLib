@@ -1,3 +1,4 @@
+#define GLM_FORCE_SWIZZLE
 #include <transform.h>
 #include <glm/gtc/matrix_transform.hpp>
 
@@ -48,15 +49,15 @@ void Transform::setScale(glm::vec3 scale)
 
 glm::vec3 Transform::getForwardVector()
 {
-  return -glm::normalize(glm::vec3(this->rotationMatrix[2]));
+  return -glm::normalize(this->rotationMatrix[2].xyz());
 }
 
 glm::vec3 Transform::getRightVector()
 {
-  return glm::normalize(glm::vec3(this->rotationMatrix[0]));
+  return glm::normalize(this->rotationMatrix[0].xyz());
 }
 
 glm::vec3 Transform::getUpVector()
 {
-  return glm::normalize(glm::vec3(this->rotationMatrix[1]));
+  return glm::normalize(this->rotationMatrix[1].xyz());
 }

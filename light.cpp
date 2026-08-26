@@ -1,6 +1,7 @@
 #include <light.h>
-#include <string.h>
 #include <cstdio>
+#include <string.h>
+
 
 void Light::bind(Program* shaderProgram)
 {

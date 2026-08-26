@@ -1,7 +1,5 @@
 #include <gameObject.h>
-#include <mesh.h>
 #include <GL/glew.h>
-#include <ray.h>
 
 GameObject::GameObject(std::shared_ptr<Mesh> meshData, std::shared_ptr<Program> shader, std::vector<std::shared_ptr<Material>> material): mesh(meshData), shaderProgram(shader), materials(material), Component()
 {
@@ -52,7 +50,7 @@ void GameObject::loadGameObjectFromPath(cy::TriMesh& objTriMesh, std::shared_ptr
   }
 
   if(objTriMesh.NM() == 0)
-    this->materials.push_back(DEFAULT_MATERIAL);
+    this->materials.push_back(Material::getDefaultMaterial());
 
   for(uint8_t i = 0; i < objTriMesh.NM(); i++)
   { 

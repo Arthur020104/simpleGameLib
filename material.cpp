@@ -1,5 +1,16 @@
 #include <material.h>
 
+std::shared_ptr<Material> Material::createDefaultMaterial()
+{
+  return std::make_shared<Material>(glm::vec3(1.0f, 1.0f, 1.0f), glm::vec3(1.0f, 1.0f, 1.0f), 256.0f);
+}
+
+std::shared_ptr<Material> Material::getDefaultMaterial()
+{
+  static std::shared_ptr<Material> defaultMaterial = createDefaultMaterial();
+  return defaultMaterial;
+}
+
 void Material::bind(Program* shaderProgram, char* arrayName, uint16_t index, uint16_t texUnit)
 {
   glUseProgram(shaderProgram->getProgram());//bind is happening in here, GameObject and Light draw

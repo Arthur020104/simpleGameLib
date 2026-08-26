@@ -1,10 +1,7 @@
 #include <mesh.h>
-#include <GL/glew.h>
-#include <cstddef>
 #include <cstdio>
-#include <ray.h>
-#include <vertex.h>
-#include <ray.h>
+#include <cstddef>
+#include <GL/glew.h>
 #include <algorithm>
 
 //PRE-DEFINED MESHES
@@ -16,7 +13,7 @@ std::shared_ptr<Mesh> Mesh::createQuadMesh()
   v3.pos = glm::vec3(-1.0f, 1.0f, 0.0f); v3.normal = glm::vec3(0.0f, 0.0f, 1.0f); v3.uv = glm::vec2(0.0f, 1.0f);
   v4.pos = glm::vec3(1.0f, 1.0f, 0.0f); v4.normal = glm::vec3(0.0f, 0.0f, 1.0f); v4.uv = glm::vec2(1.0f, 1.0f);
 
-  return std::make_shared<Mesh>(Mesh({v1, v2, v4, v1, v4, v3}, MeshType::TRIANGLE_MESH));;
+  return std::make_shared<Mesh>(Mesh({v1, v2, v4, v1, v4, v3}, MeshType::TRIANGLE_MESH));
 }
 
 std::shared_ptr<Mesh> Mesh::getQuadMesh()

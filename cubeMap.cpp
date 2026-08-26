@@ -1,10 +1,9 @@
-#define STB_IMAGE_IMPLEMENTATION
-#include <Libs/stb/stb_image.h>
 #include <cubeMap.h>
-#include <program.h>
 #include <mesh.h>
 #include <camera.h>
-
+#include <program.h>
+#define STB_IMAGE_IMPLEMENTATION
+#include <Libs/stb/stb_image.h>
 
 CubeMap::CubeMap(std::vector<std::string> facesPath): facesPath(facesPath)
 {

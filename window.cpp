@@ -1,16 +1,12 @@
 #define GLFW_INCLUDE_NONE
 #include <window.h>
+#include <string>
 #include <iostream>
 #include <GL/glew.h>
-#include <GLFW/glfw3.h>
 #include <cy/cyGL.h>
-#include <cy/cyCore.h>
-#include <cy/cyTriMesh.h>
-#include <cy/cyMatrix.h>
-#include <string>
 #include <stdexcept>
-#include <stdint.h>
 #include <algorithm>
+#include <GLFW/glfw3.h>
 
 //Windows
 #ifdef _WIN32 

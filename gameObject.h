@@ -1,12 +1,13 @@
 #pragma once
-#include <material.h>
-#include <mesh.h>
-#include <program.h>
-#include <component.h>
-#include <camera.h>
 #include <ray.h>
-#include <scene.h>
 #include <memory>
+#include <mesh.h>
+#include <scene.h>
+#include <camera.h>
+#include <program.h>
+#include <material.h>
+#include <component.h>
+#include <cy/cyTriMesh.h>
 
 class Mesh; 
 class Program;
@@ -16,7 +17,7 @@ class Scene;
 class GameObject: public Component
 {
   public:
-    GameObject(std::shared_ptr<Mesh> meshData, std::shared_ptr<Program> shader, std::vector<std::shared_ptr<Material>> material = {DEFAULT_MATERIAL});
+    GameObject(std::shared_ptr<Mesh> meshData, std::shared_ptr<Program> shader, std::vector<std::shared_ptr<Material>> material = {Material::getDefaultMaterial()});
     
     GameObject(std::string path, std::shared_ptr<Program> shader);
 

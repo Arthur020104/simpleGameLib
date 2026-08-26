@@ -3,6 +3,7 @@
 #include <../ray.h>
 #include <../vertex.h>
 #include <../mesh.h>
+#include <../program.h>
 
 void ExampleCamera::start()
 {
@@ -47,7 +48,7 @@ void ExampleCamera::beforeUpdate()
 
     std::shared_ptr<Mesh> lineMesh = std::make_shared<Mesh>(vertices, MeshType::LINE_MESH);
 
-    lineRay = new ExampleObject(lineMesh, DEFAULT_SHADER);
+    lineRay = new ExampleObject(lineMesh, Program::getDefaultShader());
     this->scene->addObject(lineRay);
   }
 

@@ -1,8 +1,6 @@
 #include <utils.h>
 #include <fstream>
-#include <string>
 #include <sstream>
-#include <mesh.h>
 
 std::string readFile(const char* path)
 {

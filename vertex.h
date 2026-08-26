@@ -1,5 +1,5 @@
 #pragma once
-#include <cy/cyTriMesh.h>
+#include <glm/glm.hpp>
 
 struct Vertex 
 {

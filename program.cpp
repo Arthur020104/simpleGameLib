@@ -1,6 +1,17 @@
 #include <program.h>
-#include <string.h>
 #include <utils.h>
+#include <stdexcept>
+
+std::shared_ptr<Program> Program::createDefaultShader()
+{
+  return std::make_shared<Program>("../shaders/vertex.vs", "../shaders/frag.fs");
+}
+
+std::shared_ptr<Program> Program::getDefaultShader()
+{
+  static std::shared_ptr<Program> defaultShader = createDefaultShader();
+  return defaultShader;
+}
 
 Program::Program(const char* vertexPath, const char* fragmentPath)
 {
@@ -40,7 +51,7 @@ void Program::prepareProgram(unsigned short* shaders, unsigned short size)
   }
   glLinkProgram(this->id);
 
-  checkCompileErrors(this->id, "PROGRAM");
+  checkCompileErrors(this->id, "Program");
 }
 
 unsigned short Program::prepareShader(const char* shaderCode, const char* type)
@@ -60,13 +71,13 @@ void Program::checkCompileErrors(unsigned short id, const char* type)
   GLint sucess;
 	char infoLog[1024];
 	
-  if(type == "PROGRAM")
+  if(type == "Program")
   {
     glGetProgramiv(id, GL_LINK_STATUS, &sucess);
     if(!sucess)
     {
       glGetProgramInfoLog(id, 512, NULL, infoLog);
-      throw std::runtime_error(std::string("ERROR LINKIN THE PROGRAM: ") + infoLog);
+      throw std::runtime_error(std::string("ERROR LINKIN THE Program: ") + infoLog);
     }
     return;
   }

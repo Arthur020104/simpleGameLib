@@ -1,20 +1,14 @@
 #define GLFW_INCLUDE_NONE
-#include <window.h>
-#include <string.h>
 #include <iostream>
-#include <GL/glew.h>
-#include <cy/cyGL.h>
-#include <cy/cyCore.h>
-#include <cy/cyTriMesh.h>
+#include <window.h>
 #include <material.h>
+#include <GL/glew.h>
 #include <glm/glm.hpp>
 #include <examples/exampleScene.h>
 
-
 glm::vec4 CLEAR_COLOR(0.529f, 0.808f, 0.922f, 1.0f);
-WindowController WINDOW = initContext(1280, 720, "Teste 11", CLEAR_COLOR);
-std::shared_ptr<Program> DEFAULT_SHADER = std::make_shared<Program>("/home/arthur/Documents/simpleGame/shaders/vertex.vs", "/home/arthur/Documents/simpleGame/shaders/frag.fs");
-std::shared_ptr<Material> DEFAULT_MATERIAL = std::make_shared<Material>(glm::vec3(1.0f, 1.0f, 1.0f), glm::vec3(1.0f, 1.0f, 1.0f), 256.0f);
+WindowController WINDOW = initContext(1280, 720, "Simple game lib", CLEAR_COLOR);
+
 int main(void)
 {
   double lastTime = glfwGetTime();

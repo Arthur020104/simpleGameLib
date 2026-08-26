@@ -1,10 +1,11 @@
 #pragma once
 #include <ray.h>
+#include <string>
 #include <vector>
 #include <vertex.h>
-#include <string>
-#include <cy/cyTriMesh.h>
+#include <GL/glew.h>
 #include <gameObject.h>
+#include <cy/cyTriMesh.h>
 #include <meshBvhNode.h>
 
 struct Ray;

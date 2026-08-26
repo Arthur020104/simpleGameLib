@@ -1,9 +1,11 @@
 #pragma once
 #define TMIN 0.01f
 #define ERROR_MARGIN 0.01f
-#include <cy/cyTriMesh.h>
+
 #include <hit.h>
 #include <vertex.h>
+#include <glm/glm.hpp>
+
 class GameObject;
 
 struct Ray 

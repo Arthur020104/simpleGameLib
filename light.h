@@ -1,7 +1,6 @@
 #pragma once
-#include <component.h>
 #include <program.h>
-
+#include <component.h>
 
 class Light: public Component
 {

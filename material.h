@@ -1,9 +1,9 @@
 #pragma once
-#include <cy/cyVector.h>
-#include <program.h>
 #include <memory>
 #include <string>
 #include <texture.h>
+#include <program.h>
+#include <cy/cyVector.h>
 
 class Material
 {
@@ -24,6 +24,8 @@ class Material
     void addEmissiveTexture(std::string emissiveTexturePath);
     
     virtual void bind(Program* shaderProgram, char* arrayName, uint16_t index, uint16_t texUnit);
+
+    static std::shared_ptr<Material> getDefaultMaterial();
     
     glm::vec3 diffuse = glm::vec3(1.0f, 1.0f, 1.0f);
     glm::vec3 specularColor = glm::vec3(1.0f, 1.0f, 1.0f);
@@ -34,6 +36,7 @@ class Material
     uint16_t activeTextures = 0;
     float shininess = 1.0f;
   private:
-};
 
-extern std::shared_ptr<Material> DEFAULT_MATERIAL;
+    static std::shared_ptr<Material> createDefaultMaterial();
+
+};

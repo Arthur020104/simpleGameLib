@@ -33,7 +33,7 @@ ExampleScene::ExampleScene(): Scene()
       else
         material = goldMaterial;
 
-      ExampleObject* teapotObj = new ExampleObject(teapotMesh, DEFAULT_SHADER);
+      ExampleObject* teapotObj = new ExampleObject(teapotMesh, Program::getDefaultShader());
       teapotObj->setPosition(startPos + glm::vec3(moveAmount * i, moveAmount*j, 0.0f));
       teapotObj->addMaterial(material, 0, teapotObj->getMaterialIndicesSize() / 2);
       teapotObj->setScale(glm::vec3(0.5f, 0.5f, 0.5f));
@@ -55,13 +55,13 @@ ExampleScene::ExampleScene(): Scene()
 
   std::shared_ptr<Mesh> boxMesh = std::make_shared<Mesh>("/home/arthur/Documents/simpleGame/obj/OldChildrensToysObj/meshes/ChildrensToys.obj");
 
-  ExampleObject* specularTest = new ExampleObject(boxMesh, DEFAULT_SHADER, {boxMaterial});
+  ExampleObject* specularTest = new ExampleObject(boxMesh, Program::getDefaultShader(), {boxMaterial});
 
   specularTest->setPosition(glm::vec3(0.0f, 0.0f, -10.0f));
   specularTest->setRotation(glm::vec3(-90.0f, 0.0f, 90.0f));
   specularTest->setScale(glm::vec3(20.0f, 20.0f, 20.0f));
 
-  ExampleObject* test = new ExampleObject("/home/arthur/Documents/simpleGame/obj/source/Cartoon_City_Free.obj", DEFAULT_SHADER);
+  ExampleObject* test = new ExampleObject("/home/arthur/Documents/simpleGame/obj/source/Cartoon_City_Free.obj", Program::getDefaultShader());
   test->setScale(glm::vec3(0.5f, 0.5f, 0.5f));
 
   this->addObject(test);

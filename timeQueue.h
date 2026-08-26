@@ -1,9 +1,8 @@
 #pragma once
 #include <vector>
-#include <queueItem.h>
 #include <thread>
 #include <mutex>
-#include <memory>
+#include <queueItem.h>
 
 class TimeQueue
 {
