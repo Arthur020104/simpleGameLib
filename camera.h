@@ -29,22 +29,22 @@ public:
   
   void updateMatrices();
 
-private:
+protected:
   const float N = 0.1f, F = 100000.0f;
   const float FOV = 90.0f;
   float aspect;
   
   glm::vec3 defaultDirection = glm::vec3(0.0f, 0.0f, -1.0f);
-  glm::vec3 defaultUp        = glm::vec3(0.0f, 1.0f, 0.0f);
-  glm::vec3 defaultRight     = glm::vec3(1.0f, 0.0f, 0.0f);
+  glm::vec3 defaultUp = glm::vec3(0.0f, 1.0f, 0.0f);
+  glm::vec3 defaultRight = glm::vec3(1.0f, 0.0f, 0.0f);
 
   glm::vec3 direction = glm::vec3(0.0f, 0.0f, -1.0f);
-  glm::vec3 up        = glm::vec3(0.0f, 1.0f, 0.0f);
-  glm::vec3 right     = glm::vec3(1.0f, 0.0f, 0.0f);
+  glm::vec3 up = glm::vec3(0.0f, 1.0f, 0.0f);
+  glm::vec3 right = glm::vec3(1.0f, 0.0f, 0.0f);
 
   glm::mat4 viewMatrix, projectionMatrix, viewProjection, invertedViewProjection;
 
+  private:
   glm::mat4& lookAtMatrix();
-  
   virtual void setScale(glm::vec3 scale) override;
 };

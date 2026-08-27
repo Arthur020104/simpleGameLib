@@ -61,3 +61,8 @@ glm::vec3 Transform::getUpVector()
 {
   return glm::normalize(this->rotationMatrix[1].xyz());
 }
+
+const glm::mat4& Transform::getRotationMatrix()
+{
+  return this->rotationMatrix;
+}

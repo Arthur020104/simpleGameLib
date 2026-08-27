@@ -8,6 +8,7 @@ class Transform
 
     void updateModelMatrix();
     const glm::mat4& getModelMatrix();
+    const glm::mat4& getRotationMatrix();
 
     virtual void setPosition(glm::vec3 pos);
     virtual void setRotation(glm::vec3 rot);

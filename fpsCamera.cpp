@@ -1,5 +1,6 @@
 #include <fpsCamera.h>
 #include <window.h>
+#include <glm/gtc/matrix_transform.hpp>
 
 void FPSCamera::start()
 { 
@@ -43,4 +44,21 @@ void FPSCamera::beforeUpdate()
   float yaw = currentRot.y - mouseDelta.x;
 
   this->setRotation(glm::vec3(pitch, yaw, 0.0f));
+}
+
+void FPSCamera::setRotation(glm::vec3 rot)
+{
+  Component::setRotation(rot);
+
+  float radX = glm::radians(rot.x);
+  float radY = glm::radians(rot.y);
+
+  glm::mat4 rotationMatrix = glm::rotate(glm::mat4(1.0f), radY, glm::vec3(0.0f, 1.0f, 0.0f));
+  rotationMatrix = glm::rotate(rotationMatrix, radX, glm::vec3(1.0f, 0.0f, 0.0f));
+
+  this->direction = glm::normalize(rotationMatrix * glm::vec4(this->defaultDirection, 0.0f));
+  this->up = glm::normalize(rotationMatrix * glm::vec4(this->defaultUp, 0.0f));
+  this->right = glm::normalize(rotationMatrix * glm::vec4(this->defaultRight, 0.0f));
+
+  this->updateMatrices();
 }

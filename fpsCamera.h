@@ -9,6 +9,7 @@ class FPSCamera : public Camera
     void start() override;
     void beforeUpdate() override;
     void afterUpdate() override;
+    void setRotation(glm::vec3 rot) override;
   protected:
     float velocity = 100.0f;
     float sensitivity = 0.1f;
