@@ -165,6 +165,7 @@ bool GameObject::intersect(Ray& ray)
   Ray modelSpaceRay;
   modelSpaceRay.origin = glm::vec3(modelSpaceOrigin);
   modelSpaceRay.direction = glm::normalize(glm::vec3(modelSpaceDirection));
+  modelSpaceRay.maxDistance = ray.maxDistance;
 
   if(!this->mesh->intersectMesh(modelSpaceRay, this)) return false;
 

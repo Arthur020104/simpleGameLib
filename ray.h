@@ -13,6 +13,8 @@ struct Ray
   glm::vec3 origin;
   glm::vec3 direction;
   std::vector<Hit> hits;
+
+  float maxDistance = INFINITY;
 };
 
 bool intersectBoundingVolume(Ray& r, glm::vec3* boundingVolume);

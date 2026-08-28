@@ -26,8 +26,7 @@ bool intersectBoundingVolume(Ray& r, glm::vec3* boundingVolume)
   float minOfMax = std::min(t2x, t2y);
   minOfMax = std::min(minOfMax, t2z);
 
-
-  if(maxOfMin > minOfMax || minOfMax < ERROR_MARGIN)
+  if(maxOfMin > minOfMax || minOfMax < ERROR_MARGIN || maxOfMin > r.maxDistance)
     return false;
   
   return true;
@@ -56,6 +55,9 @@ bool intersectTriangle(Ray& ray, GameObject* gameObject, Vertex &v0, Vertex &v1,
   if(t < TMIN) return false;
 
   glm::vec3 pointOnPlane = ray.origin + ray.direction * t;
+
+  float distance = glm::length(pointOnPlane - ray.origin);
+  if(distance > ray.maxDistance) return false;
 
   float total = 0;
 
