@@ -7,6 +7,8 @@ void Scene::draw()
 {
   if(cameras.size() <= 0) throw std::runtime_error("At least one camera is necessary for rendering");
 
+  std::scoped_lock lock(this->objectsLock, this->camerasLock, this->uiLock);
+
   for(GameObject* obj: this->objects)
   {
     obj->draw(this->cameras[activeCamera]); 
@@ -43,25 +45,41 @@ Scene::~Scene()
 
 void Scene::addUIItem(UIItem* uiItem)
 { 
+  std::scoped_lock lock(this->uiLock);
   this->ui->addUIItem(uiItem); 
 }
 
 void Scene::handleStart()
 {
-  while(!this->destroyQueue.empty())
+  while(true)
   {
-    Component* obj = *this->destroyQueue.begin();
-    this->erase(obj);
-    this->destroyQueue.erase(this->destroyQueue.begin());
+    Component* objToDelete = nullptr;
+    {
+      std::scoped_lock lock(this->destroyQueueLock);
+      if(this->destroyQueue.empty()) break;
+
+      objToDelete = *this->destroyQueue.begin();
+      this->destroyQueue.erase(this->destroyQueue.begin());
+    }
+    
+    if(objToDelete)
+    {
+      this->erase(objToDelete);
+    }
   }
 
-  for(Component* obj: this->componentsWaitingToStart)
+  std::vector<Component*> toStart;
+  {
+    std::scoped_lock componentsLock(this->componentsWaitingToStartLock);
+    toStart = std::move(this->componentsWaitingToStart);
+    this->componentsWaitingToStart.clear();
+  }
+
+  for(Component* obj: toStart)
   {
     obj->start();
     this->components.push_back(obj);
   }
-
-  this->componentsWaitingToStart.clear();
 }
 
 void Scene::beforeDrawing()
@@ -71,6 +89,8 @@ void Scene::beforeDrawing()
   {
     glfwSetWindowShouldClose(WINDOW.window, true);
   }
+
+  std::scoped_lock lock(this->camerasLock);
 
   if(WINDOW.updateCameras)
   {
@@ -103,6 +123,8 @@ void Scene::addCubeMap(std::vector<std::string> facePaths)
 
 void Scene::addObject(GameObject* obj)
 {
+  std::scoped_lock lock(this->objectsLock, this->componentsWaitingToStartLock);
+
   obj->scene = this;
   this->objects.push_back(obj);
   this->componentsWaitingToStart.push_back(obj);
@@ -110,6 +132,8 @@ void Scene::addObject(GameObject* obj)
 
 void Scene::addCamera(Camera* cam)
 {
+  std::scoped_lock lock(this->camerasLock, this->componentsWaitingToStartLock);
+
   cam->scene = this;
   this->cameras.push_back(cam);
   this->componentsWaitingToStart.push_back(cam);
@@ -117,13 +141,17 @@ void Scene::addCamera(Camera* cam)
 
 void Scene::setActiveCam(uint16_t activeCam)
 {
+  std::scoped_lock lock(this->camerasLock);
+
   if(cameras.size() <= activeCam) throw std::runtime_error("Cannot set the active camera: the specified camera index does not exist.");
 
   this->activeCamera = activeCam;
 }
 
 void Scene::setActiveCam(Camera* cam)
-{
+{ 
+  std::scoped_lock lock(this->camerasLock);
+
   for(uint16_t i = 0; i < this->cameras.size(); i++)
   {
     if(cam == this->cameras[i])
@@ -140,7 +168,6 @@ bool Scene::intersectSceneObjects(Ray& ray)
 
   for(GameObject* obj: this->objects)
   {
-
     if(obj->isIntersectable && obj->intersect(ray)) hitSomething = true;
   }
 
@@ -149,6 +176,8 @@ bool Scene::intersectSceneObjects(Ray& ray)
 
 void Scene::erase(Component* obj)
 {
+  std::scoped_lock lock(this->objectsLock, this->componentsWaitingToStartLock, this->camerasLock, this->lightsLock);
+
   bool validForDeletion = false;
   
   auto itemOnObjects = std::find(this->objects.begin(), this->objects.end(), obj);
@@ -193,6 +222,8 @@ void Scene::erase(Component* obj)
 
 void Scene::bindSceneLights(Program* shaderProgram)
 {
+  std::scoped_lock lock(this->lightsLock);
+
   if(shaderProgram == nullptr) return;
 
   for(uint16_t i = 0; i < this->lights.size(); i++)
@@ -205,6 +236,8 @@ void Scene::bindSceneLights(Program* shaderProgram)
 
 void Scene::addLight(Light* light)
 {
+  std::scoped_lock lock(this->lightsLock, this->componentsWaitingToStartLock);
+
   light->scene = this;
   this->lights.push_back(light);
   this->componentsWaitingToStart.push_back(light);
@@ -213,6 +246,8 @@ void Scene::addLight(Light* light)
 void Scene::destroy(Component* obj)
 {
   if(obj == nullptr) return;
-  
+
+  std::scoped_lock lock(this->destroyQueueLock);
+
   this->destroyQueue.insert(obj);
 }
