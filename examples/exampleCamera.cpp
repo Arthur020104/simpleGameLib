@@ -5,6 +5,7 @@
 #include <../mesh.h>
 #include <../program.h>
 
+
 void ExampleCamera::start()
 {
   
@@ -17,9 +18,8 @@ void ExampleCamera::afterUpdate()
   return;
 }
 
-void ExampleCamera::beforeUpdate()
+void ExampleCamera::fixedUpdate()
 {
-  FPSCamera::beforeUpdate();
   if(lineRay != nullptr && glfwGetMouseButton(WINDOW.window, GLFW_MOUSE_BUTTON_LEFT) == GLFW_PRESS)
   {
     this->scene->destroy(lineRay);
@@ -37,7 +37,11 @@ void ExampleCamera::beforeUpdate()
     {
       for(Hit& hit: r.hits)
       {
-        this->scene->getTimeQueue()->addToQueue([this, hit]() { this->scene->destroy(hit.hitObject); }, 5.0f);
+        b3BodyId bodyId = hit.hitObject->getBodyId();
+        b3Vec3 velocity = b3Body_GetLinearVelocity(bodyId);
+
+        r.direction = glm::normalize(r.direction) * 10.0f;
+        b3Body_SetLinearVelocity(bodyId, (b3Vec3){r.direction.x + velocity.x, r.direction.y + velocity.y, r.direction.z + velocity.z});
       }
     }
 
@@ -52,5 +56,11 @@ void ExampleCamera::beforeUpdate()
     this->scene->addObject(lineRay);
   }
 
+  return;
+}
+
+void ExampleCamera::beforeUpdate()
+{
+  FPSCamera::beforeUpdate();
   return;
 }

@@ -9,7 +9,7 @@
 #include <component.h>
 #include <timeQueue.h>
 #include <gameObject.h>
-
+#include <Libs/box3d/include/box3d/box3d.h>
 
 class GameObject;
 class Camera;
@@ -23,68 +23,66 @@ class Scene
 {
   public:
     Scene();
-
     ~Scene();
 
-    void addObject(GameObject* obj);
-
-    void addCamera(Camera* cam);
-
-    void setActiveCam(uint16_t activeCam);
-
-    void setActiveCam(Camera* cam);
-
-    void addUIItem(UIItem* uiItem);
-
-    void draw();
-
     void handleStart();
+    virtual void beforeUpdate();
+    void draw();
+    virtual void afterUpdate();
 
-    virtual void beforeDrawing();
-
-    virtual void afterDrawing();
-
+    void addObject(GameObject* obj);
+    void addCamera(Camera* cam);
+    void addLight(Light* light);
+    void addUIItem(UIItem* uiItem);
+    void addCubeMap(std::vector<std::string> facePaths);
     void destroy(Component* obj);
 
-    virtual bool intersectSceneObjects(Ray& ray);
-
-    void addCubeMap(std::vector<std::string> facePaths);
-
-    void addLight(Light* light);
+    void setActiveCam(uint16_t activeCam);
+    void setActiveCam(Camera* cam);
+    Camera* getActiveCamera() { return this->cameras[this->activeCamera]; }
 
     void bindSceneLights(Program* shaderProgram);
-
+    virtual bool intersectSceneObjects(Ray& ray);
     TimeQueue* getTimeQueue() { return &this->timeQueue; }
 
-    Camera* getActiveCamera() { return this->cameras[this->activeCamera]; }
+    b3WorldId getWorldId() { return this->worldId; }
+
   private:
+    void erase(Component* obj);
+
     std::vector<GameObject*> objects;
     mutable std::mutex objectsLock;
 
     std::vector<Camera*> cameras;
     mutable std::mutex camerasLock;
+    uint16_t activeCamera = 0;
 
-    std::vector<Component*> components;
-    //Components does not need lock, because is it only acessed inside of the scene's start, beforeUpdate and afterUpdate(only called in main thread).
     std::vector<Light*> lights;
     mutable std::mutex lightsLock;
 
+    std::vector<Component*> components;
+
     std::vector<Component*> componentsWaitingToStart;
     mutable std::mutex componentsWaitingToStartLock;
+
     std::set<Component*> destroyQueue;
     mutable std::mutex destroyQueueLock;
 
-    TimeQueue timeQueue;
-
     CubeMap* cubeMap;
+    bool hasCubeMap = false;
 
     UI* ui;
     mutable std::mutex uiLock;
 
-    bool hasCubeMap = false;
+    float timeStep = 1.0f / 60.0f;
+    uint8_t subStepCount = 4;
+    
+    bool hasStartedPhysics = false;
 
-    uint16_t activeCamera = 0;
+    double accumulatedTime = 0.0f;
 
-    void erase(Component* obj);
-    //std::vector<Ligth*> lights;
+    TimeQueue timeQueue;
+    b3WorldId worldId;
+
+    void fixedUpdate();
 };

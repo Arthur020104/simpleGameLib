@@ -28,9 +28,9 @@ int main(void)
 
     glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 
-    scene->beforeDrawing();
+    scene->beforeUpdate();
     scene->draw();
-    scene->afterDrawing();
+    scene->afterUpdate();
 
     WINDOW.swapBuffers();
     WINDOW.pollEvents();

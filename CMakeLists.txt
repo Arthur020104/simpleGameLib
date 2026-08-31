@@ -66,6 +66,8 @@ set(HEADERS
 
 add_executable(Renderer ${SOURCES} ${HEADERS})
 
+add_subdirectory (./Libs/box3d box3dBuild)
+
 target_include_directories(
   Renderer PRIVATE 
   ${CMAKE_CURRENT_SOURCE_DIR}
@@ -76,4 +78,5 @@ target_link_libraries(Renderer PRIVATE
   glfw
   OpenGL::GL
   GLEW::GLEW
+  box3d
 )

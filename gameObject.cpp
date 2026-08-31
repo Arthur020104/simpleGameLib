@@ -1,7 +1,8 @@
 #include <gameObject.h>
 #include <GL/glew.h>
+#include <utils.h>
 
-GameObject::GameObject(std::shared_ptr<Mesh> meshData, std::shared_ptr<Program> shader, std::vector<std::shared_ptr<Material>> material): mesh(meshData), shaderProgram(shader), materials(material), Component()
+GameObject::GameObject(std::shared_ptr<Mesh> meshData, std::shared_ptr<Program> shader, std::vector<std::shared_ptr<Material>> material, GameObjectType gameObjectType): mesh(meshData), shaderProgram(shader), materials(material), Component(), gameObjectType(gameObjectType)
 {
   if(material.size() == 0)
     throw std::runtime_error("Error: GameObject must have at least one material.");
@@ -12,7 +13,7 @@ GameObject::GameObject(std::shared_ptr<Mesh> meshData, std::shared_ptr<Program> 
 /* cy::TriMesh objTriMesh;
   if(!objTriMesh.LoadFromFileObj(path.c_str(), true, &std::cout)) std::cerr << "Failed to load Obj from file. Path: '"<< path << "'.\n";*/
 
-GameObject::GameObject(std::string path, std::shared_ptr<Program> shader): Component()
+GameObject::GameObject(std::string path, std::shared_ptr<Program> shader, GameObjectType gameObjectType): Component(), gameObjectType(gameObjectType)
 {
   cy::TriMesh objTriMesh;
   if(!objTriMesh.LoadFromFileObj(path.c_str(), true, &std::cout)) 
@@ -21,12 +22,12 @@ GameObject::GameObject(std::string path, std::shared_ptr<Program> shader): Compo
   this->loadGameObjectFromPath(objTriMesh, shader);
 }
 
-GameObject::GameObject(cy::TriMesh& objTriMesh, std::shared_ptr<Program> shader): Component()
+GameObject::GameObject(cy::TriMesh& objTriMesh, std::shared_ptr<Program> shader, GameObjectType gameObjectType): Component(), gameObjectType(gameObjectType)
 {
   this->loadGameObjectFromPath(objTriMesh, shader);
 }
 
-GameObject::GameObject(const char* path, std::shared_ptr<Program> shader): Component()
+GameObject::GameObject(const char* path, std::shared_ptr<Program> shader, GameObjectType gameObjectType): Component(), gameObjectType(gameObjectType)
 {
   cy::TriMesh objTriMesh;
   if(!objTriMesh.LoadFromFileObj(path, true, &std::cout)) 
@@ -192,7 +193,7 @@ void GameObject::useOnly(std::shared_ptr<Material> material)
   this->useOnly(i);
 }
 
-void GameObject::GameObject::useOnly(uint8_t materialIndex)
+void GameObject::useOnly(uint8_t materialIndex)
 {
   if(materialIndex >= this->materials.size())
     throw std::runtime_error("Error: Material index out of bounds.");
@@ -273,4 +274,102 @@ void GameObject::setMaterialIndices(std::vector<uint8_t> materialIndices)
 {
   this->materialIndices = materialIndices;
   this->loadMaterialIndicesToGPU();
+}
+
+void GameObject::createPhysicalBody(PhysicalShapeType physicalShapeType, float density, float friction)
+{
+  if(this->scene == nullptr)
+    throw std::runtime_error("Error: GameObject must be added to a scene before creating a physical body.");
+
+  bool isDynamic = this->gameObjectType == GameObjectType::DYNAMIC;
+
+  if(this->hasPhysicalBody) 
+  {
+    b3DestroyBody(this->bodyId);
+    this->hasPhysicalBody = false;
+  }
+  b3BodyDef bodyDefinition = b3DefaultBodyDef();
+  if(isDynamic) bodyDefinition.type = b3_dynamicBody;
+  
+  bodyDefinition.position = (b3Vec3){this->getPosition().x, this->getPosition().y, this->getPosition().z};
+  this->bodyId = b3CreateBody(this->scene->getWorldId(), &bodyDefinition);
+
+  switch (physicalShapeType)
+  {
+    case PhysicalShapeType::CUBE:
+    {
+      glm::vec3 minBoud = this->getModelMatrix() * glm::vec4(this->mesh->boundingVolume[0], 1.0f);
+      glm::vec3 maxBoud = this->getModelMatrix() * glm::vec4(this->mesh->boundingVolume[1], 1.0f);
+
+      glm::vec3 halfs = maxBoud - minBoud;
+
+      float hx = halfs.x > 0.0f ? halfs.x / 2.0f : 0.5f;
+      float hy = halfs.y > 0.0f ? halfs.y / 2.0f : 0.5f;
+      float hz = halfs.z > 0.0f ? halfs.z / 2.0f : 0.5f;
+
+      b3BoxHull dynamicBox = b3MakeBoxHull(hx, hy, hz);
+      b3ShapeDef shapeDef = b3DefaultShapeDef();
+      
+      if(isDynamic)
+      {
+        shapeDef.density = 1.0f;
+        shapeDef.baseMaterial.friction = 0.3f;
+      }
+
+      b3CreateHullShape(bodyId, &shapeDef, &dynamicBox.base);
+      break;
+    };
+    
+    default:
+      throw std::runtime_error("Error: Physical body type not implemented.");
+      break;
+  }
+  this->hasPhysicalBody = true;
+  this->physicalShapeType = physicalShapeType;
+}
+
+void GameObject::beforeUpdate()
+{
+  if(this->hasPhysicalBody)
+  {
+    b3Transform bodyTransform = b3Body_GetTransform(this->bodyId);
+    this->setPosition(glm::vec3(bodyTransform.p.x, bodyTransform.p.y, bodyTransform.p.z));
+    
+    b3Vec3 eulerAngles = b3QuatToEuler(bodyTransform.q);
+
+    glm::vec3 rotation = glm::vec3(eulerAngles.x, eulerAngles.y, eulerAngles.z) * cy::Deg2Rad<float>();
+    this->setRotation(rotation);
+  }
+}
+
+void GameObject::setPosition(glm::vec3 pos)
+{
+  Transform::setPosition(pos);
+
+  if(this->hasPhysicalBody)
+  {
+    b3Transform bodyTransform = b3Body_GetTransform(this->bodyId);
+    b3Body_SetTransform(this->bodyId, (b3Vec3){pos.x, pos.y, pos.z}, bodyTransform.q);
+  }
+}
+
+void GameObject::setRotation(glm::vec3 rot)
+{
+  Transform::setRotation(rot);
+
+  if(this->hasPhysicalBody)
+  {
+    b3Transform bodyTransform = b3Body_GetTransform(this->bodyId);
+    b3Body_SetTransform(this->bodyId, bodyTransform.p, b3EulerToQuat((b3Vec3){rot.x, rot.y, rot.z}));
+  }
+}
+
+void GameObject::setScale(glm::vec3 scale)
+{
+  Transform::setScale(scale);
+
+  if(this->hasPhysicalBody)
+  {
+    this->createPhysicalBody(this->physicalShapeType);
+  }
 }

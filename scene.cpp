@@ -2,6 +2,7 @@
 #include <iostream>
 #include <window.h>
 #include <algorithm>
+#include <utils.h>
 
 void Scene::draw()
 {
@@ -25,6 +26,12 @@ Scene::Scene()
   this->ui = new UI();
   this->ui->scene = this;
   this->componentsWaitingToStart.push_back(this->ui);
+
+  b3WorldDef worldDef = b3DefaultWorldDef();
+  worldDef.gravity = (b3Vec3){ 0.0f, -10.0f, 0.0f };
+
+  this->worldId = b3CreateWorld(&worldDef);
+  
 }
 
 Scene::~Scene()
@@ -41,6 +48,8 @@ Scene::~Scene()
 
   if(hasCubeMap)
     delete cubeMap;
+  
+  b3DestroyWorld(worldId);
 }
 
 void Scene::addUIItem(UIItem* uiItem)
@@ -51,6 +60,7 @@ void Scene::addUIItem(UIItem* uiItem)
 
 void Scene::handleStart()
 {
+  
   while(true)
   {
     Component* objToDelete = nullptr;
@@ -82,7 +92,7 @@ void Scene::handleStart()
   }
 }
 
-void Scene::beforeDrawing()
+void Scene::beforeUpdate()
 {
   //Placeholder
   if(glfwGetKey(WINDOW.window, GLFW_KEY_ESCAPE) == GLFW_PRESS)
@@ -105,13 +115,30 @@ void Scene::beforeDrawing()
   {
     obj->beforeUpdate();
   }
+
+  this->accumulatedTime += WINDOW.deltaTime;
+
+  while(this->accumulatedTime >= this->timeStep)
+  {
+    this->fixedUpdate();
+    b3World_Step(this->worldId, this->timeStep, this->subStepCount);
+    this->accumulatedTime -= this->timeStep;
+  }
 }
 
-void Scene::afterDrawing()
+void Scene::afterUpdate()
 {
   for(Component* obj: this->components)
   {
     obj->afterUpdate();
+  }
+}
+
+void Scene::fixedUpdate()
+{
+  for(Component* obj: this->components)
+  {
+    obj->fixedUpdate();
   }
 }
 

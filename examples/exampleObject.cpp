@@ -7,6 +7,7 @@ void ExampleObject::start()
 
 void ExampleObject::beforeUpdate()
 {
+  GameObject::beforeUpdate();
   return;
 }
 
