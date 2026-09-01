@@ -6,6 +6,7 @@
 #include <vertex.h>
 #include <glm/glm.hpp>
 
+
 class GameObject;
 
 struct Ray 
@@ -14,7 +15,7 @@ struct Ray
   glm::vec3 direction;
   std::vector<Hit> hits;
 
-  float maxDistance = INFINITY;
+  float maxDistance = 1000.0f;//To work better with box3d
 };
 
 bool intersectBoundingVolume(Ray& r, glm::vec3* boundingVolume);

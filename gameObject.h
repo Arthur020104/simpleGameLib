@@ -64,6 +64,8 @@ class GameObject: public Component
 
     uint8_t getMaterialsSize() {return materials.size();};
 
+    std::vector<std::shared_ptr<Material>> getMaterials() {return this->materials;};
+
     void setMaterialIndices(std::vector<uint8_t> materialIndices);
 
     virtual void start() = 0;

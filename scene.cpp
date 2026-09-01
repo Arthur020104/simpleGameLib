@@ -28,10 +28,9 @@ Scene::Scene()
   this->componentsWaitingToStart.push_back(this->ui);
 
   b3WorldDef worldDef = b3DefaultWorldDef();
-  worldDef.gravity = (b3Vec3){ 0.0f, -10.0f, 0.0f };
+  worldDef.gravity = (b3Vec3){ this->gravity.x, this->gravity.y, this->gravity.z };
 
   this->worldId = b3CreateWorld(&worldDef);
-  
 }
 
 Scene::~Scene()
@@ -50,6 +49,12 @@ Scene::~Scene()
     delete cubeMap;
   
   b3DestroyWorld(worldId);
+}
+
+void Scene::setGravity(glm::vec3 gravity)
+{
+  this->gravity = gravity;
+  b3World_SetGravity(this->worldId, (b3Vec3){ gravity.x, gravity.y, gravity.z });
 }
 
 void Scene::addUIItem(UIItem* uiItem)

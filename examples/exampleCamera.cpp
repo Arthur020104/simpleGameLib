@@ -32,28 +32,31 @@ void ExampleCamera::fixedUpdate()
     glm::vec2 mousePos = glm::vec2(0.0f, 0.0f);
     Ray r = generateRay(mousePos);
 
-    bool hit = this->scene->intersectSceneObjects(r);
-    if(hit)
-    {
-      for(Hit& hit: r.hits)
-      {
-        b3BodyId bodyId = hit.hitObject->getBodyId();
-        b3Vec3 velocity = b3Body_GetLinearVelocity(bodyId);
+    b3Vec3 origin = (b3Vec3){r.origin.x, r.origin.y, r.origin.z};
+    b3Vec3 direction = (b3Vec3){r.direction.x * r.maxDistance, r.direction.y * r.maxDistance, r.direction.z * r.maxDistance};
 
-        r.direction = glm::normalize(r.direction) * 10.0f;
-        b3Body_SetLinearVelocity(bodyId, (b3Vec3){r.direction.x + velocity.x, r.direction.y + velocity.y, r.direction.z + velocity.z});
-      }
+    b3RayResult result = b3World_CastRayClosest(this->scene->getWorldId(), origin, direction, b3DefaultQueryFilter());
+
+    if(result.hit)
+    {
+      b3ExplosionDef explosion = b3DefaultExplosionDef();
+      explosion.position = result.point;
+      explosion.radius = 3.0f;
+      explosion.falloff = 2.0f;
+      explosion.impulsePerArea = 50.0f;
+
+      b3World_Explode(this->scene->getWorldId(), &explosion);
     }
 
-    Vertex origin = {.pos = r.origin, .normal = glm::vec3(0.0f, 0.0f, 0.0f), .uv = glm::vec2(0.0f, 0.0f)};
-    Vertex hitPoint = {.pos = r.origin + (r.direction * 1000.0f), .normal = glm::vec3(0.0f, 0.0f, 0.0f), .uv = glm::vec2(0.0f, 0.0f)};
+    // Vertex origin = {.pos = r.origin, .normal = glm::vec3(0.0f, 0.0f, 0.0f), .uv = glm::vec2(0.0f, 0.0f)};
+    // Vertex hitPoint = {.pos = r.origin + (r.direction * 1000.0f), .normal = glm::vec3(0.0f, 0.0f, 0.0f), .uv = glm::vec2(0.0f, 0.0f)};
           
-    std::vector<Vertex> vertices{origin, hitPoint};
+    // std::vector<Vertex> vertices{origin, hitPoint};
 
-    std::shared_ptr<Mesh> lineMesh = std::make_shared<Mesh>(vertices, MeshType::LINE_MESH);
+    // std::shared_ptr<Mesh> lineMesh = std::make_shared<Mesh>(vertices, MeshType::LINE_MESH);
 
-    lineRay = new ExampleObject(lineMesh, Program::getDefaultShader());
-    this->scene->addObject(lineRay);
+    // lineRay = new ExampleObject(lineMesh, Program::getDefaultShader());
+    // this->scene->addObject(lineRay);
   }
 
   return;

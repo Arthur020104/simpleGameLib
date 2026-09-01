@@ -84,5 +84,9 @@ class Scene
     TimeQueue timeQueue;
     b3WorldId worldId;
 
+    glm::vec3 gravity = glm::vec3(0.0f, -10.0f, 0.0f);
+
     void fixedUpdate();
+  protected:
+    void setGravity(glm::vec3 gravity);
 };
