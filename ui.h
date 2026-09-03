@@ -45,6 +45,8 @@ class UI: public Component
     virtual void removeUIItem(UIItem* uiItem);
     virtual void draw();
 
+    void updateLastData();
+
   private:
     std::vector<UIItem*> uiItems;
 

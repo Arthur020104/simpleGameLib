@@ -1,6 +1,7 @@
 #include <ui.h>
 #include <window.h>
 #include <glm/gtc/matrix_access.hpp>
+#include <glm/gtc/matrix_transform.hpp>
 
 UIItem::UIItem(std::string texturePath)
 {
@@ -118,6 +119,8 @@ void UI::fakeDraw()
 {
   if (this->uiItems.empty()) return;
 
+  this->updateLastData();
+
   GLint currentFBO = 0;
   glGetIntegerv(GL_FRAMEBUFFER_BINDING, &currentFBO);
 
@@ -128,6 +131,9 @@ void UI::fakeDraw()
 
   const uint16_t shaderID = this->uiItemShader->getProgram();
   glUseProgram(shaderID);
+
+  glm::mat4 projection = glm::ortho(-WINDOW.aspect, WINDOW.aspect, -1.0f, 1.0f, -1.0f, 1.0f);
+  this->uiItemShader->bindMat4("projection", projection);
 
   this->loadVBOData(); 
   this->instanceMesh->bindVAO();
@@ -169,30 +175,40 @@ void UI::draw()
 
 bool UI::hasChanged()
 {
-  bool changed = this->isFirstFrame;
+  if(this->isFirstFrame)
+    return true;
 
-  if(this->lastW != WINDOW.w || this->lastH != WINDOW.h) changed = true;
+  if(this->lastW != WINDOW.w || this->lastH != WINDOW.h) 
+    return true;
 
+  if(this->lastModelMatrix != this->getModelMatrix())
+    return true;
+
+  if(this->lastUIItemCount != this->uiItems.size()) 
+    return true;
+
+  for(UIItem* item: this->uiItems)
+  {
+    if(item->lastModelMatrix != item->getModelMatrix()) 
+      return true;
+    if(item->lastTexture != item->texture)
+      return true;
+  }
+
+  return false;
+}
+
+void UI::updateLastData()
+{
   this->lastW = WINDOW.w; this->lastH = WINDOW.h;
-
-  if(!changed && this->lastModelMatrix != this->getModelMatrix()) changed = true;
-
   this->lastModelMatrix = this->getModelMatrix();
-
-  if(!changed && this->lastUIItemCount != this->uiItems.size()) changed = true;
-
   this->lastUIItemCount = this->uiItems.size();
 
   for(UIItem* item: this->uiItems)
   {
-    if(!changed && item->lastModelMatrix != item->getModelMatrix()) changed = true;
-    if(!changed && item->lastTexture != item->texture) changed = true;
-
     item->lastModelMatrix = item->getModelMatrix();
     item->lastTexture = item->texture;
   }
-
-  return changed;
 }
 
 void UI::beforeUpdate()

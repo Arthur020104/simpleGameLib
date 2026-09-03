@@ -11,12 +11,14 @@ layout (location = 8) in uint textureIdx;
 
 out vec2 texCoord;
 
+uniform mat4 projection;
+
 flat out uint textureIndex;
 
 void main()
 {
   mat4 modelMatrix = transpose(mat4(modelMatrixRow0, modelMatrixRow1, modelMatrixRow2, modelMatrixRow3));
-  vec4 pos = modelMatrix *  vec4(vertexPos.xyz, 1.0);
+  vec4 pos = projection * modelMatrix *  vec4(vertexPos.xyz, 1.0);
 
   textureIndex = textureIdx;
   texCoord = uv;
