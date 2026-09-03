@@ -9,6 +9,7 @@
 #include <component.h>
 #include <timeQueue.h>
 #include <gameObject.h>
+#include <instanceGroup.h>
 #include <Libs/box3d/include/box3d/box3d.h>
 
 class GameObject;
@@ -18,6 +19,7 @@ class DirectionalLight;
 struct Ray;
 class UIItem;
 class UI;
+class InstanceGroup;
 
 class Scene
 {
@@ -46,6 +48,8 @@ class Scene
     TimeQueue* getTimeQueue() { return &this->timeQueue; }
 
     b3WorldId getWorldId() { return this->worldId; }
+
+    std::vector<InstanceGroup*> instances;
 
   private:
     void erase(Component* obj);

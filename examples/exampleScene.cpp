@@ -9,6 +9,7 @@
 #include <utils.h>
 #include <../material.h>
 #include <uiItemExample.h>
+#include <../instanceGroup.h>
 
 ExampleScene::ExampleScene(): Scene()
 { 
@@ -31,9 +32,12 @@ ExampleScene::ExampleScene(): Scene()
   std::shared_ptr<Mesh> boxMesh = std::make_shared<Mesh>("/home/arthur/Documents/simpleGame/obj/square.obj");
   ExampleObject* baseBox = new ExampleObject(boxMesh ,Program::getDefaultShader(), {boxMaterial});
 
-  for(uint8_t i = 0; i < 31; i++)
+  std::shared_ptr<Program> shader = std::make_shared<Program>("/home/arthur/Documents/simpleGame/shaders/instanced.vs", "/home/arthur/Documents/simpleGame/shaders/instanced.fs");
+  InstanceGroup* group = new InstanceGroup(boxMesh,shader);
+
+  for(uint8_t i = 0; i < 130; i++)
   {
-    for(uint8_t j = 0; j < 31; j++)
+    for(uint8_t j = 0; j < 130; j++)
     {
       // std::shared_ptr<Mesh> boxMesh = std::make_shared<Mesh>("/home/arthur/Documents/simpleGame/obj/square.obj");
       // 
@@ -45,8 +49,10 @@ ExampleScene::ExampleScene(): Scene()
       box->isIntersectable = true;
 
       box->createPhysicalBody(PhysicalShapeType::CUBE, 1.0f, 1.0f);
+      group->addObject(box);
     }
   }
+  this->instances.push_back(group);
   delete baseBox;
 
   DirectionalLight* light = new DirectionalLight(glm::vec3(0.0f, 3.0f, 2.0f), glm::vec3(0.85, 0.85, 1.0), 1.0f);

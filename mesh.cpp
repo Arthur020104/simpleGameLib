@@ -71,6 +71,8 @@ Mesh::Mesh(const char* path)
     throw std::invalid_argument("Failed to load Obj from file. Path: '" + std::string(path) + "'.\n");
 
   this->loadMesh(objTriMesh);
+
+  uint16_t pathSize = strlen(path);
 }
 
 Mesh::Mesh(std::string path)
@@ -163,6 +165,7 @@ void Mesh::init(std::vector<Vertex>& inputVertices, MeshType type, glm::vec3 bou
   }
 
   std::copy(boundingVolume, boundingVolume + 2, this->boundingVolume);
+  this->meshHash = b3Hash( 5381, (const uint8_t*)this->vertices.data(), this->getVerticesAmount() * sizeof(Vertex) );
 
   this->triangleCount = this->vertices.size() / 3;
 

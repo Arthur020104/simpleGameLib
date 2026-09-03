@@ -12,6 +12,8 @@ update the ui, by rendering the ui scene to a texture and then drawing it on the
 - 2. Add input handling for the window
 - 3. Create a simple game like a bomberman clone to test
 
+- FIX: ADD ORTHO PROJECTION FOR UI, MAKE SURE TO USE THE SAME ASPECT RATIO AS THE WINDOW.
+
 # Text Redering
 - For text rendering there is a limit of char that i need to render depending on text size. For doing instancing rendering i will need total text/maxTExturesSupported andd rendering n textures. After all done get this n textures and do a final redering, for extreme cases this may need to need an extra call so it needs to be recursive. 
 

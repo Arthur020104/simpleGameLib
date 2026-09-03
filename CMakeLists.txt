@@ -36,6 +36,7 @@ set(SOURCES
   queueItem.cpp
   timeQueue.cpp
   fpsCamera.cpp
+  instanceGroup.cpp
 )
 
 set(HEADERS
@@ -62,6 +63,8 @@ set(HEADERS
   queueItem.h
   timeQueue.h
   fpsCamera.h
+  instanceGroup.h
+  gameObjectType.h
 )
 
 add_executable(Renderer ${SOURCES} ${HEADERS})

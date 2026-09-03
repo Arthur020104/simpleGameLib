@@ -12,12 +12,18 @@ void Scene::draw()
 
   for(GameObject* obj: this->objects)
   {
-    obj->draw(this->cameras[activeCamera]); 
+    if(!obj->hide)
+      obj->draw(this->cameras[activeCamera]); 
+  }
+
+  for(InstanceGroup* group: this->instances)
+  {
+    group->draw(this->cameras[activeCamera], this);
   }
 
   if(hasCubeMap)
     cubeMap->draw(this->cameras[activeCamera]);
-
+  
   this->ui->draw();
 }
 
@@ -29,6 +35,10 @@ Scene::Scene()
 
   b3WorldDef worldDef = b3DefaultWorldDef();
   worldDef.gravity = (b3Vec3){ this->gravity.x, this->gravity.y, this->gravity.z };
+  
+  uint8_t totalThreads = getTotalThreads();
+  if(totalThreads > 1) totalThreads--;
+  worldDef.workerCount = totalThreads;
 
   this->worldId = b3CreateWorld(&worldDef);
 }
@@ -47,6 +57,11 @@ Scene::~Scene()
 
   if(hasCubeMap)
     delete cubeMap;
+  
+  for(InstanceGroup* group: this->instances)
+  {
+    delete group;
+  }
   
   b3DestroyWorld(worldId);
 }

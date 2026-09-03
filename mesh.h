@@ -55,8 +55,10 @@ class Mesh
     void renderMesh();
 
     glm::vec3 boundingVolume[2];
+    uint32_t meshHash = 0;
   private:
     uint32_t id;
+    
     std::vector<Vertex> vertices;
     //if later want to add material indice create the vbo on the gameObject as an separeted buffer(idk if is possible check later)
     //Add EBO SUPPORT LATER

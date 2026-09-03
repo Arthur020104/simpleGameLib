@@ -7,6 +7,7 @@
 #include <program.h>
 #include <material.h>
 #include <component.h>
+#include <gameObjectType.h>
 #include <cy/cyTriMesh.h>
 #include <Libs/box3d/include/box3d/box3d.h>
 
@@ -14,11 +15,6 @@ class Mesh;
 class Program;
 class Camera;
 class Scene;
-
-enum class GameObjectType {
-  STATIC,
-  DYNAMIC
-};
 
 enum class PhysicalShapeType {
   NONE,
@@ -62,7 +58,11 @@ class GameObject: public Component
 
     uint32_t getMaterialIndicesSize() {return materialIndices.size();};
 
+    std::vector<uint8_t> getMaterialIndices() {return this->materialIndices;};
+
     uint8_t getMaterialsSize() {return materials.size();};
+
+    void setMesh(std::shared_ptr<Mesh> meshData);
 
     std::vector<std::shared_ptr<Material>> getMaterials() {return this->materials;};
 
@@ -76,11 +76,13 @@ class GameObject: public Component
     virtual void setRotation(glm::vec3 rot) override;
     virtual void setScale(glm::vec3 scale) override;
 
-    bool isIntersectable = false;
+    bool isIntersectable = false, hide = false;
 
     b3BodyId getBodyId() { return this->bodyId; }
 
     void createPhysicalBody(PhysicalShapeType physicalShapeType, float density = 1.0f, float friction = 0.3f);
+
+    GameObjectType getGameObjectType() { return this->gameObjectType; }
   private:
 
     GLuint materialIndicesVBO;

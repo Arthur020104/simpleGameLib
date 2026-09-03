@@ -373,3 +373,11 @@ void GameObject::setScale(glm::vec3 scale)
     this->createPhysicalBody(this->physicalShapeType);
   }
 }
+
+void GameObject::setMesh(std::shared_ptr<Mesh> meshData)
+{
+  //meshs are the same, just used to update pointer. This makes removing duplicated meshes possible
+  assert(meshData != nullptr && meshData->meshHash == this->mesh->meshHash);
+  this->mesh = meshData;
+  this->loadMaterialIndicesToGPU();
+}
