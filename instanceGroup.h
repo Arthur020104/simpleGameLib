@@ -14,7 +14,7 @@ class InstanceGroup
 {
   public:
     InstanceGroup(std::shared_ptr<Mesh> mesh, std::shared_ptr<Program> program, std::vector<GameObject*> objs);
-    InstanceGroup(std::shared_ptr<Mesh> mesh, std::shared_ptr<Program> program, std::set<GameObject*> objs = {});
+    InstanceGroup(std::shared_ptr<Mesh> mesh, std::shared_ptr<Program> program = std::make_shared<Program>("../shaders/instanced.vs", "../shaders/instanced.fs"), std::set<GameObject*> objs = {});
 
     ~InstanceGroup();
 
@@ -25,7 +25,7 @@ class InstanceGroup
     void removeObject(GameObject* obj);
     void addObject(GameObject* obj);
 
-    void loadVBO();
+    void passDataToGPU();
     void bindForDrawing();
   private:
     std::shared_ptr<Mesh> mesh;

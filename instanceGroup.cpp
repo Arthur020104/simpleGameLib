@@ -49,7 +49,7 @@ void InstanceGroup::removeObject(GameObject* obj)
   obj->hide = false;
   this->objs.erase(obj);
 
-  this->loadVBO();
+  this->passDataToGPU();
 }
 
 void InstanceGroup::addObject(GameObject* obj)
@@ -60,7 +60,7 @@ void InstanceGroup::addObject(GameObject* obj)
   if(obj->getGameObjectType() != this->gameObjectType)
     this->gameObjectType = GameObjectType::DYNAMIC;
 
-  this->loadVBO();
+  this->passDataToGPU();
 }
 
 void InstanceGroup::draw(Camera* cam, Scene* scene)
@@ -86,7 +86,29 @@ void InstanceGroup::draw(Camera* cam, Scene* scene)
   glUseProgram(0);
 }
 
-void InstanceGroup::loadVBO()
+void passModelMatrixData(std::vector<objData> &gpuData, GLuint VBO)
+{
+  std::size_t vec4Size = sizeof(glm::vec4);
+
+  glBindBuffer(GL_ARRAY_BUFFER, VBO);
+  glBufferData(GL_ARRAY_BUFFER, sizeof(objData) * gpuData.size(), gpuData.data(), GL_STATIC_DRAW);
+
+  for(uint8_t i = 0; i < 4; i++)
+  {
+    glEnableVertexAttribArray(4 + i);
+    glVertexAttribPointer(
+      4 + i,
+      4,
+      GL_FLOAT,
+      GL_FALSE,
+      sizeof(objData),
+      (void*)(i * vec4Size)
+    );
+    glVertexAttribDivisor(4 + i, 1);
+  }
+}
+
+void InstanceGroup::passDataToGPU()
 {
   this->mesh->bindVAO();
 
@@ -138,7 +160,6 @@ void InstanceGroup::loadVBO()
       if(alreadyLoaded)
         continue;
 
-      // materials[i]->bind(this->program.get(), "materials", idx, textureCounter);
       textureCounter += materials[i]->activeTextures;      
       
       if(!alreadyLoaded) materialCounter++;
@@ -146,27 +167,8 @@ void InstanceGroup::loadVBO()
     allMatIdx.insert(allMatIdx.end(), materialsIdx.begin(), materialsIdx.end());
     gpuData.push_back(data);
   }
-  //se material ja bindado previamente nao preciso bindar dnv, so preciso mudar o index do material
-  //se material nao bindado preciso mudar o index e bindar.
 
-  std::size_t vec4Size = sizeof(glm::vec4);
-
-  glBindBuffer(GL_ARRAY_BUFFER, VBO);
-  glBufferData(GL_ARRAY_BUFFER, sizeof(objData) * gpuData.size(), gpuData.data(), GL_STATIC_DRAW);
-
-  for(uint8_t i = 0; i < 4; i++)
-  {
-    glEnableVertexAttribArray(4 + i);
-    glVertexAttribPointer(
-      4 + i,
-      4,
-      GL_FLOAT,
-      GL_FALSE,
-      sizeof(objData),
-      (void*)(i * vec4Size)
-    );
-    glVertexAttribDivisor(4 + i, 1);
-  }
+  passModelMatrixData(gpuData, VBO);
 
   while (allMatIdx.size() % 4 != 0) 
     allMatIdx.push_back(0);
@@ -181,7 +183,7 @@ void InstanceGroup::loadVBO()
 void InstanceGroup::bindForDrawing()
 {
   if(!this->hasVbo)
-    throw std::runtime_error("Error: VBO not loaded. Call loadVBO() before drawing.");
+    throw std::runtime_error("Error: VBO not loaded. Call passDataToGPU() before drawing.");
 
   this->mesh->bindVAO();
 
@@ -209,36 +211,6 @@ void InstanceGroup::bindForDrawing()
 
     gpuData.push_back(data);
   }
-  //se material ja bindado previamente nao preciso bindar dnv, so preciso mudar o index do material
-  //se material nao bindado preciso mudar o index e bindar.
 
-  std::size_t vec4Size = sizeof(glm::vec4);
-
-  glBindBuffer(GL_ARRAY_BUFFER, VBO);
-  glBufferData(GL_ARRAY_BUFFER, sizeof(objData) * gpuData.size(), gpuData.data(), GL_STATIC_DRAW);
-
-  for(uint8_t i = 0; i < 4; i++)
-  {
-    glEnableVertexAttribArray(4 + i);
-    glVertexAttribPointer(
-      4 + i,
-      4,
-      GL_FLOAT,
-      GL_FALSE,
-      sizeof(objData),
-      (void*)(i * vec4Size)
-    );
-    glVertexAttribDivisor(4 + i, 1);
-  }
-
-
+  passModelMatrixData(gpuData, VBO);
 }
-
-// class InstanceGroup
-// {
-//   public:
-    
-//   private:
-//     std::shared_ptr<Mesh> mesh;
-//     std::set<GameObject*> objs;
-// };
