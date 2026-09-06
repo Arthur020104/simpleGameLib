@@ -35,9 +35,9 @@ ExampleScene::ExampleScene(): Scene()
   std::shared_ptr<Program> shader = std::make_shared<Program>("/home/arthur/Documents/simpleGame/shaders/instanced.vs", "/home/arthur/Documents/simpleGame/shaders/instanced.fs");
   InstanceGroup* group = new InstanceGroup(boxMesh,shader);
 
-  for(uint8_t i = 0; i < 130; i++)
+  for(uint8_t i = 0; i < 70; i++)
   {
-    for(uint8_t j = 0; j < 130; j++)
+    for(uint8_t j = 0; j < 70; j++)
     {
       // std::shared_ptr<Mesh> boxMesh = std::make_shared<Mesh>("/home/arthur/Documents/simpleGame/obj/square.obj");
       // 
@@ -48,7 +48,7 @@ ExampleScene::ExampleScene(): Scene()
       box->setPosition(startPosition + spacing * glm::vec3(i, j, 0.0f));
       box->isIntersectable = true;
 
-      box->createPhysicalBody(PhysicalShapeType::CUBE, 1.0f, 1.0f);
+      box->createPhysicalBody(PhysicalShapeType::CUBE, 10000.0f, 1.0f);
       group->addObject(box);
     }
   }
@@ -73,7 +73,7 @@ ExampleScene::ExampleScene(): Scene()
   });
 
   UIItem* crosshair = new UIItem("/home/arthur/Documents/simpleGame/obj/crosshair.png");
-  crosshair->setScale(glm::vec3(0.003f, 0.005f, 0.1f));
+  crosshair->setScale(glm::vec3(0.005f, 0.005f, 0.1f));
 
   ExampleUIItem* testItem = new ExampleUIItem("/home/arthur/Documents/simpleGame/obj/container.jpg");
   testItem->setScale(glm::vec3(0.1f, 0.1f, 0.1f));

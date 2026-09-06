@@ -7,8 +7,8 @@
 #include <program.h>
 #include <material.h>
 #include <component.h>
-#include <gameObjectType.h>
 #include <cy/cyTriMesh.h>
+#include <gameObjectType.h>
 #include <Libs/box3d/include/box3d/box3d.h>
 
 class Mesh; 

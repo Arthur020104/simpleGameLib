@@ -32,7 +32,7 @@ void ExampleCamera::fixedUpdate()
     glm::vec2 mousePos = glm::vec2(0.0f, 0.0f);
     Ray r = generateRay(mousePos);
 
-    b3Vec3 origin = (b3Vec3){r.origin.x, r.origin.y, r.origin.z};
+    b3Pos origin = (b3Pos){r.origin.x, r.origin.y, r.origin.z};
     b3Vec3 direction = (b3Vec3){r.direction.x * r.maxDistance, r.direction.y * r.maxDistance, r.direction.z * r.maxDistance};
 
     b3RayResult result = b3World_CastRayClosest(this->scene->getWorldId(), origin, direction, b3DefaultQueryFilter());

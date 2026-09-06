@@ -195,9 +195,6 @@ void InstanceGroup::bindForDrawing()
     textureCounter += material.first->activeTextures;
   }
 
-  if(this->gameObjectType == GameObjectType::STATIC)
-    return;
-
   std::vector<objData> gpuData;
   gpuData.reserve(this->objs.size());
 

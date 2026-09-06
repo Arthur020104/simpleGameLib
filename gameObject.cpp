@@ -291,7 +291,7 @@ void GameObject::createPhysicalBody(PhysicalShapeType physicalShapeType, float d
   b3BodyDef bodyDefinition = b3DefaultBodyDef();
   if(isDynamic) bodyDefinition.type = b3_dynamicBody;
   
-  bodyDefinition.position = (b3Vec3){this->getPosition().x, this->getPosition().y, this->getPosition().z};
+  bodyDefinition.position = (b3Pos){this->getPosition().x, this->getPosition().y, this->getPosition().z};
   this->bodyId = b3CreateBody(this->scene->getWorldId(), &bodyDefinition);
 
   switch (physicalShapeType)
@@ -332,13 +332,16 @@ void GameObject::beforeUpdate()
 {
   if(this->hasPhysicalBody)
   {
-    b3Transform bodyTransform = b3Body_GetTransform(this->bodyId);
+    b3WorldTransform bodyTransform = b3Body_GetTransform(this->bodyId);
     this->setPosition(glm::vec3(bodyTransform.p.x, bodyTransform.p.y, bodyTransform.p.z));
-    
-    b3Vec3 eulerAngles = b3QuatToEuler(bodyTransform.q);
 
-    glm::vec3 rotation = glm::vec3(eulerAngles.x, eulerAngles.y, eulerAngles.z) * cy::Deg2Rad<float>();
-    this->setRotation(rotation);
+    glm::quat physicsRot(bodyTransform.q.s, bodyTransform.q.v.x, bodyTransform.q.v.y, bodyTransform.q.v.z);
+    glm::quat currentRot = this->getRotationQuat();
+
+    float alignment = glm::abs(glm::dot(glm::normalize(physicsRot), glm::normalize(currentRot)));
+
+    if(alignment < 0.99999f)
+      Transform::setRotation(physicsRot);
   }
 }
 
@@ -348,19 +351,23 @@ void GameObject::setPosition(glm::vec3 pos)
 
   if(this->hasPhysicalBody)
   {
-    b3Transform bodyTransform = b3Body_GetTransform(this->bodyId);
-    b3Body_SetTransform(this->bodyId, (b3Vec3){pos.x, pos.y, pos.z}, bodyTransform.q);
+    b3WorldTransform bodyTransform = b3Body_GetTransform(this->bodyId);
+    b3Body_SetTransform(this->bodyId, (b3Pos){pos.x, pos.y, pos.z}, bodyTransform.q);
   }
 }
-
 void GameObject::setRotation(glm::vec3 rot)
 {
   Transform::setRotation(rot);
 
   if(this->hasPhysicalBody)
   {
-    b3Transform bodyTransform = b3Body_GetTransform(this->bodyId);
-    b3Body_SetTransform(this->bodyId, bodyTransform.p, b3EulerToQuat((b3Vec3){rot.x, rot.y, rot.z}));
+    b3WorldTransform bodyTransform = b3Body_GetTransform(this->bodyId);
+
+    b3Quat quaternion;
+    quaternion.s = this->getRotationQuat().w;
+    quaternion.v = (b3Vec3){this->getRotationQuat().x, this->getRotationQuat().y, this->getRotationQuat().z};
+
+    b3Body_SetTransform(this->bodyId, bodyTransform.p, quaternion);
   }
 }
 
