@@ -4,6 +4,7 @@ uint getMaterialID(uint idx);
 layout (location = 0) in vec3 vertexPos;
 layout (location = 1) in vec3 normal;
 layout (location = 2) in vec2 uv;
+layout (location = 3) in uint materialIndice;
 layout (location = 4) in vec4 modelMatrixRow0;
 layout (location = 5) in vec4 modelMatrixRow1;
 layout (location = 6) in vec4 modelMatrixRow2;
@@ -15,6 +16,7 @@ layout(std430, binding = 0) buffer MaterialBuffer {
 
 uniform mat4 mv;
 uniform uint verticesPerMesh;
+uniform bool hasMaterialIndices;
 
 out vec3 worldFragPos;
 out vec3 normalV;
@@ -30,7 +32,7 @@ void main()
 
   normalV = (modelMatrix * vec4(normal, 0.0)).xyz;
   uint idx = uint(gl_InstanceID) * verticesPerMesh + uint(gl_VertexID);
-  materialIdx = getMaterialID(idx);
+  materialIdx = hasMaterialIndices ? getMaterialID(idx): materialIndice;
 
   worldFragPos = (modelMatrix * vec4(vertexPos, 1.0)).xyz;
   gl_Position = mv * modelMatrix * vec4(vertexPos, 1.0);

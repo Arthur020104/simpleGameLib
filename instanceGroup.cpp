@@ -34,6 +34,8 @@ void InstanceGroup::init(std::shared_ptr<Mesh> mesh, std::shared_ptr<Program> pr
     assert(obj != nullptr);
     assert(obj->getShaderProgram().get() == this->program.get());
 
+    obj->hide = true;
+
     if(mesh.get() != obj->getMesh().get() && mesh->meshHash == obj->getMesh()->meshHash)
       obj->setMesh(this->mesh);
     else if(mesh.get() != obj->getMesh().get() && mesh->meshHash != obj->getMesh()->meshHash)
@@ -42,6 +44,9 @@ void InstanceGroup::init(std::shared_ptr<Mesh> mesh, std::shared_ptr<Program> pr
     if(obj->getGameObjectType() != this->gameObjectType)
       this->gameObjectType = GameObjectType::DYNAMIC;
   }
+
+  if(this->objs.size() > 0)
+    this->passDataToGPU();
 }
 
 void InstanceGroup::removeObject(GameObject* obj)
@@ -56,6 +61,11 @@ void InstanceGroup::addObject(GameObject* obj)
 {
   obj->hide = true;
   this->objs.insert(obj);
+
+  if(mesh.get() != obj->getMesh().get() && mesh->meshHash == obj->getMesh()->meshHash)
+    obj->setMesh(this->mesh);
+  else if(mesh.get() != obj->getMesh().get() && mesh->meshHash != obj->getMesh()->meshHash)
+    throw std::runtime_error("Error: InstanceGroup can only contain GameObjects with the same mesh.");
   
   if(obj->getGameObjectType() != this->gameObjectType)
     this->gameObjectType = GameObjectType::DYNAMIC;
@@ -74,6 +84,7 @@ void InstanceGroup::draw(Camera* cam, Scene* scene)
 
   this->program->bindMat4("mv", mv);
   this->program->bindVec3("viewPosition", cam->getPosition());
+  this->program->bindBool("hasMaterialIndices", this->hasMutipleMaterialsPerObject);
 
   this->program->bindUint("verticesPerMesh", this->mesh->getVerticesAmount());
   
@@ -81,9 +92,6 @@ void InstanceGroup::draw(Camera* cam, Scene* scene)
   this->mesh->bindVAO();
 
   glDrawArraysInstanced(GL_TRIANGLES, 0, this->mesh->getVerticesAmount(), this->objs.size()); 
-  
-  glBindVertexArray(0);
-  glUseProgram(0);
 }
 
 void passModelMatrixData(std::vector<objData> &gpuData, GLuint VBO)
@@ -128,18 +136,37 @@ void InstanceGroup::passDataToGPU()
   materialToIndexMap.clear();
 
   std::vector<uint8_t> allMatIdx;
+
+  for (GameObject* item : this->objs)
+  {
+    if(!this->hasMutipleMaterialsPerObject && item->hasMultipleMaterials())
+      this->hasMutipleMaterialsPerObject = true;
+  }
+
   for (GameObject* item : this->objs)
   {
     objData data;
-    std::vector<uint8_t> materialsIdx;
-    materialsIdx = item->getMaterialIndices();
-    assert( materialsIdx.size() == this->mesh->getVerticesAmount() );
-
     data.modelMatrixRow0 = glm::row(item->getModelMatrix(), 0);
     data.modelMatrixRow1 = glm::row(item->getModelMatrix(), 1);
     data.modelMatrixRow2 = glm::row(item->getModelMatrix(), 2);
     data.modelMatrixRow3 = glm::row(item->getModelMatrix(), 3);
 
+    gpuData.push_back(data);
+
+    std::vector<uint8_t> materialsIdx;
+
+    if(!this->hasMutipleMaterialsPerObject)
+    {
+      materialsIdx = {0};
+    }
+    else if(item->hasMultipleMaterials())
+    {
+      materialsIdx = item->getMaterialIndices();
+      assert(materialsIdx.size() == item->getMesh()->getVerticesAmount() && "Material indices size does not match the number of vertices in the mesh.");
+    }  
+    else
+      materialsIdx.resize(item->getMesh()->getVerticesAmount(), 0);
+    
     std::vector<std::shared_ptr<Material>> materials = item->getMaterials();
     for(uint8_t i = 0; i < materials.size(); i++)
     {
@@ -165,19 +192,36 @@ void InstanceGroup::passDataToGPU()
       if(!alreadyLoaded) materialCounter++;
     }
     allMatIdx.insert(allMatIdx.end(), materialsIdx.begin(), materialsIdx.end());
-    gpuData.push_back(data);
   }
 
   passModelMatrixData(gpuData, VBO);
 
-  while (allMatIdx.size() % 4 != 0) 
+  while (allMatIdx.size() % 4 != 0 && this->hasMutipleMaterialsPerObject) 
     allMatIdx.push_back(0);
 
-  glBindBuffer(GL_SHADER_STORAGE_BUFFER, MaterialVbo);
-  glBufferData(GL_SHADER_STORAGE_BUFFER, sizeof(uint8_t) * this->mesh->getVerticesAmount() * gpuData.size(), allMatIdx.data(), GL_STATIC_DRAW);
+  if(this->hasMutipleMaterialsPerObject)
+  {
+    glBindBuffer(GL_SHADER_STORAGE_BUFFER, MaterialVbo);
+    glBufferData(GL_SHADER_STORAGE_BUFFER, sizeof(uint8_t) * this->mesh->getVerticesAmount() * gpuData.size(), allMatIdx.data(), GL_STATIC_DRAW);
 
-  glBindBufferBase(GL_SHADER_STORAGE_BUFFER, 0, MaterialVbo);
+    glBindBufferBase(GL_SHADER_STORAGE_BUFFER, 0, MaterialVbo);
+  } 
+  else
+  {
+    glBindBuffer(GL_ARRAY_BUFFER, MaterialVbo);
+    glBufferData(GL_ARRAY_BUFFER, sizeof(uint8_t) * allMatIdx.size(), allMatIdx.data(), GL_STATIC_DRAW);
 
+    glEnableVertexAttribArray(3);
+    glVertexAttribPointer(
+      3,
+      1,
+      GL_UNSIGNED_BYTE,
+      GL_FALSE,
+      sizeof(uint8_t),
+      (void*)0
+    );
+    glVertexAttribDivisor(3, 1);
+  }
 }
 
 void InstanceGroup::bindForDrawing()

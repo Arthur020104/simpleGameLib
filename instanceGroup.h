@@ -20,18 +20,20 @@ class InstanceGroup
 
     void init(std::shared_ptr<Mesh> mesh, std::shared_ptr<Program> program, std::set<GameObject*> objs);
 
-    void draw(Camera* cam, Scene* scene);
+    virtual void draw(Camera* cam, Scene* scene);
 
-    void removeObject(GameObject* obj);
-    void addObject(GameObject* obj);
+    virtual void removeObject(GameObject* obj);
+    virtual void addObject(GameObject* obj);
 
-    void passDataToGPU();
-    void bindForDrawing();
-  private:
+    virtual void passDataToGPU();
+    virtual void bindForDrawing();
+  protected:
     std::shared_ptr<Mesh> mesh;
     std::set<GameObject*> objs;
     std::shared_ptr<Program> program;
     GameObjectType gameObjectType = GameObjectType::STATIC;
+
+    bool hasMutipleMaterialsPerObject = false;
 
     std::unordered_map<Material*, uint8_t> materialToIndexMap;
 

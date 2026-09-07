@@ -8,7 +8,28 @@ GameObject::GameObject(std::shared_ptr<Mesh> meshData, std::shared_ptr<Program> 
     throw std::runtime_error("Error: GameObject must have at least one material.");
 
   this->shaderProgram->registerObjectUsingProgram(this);
-  this->useOnly(material[0]);
+  if(material.size() > 1)
+  {
+    this->singleMaterial = false;
+    
+    uint16_t totalPerMaterial = this->mesh->getVerticesAmount() / material.size();
+    for(uint16_t i = 0; i < material.size(); i++)
+    {
+      this->materialIndices.insert(this->materialIndices.end(), totalPerMaterial, i);
+    }
+
+    if(this->materialIndices.size() < this->mesh->getVerticesAmount())
+    {
+      uint16_t remaining = this->mesh->getVerticesAmount() - this->materialIndices.size();
+      this->materialIndices.insert(this->materialIndices.end(), remaining, material.size() - 1);
+    }
+  }
+  else
+  {
+    this->singleMaterial = true;
+    this->useOnly(material[0]);  
+  }
+    
 }
 /* cy::TriMesh objTriMesh;
   if(!objTriMesh.LoadFromFileObj(path.c_str(), true, &std::cout)) std::cerr << "Failed to load Obj from file. Path: '"<< path << "'.\n";*/
@@ -39,9 +60,12 @@ void GameObject::loadGameObjectFromPath(cy::TriMesh& objTriMesh, std::shared_ptr
 {
   this->mesh = std::make_shared<Mesh>(objTriMesh);
   
-  this->materialIndices.reserve(mesh->getVerticesAmount());
+  this->singleMaterial = objTriMesh.NM() <= 1;
 
-  for(uint32_t i = 0; i < objTriMesh.NF(); i++)
+  if(!this->singleMaterial)
+    this->materialIndices.reserve(mesh->getVerticesAmount());
+
+  for(uint32_t i = 0; i < objTriMesh.NF() && !this->singleMaterial; i++)
   {
     int materialIdx = objTriMesh.GetMaterialIndex(i);
 
@@ -98,7 +122,9 @@ void GameObject::loadGameObjectFromPath(cy::TriMesh& objTriMesh, std::shared_ptr
 
   this->shaderProgram = shader;
   this->shaderProgram->registerObjectUsingProgram(this);
-  this->loadMaterialIndicesToGPU();
+  
+  if(!this->singleMaterial)
+    this->loadMaterialIndicesToGPU();
 }
 
 const std::shared_ptr<Mesh> GameObject::getMesh()
@@ -113,7 +139,8 @@ const std::shared_ptr<Program> GameObject::getShaderProgram()
 
 GameObject::~GameObject()
 {
-  glDeleteBuffers(1, &materialIndicesVBO);
+  if(this->hasMaterialVBO)
+    glDeleteBuffers(1, &this->materialIndicesVBO);
 }
 
 void GameObject::draw(glm::mat4 &viewProjection)
@@ -128,6 +155,7 @@ void GameObject::draw(glm::mat4 &viewProjection)
 
   this->shaderProgram->bindMat4("mvp", mvp);
   this->shaderProgram->bindMat4("modelMatrix", this->getModelMatrix());
+  this->shaderProgram->bindBool("hasMaterialIndices", !this->singleMaterial);
   
   Camera* activeCamera = this->scene->getActiveCamera();
   this->shaderProgram->bindVec3("viewPosition", activeCamera->getPosition());
@@ -181,25 +209,15 @@ bool GameObject::intersect(Ray& ray)
 
 void GameObject::useOnly(std::shared_ptr<Material> material)
 {
-  uint8_t i;
-  for(i = 0; i < this->materials.size(); i++)
+  this->materials = {material};
+  this->singleMaterial = true;
+  this->materialIndices.clear();
+
+  if(this->hasMaterialVBO)
   {
-    if(this->materials[i] == material) break;
+    glDeleteBuffers(1, &this->materialIndicesVBO);
+    this->hasMaterialVBO = false;
   }
-
-  if(i == this->materials.size())
-    this->materials.push_back(material);
-
-  this->useOnly(i);
-}
-
-void GameObject::useOnly(uint8_t materialIndex)
-{
-  if(materialIndex >= this->materials.size())
-    throw std::runtime_error("Error: Material index out of bounds.");
-
-  this->materialIndices.assign(this->mesh->getVerticesAmount(), materialIndex);
-  this->loadMaterialIndicesToGPU();
 }
 
 void GameObject::loadMaterialIndicesToGPU()
@@ -240,6 +258,12 @@ void GameObject::loadMaterialIndicesToGPU()
 void GameObject::addMaterial(std::shared_ptr<Material> material)
 {
   this->materials.push_back(material);
+
+  if(this->singleMaterial)
+  {
+    this->singleMaterial = false;
+    this->materialIndices.resize(this->mesh->getVerticesAmount(), 0);
+  }
 }
 
 void GameObject::useMaterial(std::shared_ptr<Material> material, uint32_t startIdx, uint32_t endIdx)
@@ -251,6 +275,17 @@ void GameObject::useMaterial(std::shared_ptr<Material> material, uint32_t startI
   for(i = 0; i < this->materials.size(); i++)
   {
     if(this->materials[i] == material) break;
+  }
+
+  if(this->singleMaterial && i != 0)
+  {
+    this->singleMaterial = false;
+    this->materialIndices.resize(this->mesh->getVerticesAmount(), 0);
+  }
+  else if(i == 0) 
+  {
+    std::cout << "Warning: Can't limit the use of a material that is the only one in use." << std::endl;
+    return; 
   }
 
   if(i == this->materials.size())
@@ -386,5 +421,7 @@ void GameObject::setMesh(std::shared_ptr<Mesh> meshData)
   //meshs are the same, just used to update pointer. This makes removing duplicated meshes possible
   assert(meshData != nullptr && meshData->meshHash == this->mesh->meshHash);
   this->mesh = meshData;
-  this->loadMaterialIndicesToGPU();
+
+  if(!this->singleMaterial)
+    this->loadMaterialIndicesToGPU();
 }

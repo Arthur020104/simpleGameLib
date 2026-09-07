@@ -48,8 +48,6 @@ class GameObject: public Component
 
     void useOnly(std::shared_ptr<Material> material);
 
-    void useOnly(uint8_t materialIndex);
-
     void addMaterial(std::shared_ptr<Material> material);
 
     void addMaterial(std::shared_ptr<Material> material, uint32_t startIdx, uint32_t endIdx);
@@ -83,10 +81,14 @@ class GameObject: public Component
     void createPhysicalBody(PhysicalShapeType physicalShapeType, float density = 1.0f, float friction = 0.3f);
 
     GameObjectType getGameObjectType() { return this->gameObjectType; }
+
+    bool hasMultipleMaterials() { return !this->singleMaterial; }
   private:
 
     GLuint materialIndicesVBO;
     bool hasMaterialVBO = false;
+
+    bool singleMaterial = true;
 
     std::vector<uint8_t> materialIndices;
   

@@ -7,6 +7,7 @@ layout (location = 3) in uint materialIndice;
 
 uniform mat4 mvp;
 uniform mat4 modelMatrix;
+uniform bool hasMaterialIndices;
 
 out vec3 worldFragPos;
 out vec3 normalV;
@@ -16,7 +17,7 @@ flat out uint materialIdx;
 void main()
 {
   texCoord = uv;
-  materialIdx = materialIndice;
+  materialIdx = hasMaterialIndices ? materialIndice : 0;
   normalV = (modelMatrix * vec4(normal, 0.0)).xyz;
 
   worldFragPos = (modelMatrix * vec4(vertexPos, 1.0)).xyz;
