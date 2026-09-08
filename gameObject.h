@@ -67,7 +67,8 @@ class GameObject: public Component
     void setMaterialIndices(std::vector<uint8_t> materialIndices);
 
     virtual void start() = 0;
-    virtual void beforeUpdate() override;
+    virtual void beforeUpdate() = 0;
+    virtual void fixedUpdate() override;
     virtual void afterUpdate() = 0;
 
     virtual void setPosition(glm::vec3 pos) override;

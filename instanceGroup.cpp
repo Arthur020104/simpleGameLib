@@ -3,15 +3,15 @@
 #include <glm/gtc/matrix_access.hpp>
 #include <unordered_map>
 
-InstanceGroup::InstanceGroup(std::shared_ptr<Mesh> mesh, std::shared_ptr<Program> program, std::vector<GameObject*> objs)
+InstanceGroup::InstanceGroup(std::shared_ptr<Mesh> mesh, bool objectsOnScene, std::shared_ptr<Program> program, std::vector<GameObject*> objs)
 {
   std::set<GameObject*> setObjs( objs.begin(), objs.end() );
-  this->init(mesh, program, setObjs);
+  this->init(mesh, objectsOnScene, program, setObjs);
 }
 
-InstanceGroup::InstanceGroup(std::shared_ptr<Mesh> mesh, std::shared_ptr<Program> program, std::set<GameObject*> objs)
+InstanceGroup::InstanceGroup(std::shared_ptr<Mesh> mesh, bool objectsOnScene, std::shared_ptr<Program> program, std::set<GameObject*> objs)
 {
-  this->init(mesh, program, objs);
+  this->init(mesh, objectsOnScene, program, objs);
 }
 
 InstanceGroup::~InstanceGroup()
@@ -21,13 +21,22 @@ InstanceGroup::~InstanceGroup()
     glDeleteBuffers(1, &VBO);
     glDeleteBuffers(1, &MaterialVbo);
   }
+
+  if(this->objectsOnScene)
+    return;
+  
+  for(GameObject* obj: this->objs)
+  {
+    delete obj;
+  }
 }
 
-void InstanceGroup::init(std::shared_ptr<Mesh> mesh, std::shared_ptr<Program> program, std::set<GameObject*> objs)
+void InstanceGroup::init(std::shared_ptr<Mesh> mesh, bool objectsOnScene, std::shared_ptr<Program> program, std::set<GameObject*> objs)
 {
   this->mesh = mesh;
   this->program = program;
   this->objs = objs;
+  this->objectsOnScene = objectsOnScene;
 
   for(GameObject* obj: this->objs)
   {
@@ -238,6 +247,9 @@ void InstanceGroup::bindForDrawing()
     material.first->bind(this->program.get(), "materials", this->materialToIndexMap[material.first], textureCounter);
     textureCounter += material.first->activeTextures;
   }
+
+  if(this->gameObjectType == GameObjectType::STATIC)
+    return;
 
   std::vector<objData> gpuData;
   gpuData.reserve(this->objs.size());

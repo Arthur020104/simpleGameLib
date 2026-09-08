@@ -1,4 +1,5 @@
 #pragma once
+#include <GL/glew.h>
 #include <glm/glm.hpp>
 #include <GLFW/glfw3.h>
 
@@ -23,7 +24,7 @@ class WindowController
     bool updateCameras = true;
     GLFWwindow* window;
   private:
-
+    uint8_t samples = 4;
     
 };
 

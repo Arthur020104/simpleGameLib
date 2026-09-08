@@ -145,6 +145,8 @@ GameObject::~GameObject()
 
 void GameObject::draw(glm::mat4 &viewProjection)
 {
+  if(this->hide) return;
+
   this->mesh->bindVAO();
 
   const uint16_t shaderID = this->shaderProgram->getProgram();
@@ -363,7 +365,7 @@ void GameObject::createPhysicalBody(PhysicalShapeType physicalShapeType, float d
   this->physicalShapeType = physicalShapeType;
 }
 
-void GameObject::beforeUpdate()
+void GameObject::fixedUpdate()
 {
   if(this->hasPhysicalBody)
   {

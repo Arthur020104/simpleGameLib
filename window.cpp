@@ -2,11 +2,9 @@
 #include <window.h>
 #include <string>
 #include <iostream>
-#include <GL/glew.h>
 #include <cy/cyGL.h>
 #include <stdexcept>
 #include <algorithm>
-#include <GLFW/glfw3.h>
 
 //Windows
 #ifdef _WIN32 
@@ -46,7 +44,7 @@ WindowController::WindowController(uint16_t w, uint16_t h, const char* title, ui
   glfwWindowHint(GLFW_OPENGL_PROFILE, GLFW_OPENGL_CORE_PROFILE);
   glfwWindowHint(GLFW_OPENGL_DEBUG_CONTEXT, GLFW_TRUE);
   glfwWindowHint(GLFW_DEPTH_BITS, 24);  
-
+  glfwWindowHint(GLFW_SAMPLES, this->samples);
   
   this->window = glfwCreateWindow(w, h, title, NULL, NULL);
   this->aspect = (float)w/(float)h;
@@ -109,9 +107,10 @@ void defineGlPreferences()
   glEnable(GL_DEPTH_TEST);
   glDepthFunc(GL_LESS);
   //glEnable(GL_CULL_FACE);
-  //glCullFace(GL_BACK);                   // Specify that back-facing triangles should be culled (not rendered)
+  glCullFace(GL_BACK);                   // Specify that back-facing triangles should be culled (not rendered)
   glFrontFace(GL_CCW);                    // Define counter-clockwise vertex winding as front-facing triangles
   glEnable(GL_BLEND);
+  glEnable(GL_MULTISAMPLE);  
   glEnable(GL_TEXTURE_CUBE_MAP_SEAMLESS);
 }
 void frameBufferSizeCallback(GLFWwindow* window, int w, int h)

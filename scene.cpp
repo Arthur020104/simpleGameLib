@@ -12,8 +12,7 @@ void Scene::draw()
 
   for(GameObject* obj: this->objects)
   {
-    if(!obj->hide)
-      obj->draw(this->cameras[activeCamera]); 
+    obj->draw(this->cameras[activeCamera]); 
   }
 
   for(InstanceGroup* group: this->instances)
