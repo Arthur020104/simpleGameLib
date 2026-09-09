@@ -8,7 +8,7 @@
 
 void ExampleCamera::start()
 {
-  
+  this->velocity = 30.0f;
   return;
 }
 

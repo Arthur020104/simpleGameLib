@@ -28,6 +28,8 @@ class Mesh
 
     Mesh(std::vector<Vertex> inputVertices, MeshType type = MeshType::TRIANGLE_MESH);
 
+    Mesh(const Mesh &copy);
+
     Mesh(std::string path);
 
     Mesh(const char* path);

@@ -44,6 +44,18 @@ Mesh::~Mesh()
   }
 }
 
+Mesh::Mesh(const Mesh &copy)
+{
+  this->id = nextMeshId++;
+  this->vertices = copy.vertices;
+  this->type = copy.type;
+  this->bvh = nullptr;
+
+  glm::vec3 boundingVolumeC[2] = {copy.boundingVolume[0], copy.boundingVolume[1]};
+
+  init(this->vertices, this->type, boundingVolumeC);
+}
+
 Mesh::Mesh(std::vector<Vertex> inputVertices, MeshType type)
 {
   glm::vec3 positiveInfinity = glm::vec3(INFINITY, INFINITY, INFINITY);

@@ -37,6 +37,8 @@ set(SOURCES
   timeQueue.cpp
   fpsCamera.cpp
   instanceGroup.cpp
+  examples/grassPlane.cpp
+  examples/grassGroup.cpp
 )
 
 set(HEADERS
@@ -65,6 +67,8 @@ set(HEADERS
   fpsCamera.h
   instanceGroup.h
   gameObjectType.h
+  examples/grassPlane.h
+  examples/grassGroup.h
 )
 
 add_executable(Renderer ${SOURCES} ${HEADERS})

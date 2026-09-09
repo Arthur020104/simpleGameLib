@@ -9,6 +9,9 @@
     - 1.5.2 When changes we need to reload all the vbo data.
 Create, ui. We can create a child of the game object for instancing, and for the ui component we can create its own scene and when components inside change, we can
 update the ui, by rendering the ui scene to a texture and then drawing it on the screen.
+# refactor code for the instancing, add errors instead of making the for loop and just dont let pass certain amount of textures/materials.
+# find a way to reduce memory usage for instancing, currently we pass the for each vertex one byte for the material index, maybe we can use something like.
+# (index, timesRepeatedInSequence)
 - 2. Add input handling for the window
 - 3. Create a simple game like a bomberman clone to test
 

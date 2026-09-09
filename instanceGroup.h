@@ -13,12 +13,12 @@
 class InstanceGroup
 {
   public:
-    InstanceGroup(std::shared_ptr<Mesh> mesh, bool objectsOnScene, std::shared_ptr<Program> program, std::vector<GameObject*> objs);
-    InstanceGroup(std::shared_ptr<Mesh> mesh, bool objectsOnScene, std::shared_ptr<Program> program = std::make_shared<Program>("../shaders/instanced.vs", "../shaders/instanced.fs"), std::set<GameObject*> objs = {});
+    InstanceGroup(std::shared_ptr<Mesh> mesh, bool objectsOnScene, std::shared_ptr<Program> program, std::vector<GameObject*> objs, bool passDataToGPU = true);
+    InstanceGroup(std::shared_ptr<Mesh> mesh, bool objectsOnScene, std::shared_ptr<Program> program = std::make_shared<Program>("../shaders/instanced.vs", "../shaders/instanced.fs"), std::set<GameObject*> objs = {}, bool passDataToGPU = true);
 
     ~InstanceGroup();
 
-    void init(std::shared_ptr<Mesh> mesh, bool objectsOnScene, std::shared_ptr<Program> program, std::set<GameObject*> objs);
+    void init(std::shared_ptr<Mesh> mesh, bool objectsOnScene, std::shared_ptr<Program> program, std::set<GameObject*> objs, bool passDataToGPU);
 
     virtual void draw(Camera* cam, Scene* scene);
 
@@ -28,7 +28,11 @@ class InstanceGroup
     virtual void passDataToGPU();
     virtual void bindForDrawing();
 
+    virtual void removeDataFromGPU();
+
     bool objectsOnScene = false;
+
+    Scene* scene = nullptr;
   protected:
     std::shared_ptr<Mesh> mesh;
     std::set<GameObject*> objs;

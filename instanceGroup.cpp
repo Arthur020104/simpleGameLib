@@ -3,21 +3,22 @@
 #include <glm/gtc/matrix_access.hpp>
 #include <unordered_map>
 
-InstanceGroup::InstanceGroup(std::shared_ptr<Mesh> mesh, bool objectsOnScene, std::shared_ptr<Program> program, std::vector<GameObject*> objs)
+InstanceGroup::InstanceGroup(std::shared_ptr<Mesh> mesh, bool objectsOnScene, std::shared_ptr<Program> program, std::vector<GameObject*> objs, bool passDataToGPU)
 {
   std::set<GameObject*> setObjs( objs.begin(), objs.end() );
-  this->init(mesh, objectsOnScene, program, setObjs);
+  this->init(mesh, objectsOnScene, program, setObjs, passDataToGPU);
 }
 
-InstanceGroup::InstanceGroup(std::shared_ptr<Mesh> mesh, bool objectsOnScene, std::shared_ptr<Program> program, std::set<GameObject*> objs)
+InstanceGroup::InstanceGroup(std::shared_ptr<Mesh> mesh, bool objectsOnScene, std::shared_ptr<Program> program, std::set<GameObject*> objs, bool passDataToGPU)
 {
-  this->init(mesh, objectsOnScene, program, objs);
+  this->init(mesh, objectsOnScene, program, objs, passDataToGPU);
 }
 
 InstanceGroup::~InstanceGroup()
 {
   if(this->hasVbo)
   {
+    this->mesh->bindVAO();
     glDeleteBuffers(1, &VBO);
     glDeleteBuffers(1, &MaterialVbo);
   }
@@ -31,9 +32,9 @@ InstanceGroup::~InstanceGroup()
   }
 }
 
-void InstanceGroup::init(std::shared_ptr<Mesh> mesh, bool objectsOnScene, std::shared_ptr<Program> program, std::set<GameObject*> objs)
+void InstanceGroup::init(std::shared_ptr<Mesh> mesh, bool objectsOnScene, std::shared_ptr<Program> program, std::set<GameObject*> objs, bool passDataToGPU)
 {
-  this->mesh = mesh;
+  this->mesh = std::make_shared<Mesh>(*mesh);
   this->program = program;
   this->objs = objs;
   this->objectsOnScene = objectsOnScene;
@@ -54,7 +55,7 @@ void InstanceGroup::init(std::shared_ptr<Mesh> mesh, bool objectsOnScene, std::s
       this->gameObjectType = GameObjectType::DYNAMIC;
   }
 
-  if(this->objs.size() > 0)
+  if(passDataToGPU && this->objs.size() > 0)
     this->passDataToGPU();
 }
 
@@ -101,6 +102,7 @@ void InstanceGroup::draw(Camera* cam, Scene* scene)
   this->mesh->bindVAO();
 
   glDrawArraysInstanced(GL_TRIANGLES, 0, this->mesh->getVerticesAmount(), this->objs.size()); 
+  
 }
 
 void passModelMatrixData(std::vector<objData> &gpuData, GLuint VBO)
@@ -123,6 +125,18 @@ void passModelMatrixData(std::vector<objData> &gpuData, GLuint VBO)
     );
     glVertexAttribDivisor(4 + i, 1);
   }
+}
+
+void InstanceGroup::removeDataFromGPU()
+{
+  if(!this->hasVbo)
+    return;
+  
+  
+  this->mesh->bindVAO();
+  glDeleteBuffers(1, &VBO);
+  glDeleteBuffers(1, &MaterialVbo);
+  this->hasVbo = false;
 }
 
 void InstanceGroup::passDataToGPU()
