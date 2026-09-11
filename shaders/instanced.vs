@@ -34,7 +34,7 @@ void main()
   uint idx = uint(gl_InstanceID) * verticesPerMesh + uint(gl_VertexID);
   materialIdx = hasMaterialIndices ? getMaterialID(idx): materialIndice;
 
-  worldFragPos = (modelMatrix * vec4(vertexPos, 1.0)).xyz;
+  worldFragPos = (modelMatrix * vec4(vertexPos, 1.0)).xyz;//non uniform scale breaks here, check if the performance cost will be acceptable to transpose(inverse(modelMatrix)) * vec4(normal, 0.0)).xyz;
   gl_Position = mv * modelMatrix * vec4(vertexPos, 1.0);
 }
 

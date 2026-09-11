@@ -25,11 +25,17 @@ void Transform::updateModelMatrix()
   glm::mat4 scaleMatrix = glm::scale(glm::mat4(1.0f), this->scale);
 
   this->modelMatrix = positionMatrix * this->rotationMatrix * scaleMatrix;
+  this->invertedTransposedModelMatrix = glm::transpose(glm::inverse(this->modelMatrix));
 }
 
 const glm::mat4& Transform::getModelMatrix()
 {
   return this->modelMatrix;
+}
+
+const glm::mat4& Transform::getInvertedTransposedModelMatrix()
+{
+  return this->invertedTransposedModelMatrix;
 }
 
 void Transform::setPosition(glm::vec3 pos)

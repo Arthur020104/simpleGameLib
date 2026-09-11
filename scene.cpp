@@ -18,7 +18,7 @@ void Scene::draw()
 
   for(InstanceGroup* group: this->instances)
   {
-    group->draw(this->cameras[activeCamera], this);
+    group->draw(this->cameras[activeCamera]);
   }
 
   if(hasCubeMap)
@@ -58,10 +58,10 @@ Scene::~Scene()
   if(hasCubeMap)
     delete cubeMap;
   
-  for(InstanceGroup* group: this->instances)
-  {
-    delete group;
-  }
+  // for(InstanceGroup* group: this->instances)
+  // {
+  //   delete group;
+  // }
   
   b3DestroyWorld(worldId);
 }
@@ -144,6 +144,14 @@ void Scene::beforeUpdate()
     b3World_Step(this->worldId, this->timeStep, this->subStepCount);
     this->accumulatedTime -= this->timeStep;
   }
+
+  this->reducedUpdateTime += WINDOW.deltaTime;
+
+  while(this->reducedUpdateTime >= this->reducedTimeStep)
+  {
+    this->reducedUpdate();
+    this->reducedUpdateTime -= this->reducedTimeStep;
+  }
 }
 
 void Scene::afterUpdate()
@@ -159,6 +167,14 @@ void Scene::fixedUpdate()
   for(Component* obj: this->components)
   {
     obj->fixedUpdate();
+  }
+}
+
+void Scene::reducedUpdate()
+{
+  for(Component* obj: this->components)
+  {
+    obj->reducedUpdate();
   }
 }
 
@@ -297,4 +313,11 @@ void Scene::destroy(Component* obj)
   std::scoped_lock lock(this->destroyQueueLock);
 
   this->destroyQueue.insert(obj);
+}
+
+void Scene::addInstanceGroup(InstanceGroup* group)
+{
+  group->scene = this; 
+  this->componentsWaitingToStart.push_back(group);
+  this->instances.push_back(group);
 }

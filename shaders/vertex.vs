@@ -7,6 +7,7 @@ layout (location = 3) in uint materialIndice;
 
 uniform mat4 mvp;
 uniform mat4 modelMatrix;
+uniform mat4 invertedTransposedModelMatrix;
 uniform bool hasMaterialIndices;
 
 out vec3 worldFragPos;
@@ -18,7 +19,7 @@ void main()
 {
   texCoord = uv;
   materialIdx = hasMaterialIndices ? materialIndice : 0;
-  normalV = (modelMatrix * vec4(normal, 0.0)).xyz;
+  normalV = (invertedTransposedModelMatrix * vec4(normal, 0.0)).xyz;
 
   worldFragPos = (modelMatrix * vec4(vertexPos, 1.0)).xyz;
   gl_Position = mvp * vec4(vertexPos, 1.0);

@@ -35,7 +35,7 @@ void main()
 
   mat4 modelMatrix = transpose(mat4(modelMatrixRow0, modelMatrixRow1, modelMatrixRow2, modelMatrixRow3));
 
-  normalV = (modelMatrix * vec4(normal, 0.0)).xyz;
+  normalV = (modelMatrix * vec4(normal, 0.0)).xyz;//non uniform scale breaks here, check if the performance cost will be acceptable to transpose(inverse(modelMatrix)) * vec4(normal, 0.0)).xyz;
   uint idx = uint(gl_InstanceID) * verticesPerMesh + uint(gl_VertexID);
   materialIdx = hasMaterialIndices ? getMaterialID(idx): materialIndice;
   

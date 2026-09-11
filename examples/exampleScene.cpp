@@ -21,7 +21,7 @@ ExampleScene::ExampleScene(): Scene()
 
   GrassPlane* grassPlane = new GrassPlane(glm::vec3(0.0f, 0.0f, 0.0f));
   this->addObject(grassPlane);
-  grassPlane->setScale(glm::vec3(500.0f, 1.0f, 500.0f));
+  grassPlane->setScale(glm::vec3(500.0f, 0.1f, 500.0f));
   grassPlane->createPhysicalBody(PhysicalShapeType::CUBE, 10000.0f, 1.0f);
   grassPlane->isIntersectable = true;
 
@@ -54,10 +54,10 @@ ExampleScene::ExampleScene(): Scene()
   }
   
   InstanceGroup* group = new InstanceGroup(boxMesh, true, shader, boxes);
-  this->instances.push_back(group);
+  this->addInstanceGroup(group);
   delete baseBox;
 
-  DirectionalLight* light = new DirectionalLight(glm::vec3(0.0f, 3.0f, 2.0f), glm::vec3(0.85, 0.85, 1.0), 1.0f);
+  DirectionalLight* light = new DirectionalLight(glm::vec3(0.0f, 4.0f, 2.0f), glm::vec3(0.85, 0.85, 1.0), 1.0f);
   ExamplePointLight* pointLight = new ExamplePointLight(glm::vec3(-10.0f, 15.0f, -15.0f), glm::vec3(1.0, 0.5, 0.8), 5.0f);
 
   this->addLight(pointLight);

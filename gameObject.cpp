@@ -157,6 +157,7 @@ void GameObject::draw(glm::mat4 &viewProjection)
 
   this->shaderProgram->bindMat4("mvp", mvp);
   this->shaderProgram->bindMat4("modelMatrix", this->getModelMatrix());
+  this->shaderProgram->bindMat4("invertedTransposedModelMatrix", this->getInvertedTransposedModelMatrix());
   this->shaderProgram->bindBool("hasMaterialIndices", !this->singleMaterial);
   
   Camera* activeCamera = this->scene->getActiveCamera();
@@ -170,7 +171,6 @@ void GameObject::draw(glm::mat4 &viewProjection)
   }
 
   this->mesh->renderMesh();
-    
 }
 
 void GameObject::draw(Camera* camera)

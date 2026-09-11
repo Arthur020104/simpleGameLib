@@ -15,4 +15,5 @@ class Component: public Transform
     virtual void beforeUpdate() = 0;
     virtual void afterUpdate() = 0;
     virtual void fixedUpdate() {};
+    virtual void reducedUpdate() {};
 };

@@ -10,7 +10,7 @@
 #include <Libs/box3d/include/box3d/box3d.h>
 
 
-class InstanceGroup
+class InstanceGroup: public Component
 {
   public:
     InstanceGroup(std::shared_ptr<Mesh> mesh, bool objectsOnScene, std::shared_ptr<Program> program, std::vector<GameObject*> objs, bool passDataToGPU = true);
@@ -20,7 +20,7 @@ class InstanceGroup
 
     void init(std::shared_ptr<Mesh> mesh, bool objectsOnScene, std::shared_ptr<Program> program, std::set<GameObject*> objs, bool passDataToGPU);
 
-    virtual void draw(Camera* cam, Scene* scene);
+    virtual void draw(Camera* cam);
 
     virtual void removeObject(GameObject* obj);
     virtual void addObject(GameObject* obj);
@@ -30,9 +30,13 @@ class InstanceGroup
 
     virtual void removeDataFromGPU();
 
+    virtual void beforeUpdate() override {};
+    virtual void afterUpdate() override {};
+    virtual void fixedUpdate() override {};
+    virtual void start() override {};
+
     bool objectsOnScene = false;
 
-    Scene* scene = nullptr;
   protected:
     std::shared_ptr<Mesh> mesh;
     std::set<GameObject*> objs;

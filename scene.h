@@ -49,10 +49,12 @@ class Scene
 
     b3WorldId getWorldId() { return this->worldId; }
 
-    std::vector<InstanceGroup*> instances;
+    void addInstanceGroup(InstanceGroup* group);
 
   private:
     void erase(Component* obj);
+
+    std::vector<InstanceGroup*> instances;
 
     std::vector<GameObject*> objects;
     mutable std::mutex objectsLock;
@@ -85,12 +87,17 @@ class Scene
 
     double accumulatedTime = 0.0f;
 
+    double reducedUpdateTime = 0.0f;
+    float reducedTimeStep = 1.0f / 20.0f;
+
     TimeQueue timeQueue;
     b3WorldId worldId;
 
     glm::vec3 gravity = glm::vec3(0.0f, -10.0f, 0.0f);
 
     void fixedUpdate();
+    //for less frequent update, 5 updates per second.
+    void reducedUpdate();
   protected:
     void setGravity(glm::vec3 gravity);
 };

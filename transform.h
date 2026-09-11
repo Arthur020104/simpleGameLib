@@ -10,6 +10,7 @@ class Transform
     void updateModelMatrix();
     const glm::mat4& getModelMatrix();
     const glm::mat4& getRotationMatrix();
+    const glm::mat4& getInvertedTransposedModelMatrix();
 
     virtual void setPosition(glm::vec3 pos);
     virtual void setRotation(glm::vec3 rot);
@@ -28,6 +29,7 @@ class Transform
 
   private:
     glm::mat4 modelMatrix, rotationMatrix;
+    glm::mat4 invertedTransposedModelMatrix;
 
     glm::vec3 position, scale, eulerRotation = glm::vec3(0.0f, 0.0f, 0.0f);
     glm::quat rotation;

@@ -3,13 +3,13 @@
 #include <glm/gtc/matrix_access.hpp>
 #include <unordered_map>
 
-InstanceGroup::InstanceGroup(std::shared_ptr<Mesh> mesh, bool objectsOnScene, std::shared_ptr<Program> program, std::vector<GameObject*> objs, bool passDataToGPU)
+InstanceGroup::InstanceGroup(std::shared_ptr<Mesh> mesh, bool objectsOnScene, std::shared_ptr<Program> program, std::vector<GameObject*> objs, bool passDataToGPU): Component()
 {
   std::set<GameObject*> setObjs( objs.begin(), objs.end() );
   this->init(mesh, objectsOnScene, program, setObjs, passDataToGPU);
 }
 
-InstanceGroup::InstanceGroup(std::shared_ptr<Mesh> mesh, bool objectsOnScene, std::shared_ptr<Program> program, std::set<GameObject*> objs, bool passDataToGPU)
+InstanceGroup::InstanceGroup(std::shared_ptr<Mesh> mesh, bool objectsOnScene, std::shared_ptr<Program> program, std::set<GameObject*> objs, bool passDataToGPU): Component()
 {
   this->init(mesh, objectsOnScene, program, objs, passDataToGPU);
 }
@@ -83,7 +83,7 @@ void InstanceGroup::addObject(GameObject* obj)
   this->passDataToGPU();
 }
 
-void InstanceGroup::draw(Camera* cam, Scene* scene)
+void InstanceGroup::draw(Camera* cam)
 {
   const uint16_t shaderID = this->program->getProgram();
   glUseProgram(shaderID);
@@ -131,7 +131,6 @@ void InstanceGroup::removeDataFromGPU()
 {
   if(!this->hasVbo)
     return;
-  
   
   this->mesh->bindVAO();
   glDeleteBuffers(1, &VBO);
