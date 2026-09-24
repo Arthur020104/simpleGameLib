@@ -32,7 +32,7 @@ public:
   float getFOV() { return this->FOV; }
 
 protected:
-  const float N = 0.1f, F = 100000.0f;
+  float N = 0.1f, F = 100000.0f;
   const float FOV = 90.0f;
   float aspect;
   

@@ -2,5 +2,6 @@
 
 enum class GameObjectType {
   STATIC,
-  DYNAMIC
+  DYNAMIC,
+  KINEMATIC
 };

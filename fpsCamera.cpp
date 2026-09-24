@@ -12,7 +12,7 @@ void FPSCamera::afterUpdate()
   return;
 }
 
-void FPSCamera::beforeUpdate()
+void FPSCamera::updatePostion()
 {
   glm::vec3 moveVector = glm::vec3(0.0f, 0.0f, 0.0f);
 
@@ -25,7 +25,10 @@ void FPSCamera::beforeUpdate()
 
   moveVector *= this->velocity * WINDOW.deltaTime;
   this->setPosition(moveVector + this->getPosition());
+}
 
+void FPSCamera::updateRotation()
+{
   glm::vec2 mousePos = WINDOW.getMousePos();
 
   if (this->firstMouse)
@@ -44,6 +47,16 @@ void FPSCamera::beforeUpdate()
   float yaw = currentRot.y - mouseDelta.x;
 
   this->setRotation(glm::vec3(pitch, yaw, 0.0f));
+  return;
+}
+
+void FPSCamera::beforeUpdate()
+{
+  if(this->scene->getActiveCamera() != this)
+    return;
+
+  this->updatePostion();
+  this->updateRotation();  
 }
 
 void FPSCamera::setRotation(glm::vec3 rot)

@@ -313,20 +313,26 @@ void GameObject::setMaterialIndices(std::vector<uint8_t> materialIndices)
   this->loadMaterialIndicesToGPU();
 }
 
-void GameObject::createPhysicalBody(PhysicalShapeType physicalShapeType, float density, float friction)
+void GameObject::createPhysicalBody(PhysicalShapeType physicalShapeType, float density, float friction, float drag)
 {
   if(this->scene == nullptr)
     throw std::runtime_error("Error: GameObject must be added to a scene before creating a physical body.");
 
-  bool isDynamic = this->gameObjectType == GameObjectType::DYNAMIC;
+  bool isDynamic = this->gameObjectType != GameObjectType::STATIC;
 
   if(this->hasPhysicalBody) 
   {
     b3DestroyBody(this->bodyId);
     this->hasPhysicalBody = false;
   }
+
   b3BodyDef bodyDefinition = b3DefaultBodyDef();
-  if(isDynamic) bodyDefinition.type = b3_dynamicBody;
+  if(isDynamic) 
+  {
+    bodyDefinition.type = this->gameObjectType == GameObjectType::DYNAMIC ? b3BodyType::b3_dynamicBody : b3BodyType::b3_kinematicBody;
+    bodyDefinition.linearDamping = drag;
+  }
+
   
   bodyDefinition.position = (b3Pos){this->getPosition().x, this->getPosition().y, this->getPosition().z};
   this->bodyId = b3CreateBody(this->scene->getWorldId(), &bodyDefinition);
@@ -372,6 +378,11 @@ void GameObject::fixedUpdate()
     b3WorldTransform bodyTransform = b3Body_GetTransform(this->bodyId);
     this->setPosition(glm::vec3(bodyTransform.p.x, bodyTransform.p.y, bodyTransform.p.z));
 
+    if(this->blockPhysicalRotation) 
+    { // IF the rotation is blocked, we set the physical body rotation to the current rotation of the game object, setRotation willl sync the physical body rotation with the game object rotation
+      this->setRotation(this->getRotationQuat());
+      return;
+    }
     glm::quat physicsRot(bodyTransform.q.s, bodyTransform.q.v.x, bodyTransform.q.v.y, bodyTransform.q.v.z);
     glm::quat currentRot = this->getRotationQuat();
 
@@ -392,7 +403,24 @@ void GameObject::setPosition(glm::vec3 pos)
     b3Body_SetTransform(this->bodyId, (b3Pos){pos.x, pos.y, pos.z}, bodyTransform.q);
   }
 }
+
 void GameObject::setRotation(glm::vec3 rot)
+{
+  Transform::setRotation(rot);
+
+  if(this->hasPhysicalBody)
+  {
+    b3WorldTransform bodyTransform = b3Body_GetTransform(this->bodyId);
+
+    b3Quat quaternion;
+    quaternion.s = this->getRotationQuat().w;
+    quaternion.v = (b3Vec3){this->getRotationQuat().x, this->getRotationQuat().y, this->getRotationQuat().z};
+
+    b3Body_SetTransform(this->bodyId, bodyTransform.p, quaternion);
+  }
+}
+
+void GameObject::setRotation(glm::quat rot)
 {
   Transform::setRotation(rot);
 

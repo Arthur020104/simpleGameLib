@@ -1,11 +1,11 @@
 #include <grassGroup.h>
 #include <malloc.h>
 
-float GrassGroup::maxDistanceToUseHighQualityGrass = 175.0f;
-float GrassGroup::stopRenderingDistance = 400.0f;
-float GrassGroup::removeFromGPUDistance = 500.0f;
-float GrassGroup::removeFromRAMDistance = 550.0f;
-float GrassGroup::loadBackToGPUDistance = 450.0f;
+float GrassGroup::maxDistanceToUseHighQualityGrass = 100.0f;
+float GrassGroup::stopRenderingDistance = 600.0f;
+float GrassGroup::removeFromGPUDistance = GrassGroup::stopRenderingDistance + 100.0f;
+float GrassGroup::removeFromRAMDistance = GrassGroup::removeFromGPUDistance + 50.0f;
+float GrassGroup::loadBackToGPUDistance = GrassGroup::stopRenderingDistance + 50.0f;
 float GrassGroup::minDistanceForOclusion = 100.0f;
 
 uint32_t GrassGroup::maxMemoryUntilFreeRAM = 1024 * 1024 * 1024;
@@ -74,7 +74,7 @@ void GrassGroup::loadDataToRAM()
       
       grass->setRotation(rotation);
       
-      float scale = getRandomFloatR(3.0f, 5.0f);
+      float scale = getRandomFloatR(1.5f, 3.0f);
       glm::vec3 scaleVec = glm::vec3(scale, scale, scale);
 
       grass->setPosition(grassPosition);

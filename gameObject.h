@@ -73,13 +73,14 @@ class GameObject: public Component
 
     virtual void setPosition(glm::vec3 pos) override;
     virtual void setRotation(glm::vec3 rot) override;
+    virtual void setRotation(glm::quat rot) override;
     virtual void setScale(glm::vec3 scale) override;
 
     bool isIntersectable = false, hide = false;
 
     b3BodyId getBodyId() { return this->bodyId; }
 
-    void createPhysicalBody(PhysicalShapeType physicalShapeType, float density = 1.0f, float friction = 0.3f);
+    void createPhysicalBody(PhysicalShapeType physicalShapeType, float density = 1.0f, float friction = 0.3f, float drag = 0.1f);
 
     GameObjectType getGameObjectType() { return this->gameObjectType; }
 
@@ -104,6 +105,7 @@ class GameObject: public Component
     std::shared_ptr<Program> shaderProgram;
 
     bool hasPhysicalBody = false;
+    bool blockPhysicalRotation = false;
 
     b3BodyId bodyId;
 

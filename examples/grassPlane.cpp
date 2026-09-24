@@ -9,7 +9,6 @@ GrassPlane::GrassPlane(glm::vec3 position): GameObject(std::make_shared<Mesh>(".
   this->setPosition(position);
 }
 
-
 void GrassPlane::start()
 {
   std::shared_ptr<Material> planeMaterial = std::make_shared<Material>("../obj/grass.png", glm::vec3(1.0f, 1.0f, 1.0f), 1.0f);

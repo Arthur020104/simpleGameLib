@@ -39,6 +39,8 @@ set(SOURCES
   instanceGroup.cpp
   examples/grassPlane.cpp
   examples/grassGroup.cpp
+  examples/movementController.cpp
+  examples/baseMover.cpp
 )
 
 set(HEADERS
@@ -69,6 +71,8 @@ set(HEADERS
   gameObjectType.h
   examples/grassPlane.h
   examples/grassGroup.h
+  examples/movementController.h
+  examples/baseMover.h
 )
 
 add_executable(Renderer ${SOURCES} ${HEADERS})
