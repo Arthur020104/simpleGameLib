@@ -50,6 +50,9 @@ void InstanceGroup::init(std::shared_ptr<Mesh> mesh, bool objectsOnScene, std::s
       obj->setMesh(this->mesh);
     else if(mesh.get() != obj->getMesh().get() && mesh->meshHash != obj->getMesh()->meshHash)
       throw std::runtime_error("Error: InstanceGroup can only contain GameObjects with the same mesh.");
+    
+    if(!this->hasMutipleMaterialsPerObject && obj->hasMultipleMaterials())
+      this->hasMutipleMaterialsPerObject = true;
 
     if(obj->getGameObjectType() != this->gameObjectType)
       this->gameObjectType = GameObjectType::DYNAMIC;
@@ -79,6 +82,9 @@ void InstanceGroup::addObject(GameObject* obj)
   
   if(obj->getGameObjectType() != this->gameObjectType)
     this->gameObjectType = GameObjectType::DYNAMIC;
+
+  if(!this->hasMutipleMaterialsPerObject && obj->hasMultipleMaterials())
+    this->hasMutipleMaterialsPerObject = true;
 
   this->needsUpdate = true;
 }
@@ -158,28 +164,19 @@ void InstanceGroup::passDataToGPU()
   uint8_t textureCounter = 0;//use it later to limit, keep the same max as in the shader,
   uint8_t materialCounter = 0;//use it later to limit, keep the same max as in the shader,
 
-  std::vector<objData> gpuData;
-  gpuData.reserve(this->objs.size());
+  std::vector<objData> gpuData(this->objs.size());
 
   materialToIndexMap.clear();
 
   std::vector<uint8_t> allMatIdx;
 
+  uint32_t counter = 0;
   for (GameObject* item : this->objs)
   {
-    if(!this->hasMutipleMaterialsPerObject && item->hasMultipleMaterials())
-      this->hasMutipleMaterialsPerObject = true;
-  }
-
-  for (GameObject* item : this->objs)
-  {
-    objData data;
-    data.modelMatrixRow0 = glm::row(item->getModelMatrix(), 0);
-    data.modelMatrixRow1 = glm::row(item->getModelMatrix(), 1);
-    data.modelMatrixRow2 = glm::row(item->getModelMatrix(), 2);
-    data.modelMatrixRow3 = glm::row(item->getModelMatrix(), 3);
-
-    gpuData.push_back(data);
+    gpuData[counter].modelMatrixRow0 = glm::row(item->getModelMatrix(), 0);
+    gpuData[counter].modelMatrixRow1 = glm::row(item->getModelMatrix(), 1);
+    gpuData[counter].modelMatrixRow2 = glm::row(item->getModelMatrix(), 2);
+    gpuData[counter].modelMatrixRow3 = glm::row(item->getModelMatrix(), 3);
 
     std::vector<uint8_t> materialsIdx;
 
@@ -195,7 +192,13 @@ void InstanceGroup::passDataToGPU()
     else
       materialsIdx.resize(item->getMesh()->getVerticesAmount(), 0);
     
-    std::vector<std::shared_ptr<Material>> materials = item->getMaterials();
+    if(!this->hasMutipleMaterialsPerObject && allMatIdx.size() > 0)
+    {
+      counter++;
+      continue;
+    }
+
+    const std::vector<std::shared_ptr<Material>> materials = item->getMaterials();
     for(uint8_t i = 0; i < materials.size(); i++)
     {
       assert(materialCounter < 255 && "material slot counter overflow");
@@ -220,6 +223,7 @@ void InstanceGroup::passDataToGPU()
       if(!alreadyLoaded) materialCounter++;
     }
     allMatIdx.insert(allMatIdx.end(), materialsIdx.begin(), materialsIdx.end());
+    counter++;
   }
 
   passModelMatrixData(gpuData, VBO);
@@ -270,18 +274,17 @@ void InstanceGroup::bindForDrawing()
   if(this->gameObjectType == GameObjectType::STATIC)
     return;
 
-  std::vector<objData> gpuData;
-  gpuData.reserve(this->objs.size());
+  std::vector<objData> gpuData(this->objs.size());
 
+  uint32_t counter = 0;
   for (GameObject* item : this->objs)
   {
-    objData data;
-    data.modelMatrixRow0 = glm::row(item->getModelMatrix(), 0);
-    data.modelMatrixRow1 = glm::row(item->getModelMatrix(), 1);
-    data.modelMatrixRow2 = glm::row(item->getModelMatrix(), 2);
-    data.modelMatrixRow3 = glm::row(item->getModelMatrix(), 3);
+    gpuData[counter].modelMatrixRow0 = glm::row(item->getModelMatrix(), 0);
+    gpuData[counter].modelMatrixRow1 = glm::row(item->getModelMatrix(), 1);
+    gpuData[counter].modelMatrixRow2 = glm::row(item->getModelMatrix(), 2);
+    gpuData[counter].modelMatrixRow3 = glm::row(item->getModelMatrix(), 3);
 
-    gpuData.push_back(data);
+    counter++;
   }
 
   passModelMatrixData(gpuData, VBO);

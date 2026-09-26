@@ -62,7 +62,7 @@ class GameObject: public Component
 
     void setMesh(std::shared_ptr<Mesh> meshData);
 
-    std::vector<std::shared_ptr<Material>> getMaterials() {return this->materials;};
+    const std::vector<std::shared_ptr<Material>>& getMaterials() {return this->materials;};
 
     void setMaterialIndices(std::vector<uint8_t> materialIndices);
 
