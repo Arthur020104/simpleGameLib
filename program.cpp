@@ -146,3 +146,9 @@ void Program::bindUint(const char* uniformName, unsigned int value)
   GLuint location = glGetUniformLocation(this->id, uniformName);
   glUniform1ui(location, value);
 }
+
+void Program::bindVec2(const char* uniformName, glm::vec2 value)
+{
+  GLuint location = glGetUniformLocation(this->id, uniformName);
+  glUniform2f(location, value.x, value.y);
+}

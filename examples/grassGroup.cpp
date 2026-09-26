@@ -2,7 +2,7 @@
 #include <malloc.h>
 
 float GrassGroup::maxDistanceToUseHighQualityGrass = 100.0f;
-float GrassGroup::stopRenderingDistance = 600.0f;
+float GrassGroup::stopRenderingDistance = 500.0f;
 float GrassGroup::removeFromGPUDistance = GrassGroup::stopRenderingDistance + 100.0f;
 float GrassGroup::removeFromRAMDistance = GrassGroup::removeFromGPUDistance + 50.0f;
 float GrassGroup::loadBackToGPUDistance = GrassGroup::stopRenderingDistance + 50.0f;

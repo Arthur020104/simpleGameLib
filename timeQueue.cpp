@@ -37,7 +37,7 @@ void TimeQueue::update()
       this->queue[i].invoke();
       double timeUntilNextExecution = std::max(this->queue[i].getNextExecutionTime() - currentTime, 0.001);
       
-      sleepDurationInSeconds = std::min(sleepDurationInSeconds, timeUntilNextExecution);
+      sleepDurationInSeconds = std::min(0.1, timeUntilNextExecution);
     }
 
     std::unique_lock<std::mutex> lock(mtx, std::try_to_lock);

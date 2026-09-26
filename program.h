@@ -11,7 +11,7 @@ class Program
 {
   public:
     Program(const char* vertexShaderPath, const char* fragmentShaderPath);
-    ~Program();
+    virtual ~Program();
     void compileShaders();
     unsigned short getProgram();
 
@@ -22,6 +22,7 @@ class Program
     void bindFloat(const char* uniformName, float value);
     void bindVec3(const char* uniformName, glm::vec3 value);
     void bindVec4(const char* uniformName, glm::vec4 value);
+    void bindVec2(const char* uniformName, glm::vec2 value);
     void bindMat4(const char* uniformName, glm::mat4 value);
     void bindInt(const char* uniformName, int value);
     void bindBool(const char* uniformName, bool value);

@@ -1,5 +1,5 @@
 #pragma once
-#include <../gameObject.h>
+#include <gameObject.h>
 
 class ExampleObject: public GameObject
 {
@@ -10,6 +10,7 @@ class ExampleObject: public GameObject
     void fixedUpdate() override;
     void beforeUpdate() override;
     void afterUpdate() override;
+    
   private:
     bool rotating = false;
 };

@@ -85,6 +85,8 @@ class GameObject: public Component
     GameObjectType getGameObjectType() { return this->gameObjectType; }
 
     bool hasMultipleMaterials() { return !this->singleMaterial; }
+
+    bool hasRigidBody() { return this->hasPhysicalBody; }
   private:
 
     GLuint materialIndicesVBO;

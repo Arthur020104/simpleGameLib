@@ -3,14 +3,14 @@
 #include <exampleObject.h>
 #include <examplePointLight.h>
 #include <exampleCamera.h>
-#include <../mesh.h>
-#include <../utils.h>
-#include <../program.h>
+#include <mesh.h>
+#include <utils.h>
+#include <program.h>
 #include <exampleCamera.h>
 #include <utils.h>
-#include <../material.h>
+#include <material.h>
 #include <uiItemExample.h>
-#include <../instanceGroup.h>
+#include <instanceGroup.h>
 #include <baseMover.h>
 #include <grassPlane.h>
 #include <movementController.h>
@@ -24,9 +24,10 @@ ExampleScene::ExampleScene(): Scene()
 
   GrassPlane* grassPlane = new GrassPlane(glm::vec3(0.0f, 0.0f, 0.0f));
   this->addObject(grassPlane);
-  grassPlane->setScale(glm::vec3(1000.0f, 0.1f, 1000.0f));
+  grassPlane->setScale(glm::vec3(10000.0f, 10000.0f, 10000.0f));
   grassPlane->createPhysicalBody(PhysicalShapeType::CUBE, 1.0f, 1.0f);
   grassPlane->isIntersectable = true;
+  // throw std::runtime_error("ExampleScene: GrassPlane is not compatible with the current physics engine. Please use a different ground object.");
 
   glm::vec3 spacing = glm::vec3(1.0f, 1.0f, 0.0f);
   glm::vec3 startPosition = glm::vec3(-9.0f, 1.0f, -9.0f);
@@ -34,7 +35,7 @@ ExampleScene::ExampleScene(): Scene()
   std::shared_ptr<Material> boxMaterial2 = std::make_shared<Material>(glm::vec3(1.0f, 0.0f, 0.0f), glm::vec3(1.0f, 1.0f, 1.0f), 32.0f);
   std::shared_ptr<Material> boxMaterial3 = std::make_shared<Material>(glm::vec3(0.0f, 1.0f, 0.0f), glm::vec3(1.0f, 1.0f, 1.0f), 32.0f);
   std::shared_ptr<Material> boxMaterial4 = std::make_shared<Material>(glm::vec3(0.0f, 0.0f, 1.0f), glm::vec3(1.0f, 1.0f, 1.0f), 32.0f);
-  std::shared_ptr<Material> boxMaterial = std::make_shared<Material>("/home/arthur/Documents/simpleGame/obj/container.jpg", glm::vec3(1.0f, 1.0f, 1.0f), 32.0f);
+  std::shared_ptr<Material> boxMaterial = std::make_shared<Material>("/home/arthur/Documents/simpleGame/obj/container.jpg", glm::vec3(0.2f, 0.2f, 0.2f), 5.0f);
   std::shared_ptr<Mesh> boxMesh = std::make_shared<Mesh>("/home/arthur/Documents/simpleGame/obj/square.obj");
   ExampleObject* baseBox = new ExampleObject(boxMesh, Program::getDefaultShader(), {boxMaterial});
 
@@ -42,11 +43,11 @@ ExampleScene::ExampleScene(): Scene()
 
   std::vector<GameObject*> boxes;
 
-  for (uint8_t i = 0; i < 30; i++)
+  for (uint8_t i = 0; i < 60; i++)
   {
-    for (uint8_t j = 0; j < 30; j++)
+    for (uint8_t j = 0; j < 60; j++)
     {
-      ExampleObject* box = new ExampleObject(baseBox->getMesh(), Program::getDefaultShader(), baseBox->getMaterials(), GameObjectType::DYNAMIC);
+      ExampleObject* box = new ExampleObject(baseBox->getMesh(), shader, baseBox->getMaterials(), GameObjectType::DYNAMIC);
       box->setPosition(startPosition + spacing * glm::vec3(i, j, 0.0f));
       box->isIntersectable = true;
       this->addObject(box);
@@ -133,6 +134,6 @@ void ExampleScene::beforeUpdate()
 
 void ExampleScene::restartScene()
 {
-  this->~Scene();
+  this->~ExampleScene();
   ::new (static_cast<void*>(this)) ExampleScene();
 }

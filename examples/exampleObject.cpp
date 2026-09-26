@@ -1,5 +1,5 @@
 #include <exampleObject.h>
-#include <../window.h>
+#include <window.h>
 void ExampleObject::start()
 {
   this->setRotation(this->getRotation() + glm::vec3(0.0f, 90, 0.0f));

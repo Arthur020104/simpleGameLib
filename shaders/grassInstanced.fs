@@ -84,12 +84,12 @@ vec3 applyLight(Light light, vec3 normal, vec3 viewDirection, Material mat)
       float spec = pow(max(dot(viewDirection, reflectDirection), 0.0), mat.shininess);
       vec3 specular = mat.hasSpecularTex ? 
         texture(textures[mat.specularTexUnit], texCoord).rgb * mat.specularColor * spec * light.color * light.intensity: 
-        mat.specularColor * spec * light.color * diffuseColor * light.intensity;  
+        mat.specularColor * spec * light.color * light.intensity;  
 
       vec3 diffuse = light.color * theta * light.intensity;
       vec3 ambient = light.color * light.ambientIntensity;
 
-      return (diffuse + ambient) * diffuseColor + specular;
+      return vec3((diffuse + ambient) * diffuseColor + specular);
       break;
     }
     case 2:
@@ -108,7 +108,7 @@ vec3 applyLight(Light light, vec3 normal, vec3 viewDirection, Material mat)
 
       vec3 specular = mat.hasSpecularTex ? 
         texture(textures[mat.specularTexUnit], texCoord).rgb * mat.specularColor * spec * light.color * light.intensity: 
-        mat.specularColor * spec * light.color * diffuseColor * light.intensity;
+        mat.specularColor * spec * light.color * light.intensity;
        
       vec3 diffuse = light.color * theta * light.intensity;
       vec3 ambient = light.color * light.ambientIntensity;

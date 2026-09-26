@@ -41,6 +41,7 @@ set(SOURCES
   examples/grassGroup.cpp
   examples/movementController.cpp
   examples/baseMover.cpp
+  examples/blackHole.cpp
 )
 
 set(HEADERS
@@ -73,6 +74,7 @@ set(HEADERS
   examples/grassGroup.h
   examples/movementController.h
   examples/baseMover.h
+  examples/blackHole.h
 )
 
 add_executable(Renderer ${SOURCES} ${HEADERS})

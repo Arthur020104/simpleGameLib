@@ -61,18 +61,14 @@ Mesh::Mesh(std::vector<Vertex> inputVertices, MeshType type)
   glm::vec3 positiveInfinity = glm::vec3(INFINITY, INFINITY, INFINITY);
   glm::vec3 negativeInfinity = glm::vec3(-INFINITY, -INFINITY, -INFINITY);
 
-  glm::vec3 boundingVolumeC[2] = {positiveInfinity, negativeInfinity};
+  glm::vec3 boundingVolumeC[2] = { positiveInfinity, negativeInfinity };
 
-  for(Vertex& vertex: inputVertices)
+  for(Vertex& vertex : inputVertices)
   {
-    glm::vec3 itemsBBox[2] = { positiveInfinity, negativeInfinity };
-
-    alterBoudingMin(vertex.pos, itemsBBox[0]);
-    alterBoudingMin(vertex.pos, itemsBBox[1]);
-
-    alterBoudingMin(itemsBBox[0], boundingVolumeC[0]);
-    alterBoudingMin(itemsBBox[1], boundingVolumeC[1]);
+    alterBoudingMin(vertex.pos, boundingVolumeC[0]);
+    alterBoudingMax(vertex.pos, boundingVolumeC[1]);
   }
+
   init(inputVertices, type, boundingVolumeC);
 }
 

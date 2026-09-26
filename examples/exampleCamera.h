@@ -22,4 +22,6 @@ class ExampleCamera: public FPSCamera
     float minDistance = 1.0f;
   private:
     ExampleObject* lineRay = nullptr;
+
+    bool isShooting = false;
 };

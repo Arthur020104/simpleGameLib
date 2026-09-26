@@ -58,11 +58,6 @@ Scene::~Scene()
   if(hasCubeMap)
     delete cubeMap;
   
-  // for(InstanceGroup* group: this->instances)
-  // {
-  //   delete group;
-  // }
-  
   b3DestroyWorld(worldId);
 }
 
@@ -80,7 +75,6 @@ void Scene::addUIItem(UIItem* uiItem)
 
 void Scene::handleStart()
 {
-  
   while(true)
   {
     Component* objToDelete = nullptr;
@@ -89,6 +83,14 @@ void Scene::handleStart()
       if(this->destroyQueue.empty()) break;
 
       objToDelete = *this->destroyQueue.begin();
+
+      for(InstanceGroup* group: this->instances)
+      {
+        GameObject* obj = dynamic_cast<GameObject*>(objToDelete);
+
+        if(obj != nullptr)
+          group->removeObject(obj);
+      }
       this->destroyQueue.erase(this->destroyQueue.begin());
     }
     

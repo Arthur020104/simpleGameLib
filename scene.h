@@ -25,7 +25,7 @@ class Scene
 {
   public:
     Scene();
-    ~Scene();
+    virtual ~Scene();
 
     void handleStart();
     virtual void beforeUpdate();
@@ -47,7 +47,11 @@ class Scene
     virtual bool intersectSceneObjects(Ray& ray);
     TimeQueue* getTimeQueue() { return &this->timeQueue; }
 
+    std::vector<GameObject*> getGameObjects() { return this->objects; };
+
     b3WorldId getWorldId() { return this->worldId; }
+
+    float getFixedTimeStep() { return this->timeStep; }
 
     void addInstanceGroup(InstanceGroup* group);
 

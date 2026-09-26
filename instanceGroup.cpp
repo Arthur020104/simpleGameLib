@@ -64,7 +64,7 @@ void InstanceGroup::removeObject(GameObject* obj)
   obj->hide = false;
   this->objs.erase(obj);
 
-  this->passDataToGPU();
+  this->needsUpdate = true;
 }
 
 void InstanceGroup::addObject(GameObject* obj)
@@ -80,11 +80,17 @@ void InstanceGroup::addObject(GameObject* obj)
   if(obj->getGameObjectType() != this->gameObjectType)
     this->gameObjectType = GameObjectType::DYNAMIC;
 
-  this->passDataToGPU();
+  this->needsUpdate = true;
 }
 
 void InstanceGroup::draw(Camera* cam)
 {
+  if(this->needsUpdate)
+  {
+    this->passDataToGPU();
+    this->needsUpdate = false;
+  }
+
   const uint16_t shaderID = this->program->getProgram();
   glUseProgram(shaderID);
 

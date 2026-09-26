@@ -141,6 +141,9 @@ GameObject::~GameObject()
 {
   if(this->hasMaterialVBO)
     glDeleteBuffers(1, &this->materialIndicesVBO);
+
+  if(this->hasPhysicalBody)
+    b3DestroyBody(this->bodyId);
 }
 
 void GameObject::draw(glm::mat4 &viewProjection)
@@ -332,7 +335,6 @@ void GameObject::createPhysicalBody(PhysicalShapeType physicalShapeType, float d
     bodyDefinition.type = this->gameObjectType == GameObjectType::DYNAMIC ? b3BodyType::b3_dynamicBody : b3BodyType::b3_kinematicBody;
     bodyDefinition.linearDamping = drag;
   }
-
   
   bodyDefinition.position = (b3Pos){this->getPosition().x, this->getPosition().y, this->getPosition().z};
   this->bodyId = b3CreateBody(this->scene->getWorldId(), &bodyDefinition);

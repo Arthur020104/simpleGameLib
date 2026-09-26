@@ -27,6 +27,8 @@ class Transform
     virtual glm::vec3 getRightVector();
     virtual glm::vec3 getUpVector();
 
+    virtual ~Transform() = default;
+
   private:
     glm::mat4 modelMatrix, rotationMatrix;
     glm::mat4 invertedTransposedModelMatrix;

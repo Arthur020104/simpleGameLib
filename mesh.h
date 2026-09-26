@@ -36,7 +36,7 @@ class Mesh
 
     Mesh(cy::TriMesh& objTriMesh);
 
-    ~Mesh();
+    virtual ~Mesh();
 
     void registerObjectWithMesh(GameObject* obj);//for now passing the obj is useless, but later I may want to add a list of objects using this mesh
 

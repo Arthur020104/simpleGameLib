@@ -1,8 +1,8 @@
 #pragma once
-#include <../light.h>
-#include <../gameObject.h>
-#include <../mesh.h>
-#include <../utils.h>
+#include <light.h>
+#include <gameObject.h>
+#include <mesh.h>
+#include <utils.h>
 #include <exampleObject.h>
 
 class ExamplePointLight: public PointLight
@@ -23,7 +23,7 @@ class ExamplePointLight: public PointLight
 
     ~ExamplePointLight()
     {
-      if(body != nullptr)
-        delete body;
+      if(body != nullptr && this->scene != nullptr)
+        this->scene->destroy(this->body);
     }
 };

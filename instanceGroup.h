@@ -50,6 +50,8 @@ class InstanceGroup: public Component
     GLuint VBO, MaterialVbo;
     bool hasVbo = false;
 
+    bool needsUpdate = false;
+
 };
 
 struct objData

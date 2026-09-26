@@ -17,7 +17,7 @@ class UIItem: public Component
   public:
     UIItem(std::string texturePath);
     UIItem(Texture* texture);
-    ~UIItem();
+    virtual ~UIItem();
 
     virtual void start() {};
     virtual void beforeUpdate() {};
@@ -34,7 +34,7 @@ class UI: public Component
   public:
     UI(std::vector<UIItem*> uiItems, Scene* scene);
     UI();
-    ~UI();
+    virtual ~UI();
 
     virtual void start();
     virtual void beforeUpdate();

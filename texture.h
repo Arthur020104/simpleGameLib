@@ -17,7 +17,7 @@ class Texture
       GLenum minFilter = GL_LINEAR_MIPMAP_LINEAR, GLenum magFilter = GL_LINEAR
     );
     
-    ~Texture();
+    virtual ~Texture();
 
     void loadDataFromPath();
 

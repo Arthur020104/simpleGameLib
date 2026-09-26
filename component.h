@@ -16,4 +16,7 @@ class Component: public Transform
     virtual void afterUpdate() = 0;
     virtual void fixedUpdate() {};
     virtual void reducedUpdate() {};
+
+    virtual ~Component() = default;
+
 };

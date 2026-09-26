@@ -1,5 +1,5 @@
-#include <../ui.h>
-#include <../window.h>
+#include <ui.h>
+#include <window.h>
 
 class ExampleUIItem: public UIItem
 {
