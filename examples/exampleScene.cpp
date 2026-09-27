@@ -11,7 +11,6 @@
 #include <material.h>
 #include <uiItemExample.h>
 #include <instanceGroup.h>
-#include <baseMover.h>
 #include <grassPlane.h>
 #include <movementController.h>
 
@@ -24,28 +23,25 @@ ExampleScene::ExampleScene(): Scene()
 
   GrassPlane* grassPlane = new GrassPlane(glm::vec3(0.0f, 0.0f, 0.0f));
   this->addObject(grassPlane);
-  grassPlane->setScale(glm::vec3(10000.0f, 10000.0f, 10000.0f));
+  grassPlane->setScale(glm::vec3(500.0f, 500.0f, 500.0f));
   grassPlane->createPhysicalBody(PhysicalShapeType::CUBE, 1.0f, 1.0f);
   grassPlane->isIntersectable = true;
-  // throw std::runtime_error("ExampleScene: GrassPlane is not compatible with the current physics engine. Please use a different ground object.");
 
   glm::vec3 spacing = glm::vec3(1.0f, 1.0f, 0.0f);
   glm::vec3 startPosition = glm::vec3(-9.0f, 1.0f, -9.0f);
 
-  std::shared_ptr<Material> boxMaterial2 = std::make_shared<Material>(glm::vec3(1.0f, 0.0f, 0.0f), glm::vec3(1.0f, 1.0f, 1.0f), 32.0f);
-  std::shared_ptr<Material> boxMaterial3 = std::make_shared<Material>(glm::vec3(0.0f, 1.0f, 0.0f), glm::vec3(1.0f, 1.0f, 1.0f), 32.0f);
-  std::shared_ptr<Material> boxMaterial4 = std::make_shared<Material>(glm::vec3(0.0f, 0.0f, 1.0f), glm::vec3(1.0f, 1.0f, 1.0f), 32.0f);
-  std::shared_ptr<Material> boxMaterial = std::make_shared<Material>("/home/arthur/Documents/simpleGame/obj/container.jpg", glm::vec3(0.2f, 0.2f, 0.2f), 5.0f);
-  std::shared_ptr<Mesh> boxMesh = std::make_shared<Mesh>("/home/arthur/Documents/simpleGame/obj/square.obj");
+  std::shared_ptr<Material> boxMaterial = std::make_shared<Material>("../obj/container2.png", glm::vec3(1.0f, 1.0f, 1.0f), 512.0f);
+  boxMaterial->addSpecularTexture("../obj/container2_specular.png");
+  std::shared_ptr<Mesh> boxMesh = std::make_shared<Mesh>("../obj/square.obj");
   ExampleObject* baseBox = new ExampleObject(boxMesh, Program::getDefaultShader(), {boxMaterial});
 
-  std::shared_ptr<Program> shader = std::make_shared<Program>("/home/arthur/Documents/simpleGame/shaders/instanced.vs", "/home/arthur/Documents/simpleGame/shaders/instanced.fs");
+  std::shared_ptr<Program> shader = std::make_shared<Program>("../shaders/instanced.vs", "../shaders/instanced.fs");
 
   std::vector<GameObject*> boxes;
 
-  for (uint8_t i = 0; i < 60; i++)
+  for (uint8_t i = 0; i < 50; i++)
   {
-    for (uint8_t j = 0; j < 60; j++)
+    for (uint8_t j = 0; j < 50; j++)
     {
       ExampleObject* box = new ExampleObject(baseBox->getMesh(), shader, baseBox->getMaterials(), GameObjectType::DYNAMIC);
       box->setPosition(startPosition + spacing * glm::vec3(i, j, 0.0f));
@@ -59,12 +55,14 @@ ExampleScene::ExampleScene(): Scene()
   InstanceGroup* group = new InstanceGroup(boxMesh, true, shader, boxes);
   this->addInstanceGroup(group);
 
-  BaseMover* mover = new BaseMover(baseBox->getMesh(), Program::getDefaultShader(), {Material::getDefaultMaterial()}, GameObjectType::DYNAMIC);
-  mover->setPosition(glm::vec3(0.0f, 50.0f, 0.0f));
-  mover->player = cam;
-  this->addObject(mover);
+  ExampleObject* whiteBox = new ExampleObject(baseBox->getMesh(), Program::getDefaultShader(), {boxMaterial}, GameObjectType::DYNAMIC);
+  whiteBox->setPosition(glm::vec3(0.0f, 50.0f, 0.0f));
+  this->addObject(whiteBox);
+  whiteBox->createPhysicalBody(PhysicalShapeType::CUBE, 1.0f, 0.3f);
 
-  ExampleObject* obstacle = new ExampleObject(boxMesh, Program::getDefaultShader(), {boxMaterial2});
+  //marble texture from https://www.vecteezy.com/photo/13425660-white-gray-black-marble-pattern-square-background
+  std::shared_ptr<Material> marbleMaterial = std::make_shared<Material>("../obj/marbleTexture.jpg", glm::vec3(0.7f, 0.7f, 0.7f), 512.0f);
+  ExampleObject* obstacle = new ExampleObject(boxMesh, Program::getDefaultShader(), {marbleMaterial});
   obstacle->setPosition(glm::vec3(0.0f, 5.0f, 10.0f));
   obstacle->setScale(glm::vec3(20.0f, 10.0f, 1.0f));
   this->addObject(obstacle);
@@ -72,8 +70,8 @@ ExampleScene::ExampleScene(): Scene()
 
   delete baseBox;
 
-  DirectionalLight* light = new DirectionalLight(glm::vec3(3.0f, 3.0f, 2.0f), glm::vec3(1.0, 1.0, 1.0), 1.5f);
-  ExamplePointLight* pointLight = new ExamplePointLight(glm::vec3(-10.0f, 15.0f, -15.0f), glm::vec3(0.8, 1.0, 1.0), 20.0f);
+  DirectionalLight* light = new DirectionalLight(glm::vec3(3.0f, 3.0f, 2.0f), glm::vec3(1.0, 1.0, 1.0), 1.0f);
+  ExamplePointLight* pointLight = new ExamplePointLight(glm::vec3(-10.0f, 15.0f, 5.0f), glm::vec3(0.7, 0.7, 1.0), 15.0f);
 
   this->addLight(pointLight);
   this->addLight(light);
@@ -81,18 +79,18 @@ ExampleScene::ExampleScene(): Scene()
   this->setActiveCam(cam);
 
   this->addCubeMap({
-    "/home/arthur/Documents/simpleGame/obj/Cubemaps_2025-07-25/20250717_210302_0772_rt.png",
-    "/home/arthur/Documents/simpleGame/obj/Cubemaps_2025-07-25/20250717_210302_0772_lf.png",
-    "/home/arthur/Documents/simpleGame/obj/Cubemaps_2025-07-25/20250717_210302_0772_up.png",
-    "/home/arthur/Documents/simpleGame/obj/Cubemaps_2025-07-25/20250717_210302_0772_dn.png",
-    "/home/arthur/Documents/simpleGame/obj/Cubemaps_2025-07-25/20250717_210302_0772_bk.png",
-    "/home/arthur/Documents/simpleGame/obj/Cubemaps_2025-07-25/20250717_210302_0772_ft.png"
+    "../obj/Cubemaps_2025-07-25/20250717_210302_0772_rt.png",
+    "../obj/Cubemaps_2025-07-25/20250717_210302_0772_lf.png",
+    "../obj/Cubemaps_2025-07-25/20250717_210302_0772_up.png",
+    "../obj/Cubemaps_2025-07-25/20250717_210302_0772_dn.png",
+    "../obj/Cubemaps_2025-07-25/20250717_210302_0772_bk.png",
+    "../obj/Cubemaps_2025-07-25/20250717_210302_0772_ft.png"
   });
 
-  UIItem* crosshair = new UIItem("/home/arthur/Documents/simpleGame/obj/crosshair.png");
+  UIItem* crosshair = new UIItem("../obj/crosshair.png");
   crosshair->setScale(glm::vec3(0.005f, 0.005f, 0.1f));
 
-  ExampleUIItem* testItem = new ExampleUIItem("/home/arthur/Documents/simpleGame/obj/container.jpg");
+  ExampleUIItem* testItem = new ExampleUIItem("../obj/container.jpg");
   testItem->setScale(glm::vec3(0.1f, 0.1f, 0.1f));
   testItem->setPosition(glm::vec3(-0.9f, 0.9f, 0.0f));
 
@@ -105,9 +103,10 @@ ExampleScene::ExampleScene(): Scene()
   this->mainCam = cam;
   this->secondaryCam = secondaryCam;
 
-  ExampleObject* house = new ExampleObject("/home/arthur/Documents/simpleGame/obj/casa.obj", Program::getDefaultShader(), GameObjectType::STATIC);
+  ExampleObject* house = new ExampleObject("../obj/casa.obj", Program::getDefaultShader(), GameObjectType::STATIC);
   this->addObject(house);
-  house->setPosition(glm::vec3(0.0f, 2.5f, 25.0f));
+  house->setPosition(glm::vec3(0.0f, 2.5f, 35.0f));
+  house->setScale(glm::vec3(3.0f, 3.0f, 3.0f));
   house->createPhysicalBody(PhysicalShapeType::CUBE, 1.0f, 1.0f);
 }
 

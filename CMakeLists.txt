@@ -5,8 +5,8 @@ project(SimpleGame CXX)
 set(CMAKE_CXX_STANDARD 17)
 set(CMAKE_CXX_STANDARD_REQUIRED ON)
 
-add_compile_options(-pg)
-add_link_options(-pg)
+# add_compile_options(-pg)
+# add_link_options(-pg)
 
 find_package(OpenGL REQUIRED)
 find_package(glfw3 REQUIRED)
@@ -40,7 +40,6 @@ set(SOURCES
   examples/grassPlane.cpp
   examples/grassGroup.cpp
   examples/movementController.cpp
-  examples/baseMover.cpp
   examples/blackHole.cpp
 )
 
@@ -73,7 +72,6 @@ set(HEADERS
   examples/grassPlane.h
   examples/grassGroup.h
   examples/movementController.h
-  examples/baseMover.h
   examples/blackHole.h
 )
 

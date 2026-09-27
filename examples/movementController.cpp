@@ -35,7 +35,7 @@ MovementController::MovementController(glm::vec3 position): GameObject("../obj/s
 
   std::shared_ptr<Material> material = std::make_shared<Material>(
     glm::vec3(0.0f, 0.0f, 1.0f),
-    glm::vec3(1.0f, 1.0f, 1.0f),
+    glm::vec3(0.01f, 0.01f, 0.01f),
     1.0f
   );
 

@@ -21,7 +21,7 @@ class GrassPlane : public GameObject
 
     glm::vec3 basePosition = glm::vec3(0.0f, 0.0f, 0.0f);
 
-    float minXDistance = 0.5f, minZDistance = 0.5f;
+    float minXDistance = 0.55f, minZDistance = 0.55f;
     float chunkSizeX = 100.0f, chunkSizeZ = 100.0f;
 
     static std::shared_ptr<Program> planeShader;

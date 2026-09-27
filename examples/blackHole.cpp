@@ -1,7 +1,7 @@
 #include <blackHole.h>
 
 std::shared_ptr<Program> BlackHole::blackHoleShader = std::make_shared<Program>("../shaders/vertex.vs", "../shaders/blackHole.fs");
-std::shared_ptr<Mesh> BlackHole::blackHoleMesh = std::make_shared<Mesh>("/home/arthur/Documents/simpleGame/obj/source/sphere.obj");
+std::shared_ptr<Mesh> BlackHole::blackHoleMesh = std::make_shared<Mesh>("../obj/source/sphere.obj");
 
 float BlackHole::baseRadius = (BlackHole::blackHoleMesh->boundingVolume[1].x - BlackHole::blackHoleMesh->boundingVolume[0].x) * 0.5f;
 float BlackHole::minDistanceToDestroy = 4.0f;

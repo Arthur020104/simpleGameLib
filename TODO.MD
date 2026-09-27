@@ -1,21 +1,12 @@
 # Todo
-- 1. Add an instancing for gameObjects, I think the best aprouch is to continue adding every single gameObject to the scene, and in the draw phase for loop through all gameObjects we can ignore objects that are instanced(add a flag to gameObject class, shouldDraw). for the actual instancing we can create a new class to take care of it. I dont want to add as a component bc it does not have the core functionality of a component, is more like a group.
-  - 1.1 When redering make sure we load for shader only once each material. Use a set to make sure unique and to get index faster for the material uniform buffer.
-  - 1.2 Execute instancing in loops, to make sure even if we hit the max TEXTURES or max MATERIALS we can still draw the rest of the objects.
-  - 1.3 Scene class will have a vector of instacing groups.
-  - 1.4 Instacing group must make sure that all gameObjects have the same mesh and shader.
-  - 1.5 Define the vbo data once on creation and just change as needed.
-    - 1.5.1 When the amounts of gameObjects is the same we just change the vbo data that is relative to position(model matrix), we assume that once is instaced material data does not change, but we will create a method to force the reload of the material data(maybe just reload all the vbo data, using the same method as the below).
-    - 1.5.2 When changes we need to reload all the vbo data.
-Create, ui. We can create a child of the game object for instancing, and for the ui component we can create its own scene and when components inside change, we can
-update the ui, by rendering the ui scene to a texture and then drawing it on the screen.
-# refactor code for the instancing, add errors instead of making the for loop and just dont let pass certain amount of textures/materials.
-# find a way to reduce memory usage for instancing, currently we pass the for each vertex one byte for the material index, maybe we can use something like.
-# (index, timesRepeatedInSequence)
-- 2. Add input handling for the window
-- 3. Create a simple game like a bomberman clone to test
-
-- FIX: ADD ORTHO PROJECTION FOR UI, MAKE SURE TO USE THE SAME ASPECT RATIO AS THE WINDOW.
+- 1. Add shadows. Make sure to create dynamic lights, static lights, and each light must have a shadow map, maybe we can have two shadow maps, one for the gameObjects tagged as static and one for the dynamic gameObjects. Only dynamic lights will have this two, static lights will only have the static shadow map.
+- 2. Add parent to component, so that we can render based on the parent, and create an better hierarchy for the gameObjects.
+- 3. Add more types of physics colliders.
+- 4. Add audio
+- 5. Improve the input handling in the window.
+- 6. Add a generic mover class. Must work with any mesh.
+- 7. Check for memory leaks, and 1% low performance.
+- 8. Create a simple game use https://letsmakeagame.net/game-jam-theme-generator/
 
 # Text Redering
 - For text rendering there is a limit of char that i need to render depending on text size. For doing instancing rendering i will need total text/maxTExturesSupported andd rendering n textures. After all done get this n textures and do a final redering, for extreme cases this may need to need an extra call so it needs to be recursive. 
@@ -127,3 +118,17 @@ Materials: every game object should be able to have N materials, and we should b
 - Add materials, make sure to load materials in the .obj file - look up creating a class that stores for an map for each class data varibles(maybe leave this precompiled thing for latter)
 - Add an execution queue with time, will run in a separate thread.
 - Make materials load from the .obj file
+- Add an instancing for gameObjects, I think the best aprouch is to continue adding every single gameObject to the scene, and in the draw phase for loop through all gameObjects we can ignore objects that are instanced(add a flag to gameObject class, shouldDraw). for the actual instancing we can create a new class to take care of it. I dont want to add as a component bc it does not have the core functionality of a component, is more like a group.
+  - 1.1 When redering make sure we load for shader only once each material. Use a set to make sure unique and to get index faster for the material uniform buffer.
+  - 1.2 Execute instancing in loops, to make sure even if we hit the max TEXTURES or max MATERIALS we can still draw the rest of the objects.
+  - 1.3 Scene class will have a vector of instacing groups.
+  - 1.4 Instacing group must make sure that all gameObjects have the same mesh and shader.
+  - 1.5 Define the vbo data once on creation and just change as needed.
+    - 1.5.1 When the amounts of gameObjects is the same we just change the vbo data that is relative to position(model matrix), we assume that once is instaced material data does not change, but we will create a method to force the reload of the material data(maybe just reload all the vbo data, using the same method as the below).
+    - 1.5.2 When changes we need to reload all the vbo data.
+Create, ui. We can create a child of the game object for instancing, and for the ui component we can create its own scene and when components inside change, we can
+update the ui, by rendering the ui scene to a texture and then drawing it on the screen.
+# refactor code for the instancing, add errors instead of making the for loop and just dont let pass certain amount of textures/materials.
+# find a way to reduce memory usage for instancing, currently we pass the for each vertex one byte for the material index, maybe we can use something like.
+# (index, timesRepeatedInSequence)
+- FIX: ADD ORTHO PROJECTION FOR UI, MAKE SURE TO USE THE SAME ASPECT RATIO AS THE WINDOW.

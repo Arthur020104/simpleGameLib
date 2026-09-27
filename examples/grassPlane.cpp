@@ -14,14 +14,9 @@ GrassPlane::GrassPlane(glm::vec3 position): GameObject(Mesh::getQuadMesh(), Gras
 void GrassPlane::start()
 {
   std::shared_ptr<Material> planeMaterial = std::make_shared<Material>("../obj/grass.png", glm::vec3(0.1f, 0.1f, 0.1f), 1.0f);
-  planeMaterial->diffuseTex->setWrapping(GL_REPEAT, GL_REPEAT);
+  planeMaterial->getDiffuseTexture()->setWrapping(GL_REPEAT, GL_REPEAT);
   this->useOnly(planeMaterial);
   this->setRotation(glm::vec3(270.0f, 0.0f, 0.0f));
-
-  
-
-  std::cout << "GrassPlane: Bounding Volume: min: " << this->getMesh()->boundingVolume[0].x << ", " << this->getMesh()->boundingVolume[0].y << ", " << this->getMesh()->boundingVolume[0].z << std::endl;
-  std::cout << "GrassPlane: Bounding Volume: max: " << this->getMesh()->boundingVolume[1].x << ", " << this->getMesh()->boundingVolume[1].y << ", " << this->getMesh()->boundingVolume[1].z << std::endl;
 
   glm::vec4 min = this->getModelMatrix() * glm::vec4(this->getMesh()->boundingVolume[0], 1.0f);
   glm::vec4 max = this->getModelMatrix() * glm::vec4(this->getMesh()->boundingVolume[1], 1.0f);
@@ -29,18 +24,11 @@ void GrassPlane::start()
   max = glm::max(max, min);
   min = tempMin;
 
-  std::cout << "GrassPlane: min: " << min.x << ", " << min.y << ", " << min.z << std::endl;
-  std::cout << "GrassPlane: max: " << max.x << ", " << max.y << ", " << max.z << std::endl;
-
   this->basePosition = glm::vec3(min.x, this->getPosition().y, min.z) - glm::vec3(-0.6f, 0.0f, -0.6f);//offset
-  std::cout << "GrassPlane: basePosition: " << this->basePosition.x << ", " << this->basePosition.y << ", " << this->basePosition.z << std::endl;
   
   uint16_t grassAmountX = std::floor((max.x - min.x) / this->minXDistance);
   uint16_t grassAmountZ = std::floor((max.z - min.z) / this->minZDistance);
-  std::cout << "GrassPlane: grassAmountX: " << grassAmountX << std::endl;
-  std::cout << "GrassPlane: grassAmountZ: " << grassAmountZ << std::endl;
 
-  // throw std::runtime_error("GrassPlane: GrassPlane is not compatible with the current physics engine. Please use a different ground object.");
   uint16_t xChunks = std::ceil((max.x - min.x) / this->chunkSizeX);
   uint16_t zChunks = std::ceil((max.z - min.z) / this->chunkSizeZ);
 

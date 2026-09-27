@@ -22,6 +22,10 @@ class Material
 
     void addEmissiveTexture(std::shared_ptr<Texture> emissiveTex);
     void addEmissiveTexture(std::string emissiveTexturePath);
+
+    std::shared_ptr<Texture> getDiffuseTexture() {return this->diffuseTex;};
+    std::shared_ptr<Texture> getSpecularTexture() {return this->specularTex;};
+    std::shared_ptr<Texture> getEmissiveTexture() {return this->emissiveTex;};
     
     virtual void bind(Program* shaderProgram, char* arrayName, uint16_t index, uint16_t texUnit);
 
@@ -30,13 +34,12 @@ class Material
     glm::vec3 diffuse = glm::vec3(1.0f, 1.0f, 1.0f);
     glm::vec3 specularColor = glm::vec3(1.0f, 1.0f, 1.0f);
 
-    std::shared_ptr<Texture> diffuseTex = nullptr;
-    std::shared_ptr<Texture> specularTex = nullptr;
-    std::shared_ptr<Texture> emissiveTex = nullptr;
     uint16_t activeTextures = 0;
     float shininess = 1.0f;
   private:
-
+    std::shared_ptr<Texture> diffuseTex = nullptr;
+    std::shared_ptr<Texture> specularTex = nullptr;
+    std::shared_ptr<Texture> emissiveTex = nullptr;
     static std::shared_ptr<Material> createDefaultMaterial();
 
 };

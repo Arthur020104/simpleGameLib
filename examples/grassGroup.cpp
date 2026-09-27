@@ -1,8 +1,8 @@
 #include <grassGroup.h>
 #include <malloc.h>
 
-float GrassGroup::maxDistanceToUseHighQualityGrass = 100.0f;
-float GrassGroup::stopRenderingDistance = 500.0f;
+float GrassGroup::maxDistanceToUseHighQualityGrass = 200.0f;
+float GrassGroup::stopRenderingDistance = 300.0f;
 float GrassGroup::removeFromGPUDistance = GrassGroup::stopRenderingDistance + 100.0f;
 float GrassGroup::removeFromRAMDistance = GrassGroup::removeFromGPUDistance + 50.0f;
 float GrassGroup::loadBackToGPUDistance = GrassGroup::stopRenderingDistance + 50.0f;
@@ -54,34 +54,36 @@ void GrassGroup::loadDataToRAM()
   this->mesh = this->groupLods[0];
 
   this->hasDataInRAM = true;
+  
+  GrassInstance** grassArray = new GrassInstance*[grassAmountX * grassAmountZ];
 
   this->gen.seed(this->seed);
   for(uint16_t i = 0; i < grassAmountX; i++)
   {
     for(uint16_t j = 0; j < grassAmountZ; j++)
     {
-      GrassInstance* grass = new GrassInstance(this->groupLods[0], this->program, {material}, GameObjectType::STATIC);
+      grassArray[i * grassAmountZ + j] = new GrassInstance(this->groupLods[0], this->program, {material}, GameObjectType::STATIC);
 
       glm::vec3 grassPosition = glm::vec3(basePosition.x, basePosition.y, basePosition.z);
 
       float xNoise = i != 0 && i != grassAmountX - 1 ? getRandomFloatR(-minXDistance * 0.5f, minXDistance * 0.5f) : 0.0f;
       float zNoise = j != 0 && j != grassAmountZ - 1 ? getRandomFloatR(-minZDistance * 0.5f, minZDistance * 0.5f) : 0.0f;
       
-      grassPosition.x += 0.0f + i * minXDistance;
-      grassPosition.z += 0.0f + j * minZDistance;
+      grassPosition.x += xNoise + i * minXDistance;
+      grassPosition.z += zNoise + j * minZDistance;
       
       glm::vec3 rotation = glm::vec3(0.0f, getRandomFloatR(0.0f, 180.0f), 0.0f);
       
-      grass->setRotation(rotation);
+      grassArray[i * grassAmountZ + j]->setRotation(rotation);
       
       float scale = getRandomFloatR(1.5f, 3.0f);
       glm::vec3 scaleVec = glm::vec3(scale, scale, scale);
 
-      grass->setPosition(grassPosition);
+      grassArray[i * grassAmountZ + j]->setPosition(grassPosition);
 
-      grass->setScale(scaleVec);
+      grassArray[i * grassAmountZ + j]->setScale(scaleVec);
 
-      this->objs.insert(grass);
+      this->objs.insert(grassArray[i * grassAmountZ + j]);
     }
   }
 }

@@ -75,18 +75,20 @@ void ExampleCamera::beforeUpdate()
     this->isShooting = true;
     BlackHole* bh = new BlackHole(this->getPosition(), this->getForwardVector(), 5.0f, 0.1f, 500.0f, 50000.0f, 10.0f);
     this->scene->addObject(bh);
-   
-    // b3ExplosionDef explosion = b3DefaultExplosionDef();
-    // explosion.position = result.point;
-    // explosion.radius = 3.0f;
-    // explosion.falloff = 2.0f;
-    // explosion.impulsePerArea = 50.0f;
-
-    // b3World_Explode(this->scene->getWorldId(), &explosion);
   } 
   else if(glfwGetMouseButton(WINDOW.window, GLFW_MOUSE_BUTTON_LEFT) == GLFW_RELEASE || glfwGetKey(WINDOW.window, GLFW_KEY_LEFT_SHIFT) == GLFW_RELEASE)
   {
     this->isShooting = false;
   }
 
+  if(glfwGetMouseButton(WINDOW.window, GLFW_MOUSE_BUTTON_LEFT) == GLFW_PRESS && glfwGetKey(WINDOW.window, GLFW_KEY_LEFT_SHIFT) == GLFW_RELEASE && result.hit)
+  {
+    b3ExplosionDef explosion = b3DefaultExplosionDef();
+    explosion.position = result.point;
+    explosion.radius = 3.0f;
+    explosion.falloff = 2.0f;
+    explosion.impulsePerArea = 50.0f;
+
+    b3World_Explode(this->scene->getWorldId(), &explosion);
+  }
 }
