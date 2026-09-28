@@ -1,1 +1,1 @@
-![Example](https://s15.gifyu.com/images/bQzeT.gif)
+![Example](./img/example.gif)
